@@ -131,6 +131,11 @@ class SourceImage
             $data['static_metadata'] = [];
         }
 
+        //FIXME: backend should always return link
+        if (!isset($data['link'])) {
+            $data['link'] = null;
+        }
+
         $dynamic_metadata = [];
 
         // Rebuild the DynamicMetadata associated to the current SourceImage
