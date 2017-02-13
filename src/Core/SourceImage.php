@@ -129,6 +129,12 @@ class SourceImage
 
         if (!isset($data['user_metadata'])) {
             $data['user_metadata'] = [];
+        } else {
+            foreach ($data['user_metadata'] as $key => $value) {
+                if (strpos($key, "date:") === 0) {
+                    $data['user_metadata'][$key] = new \DateTime($value);
+                }
+            }
         }
 
         //FIXME: backend should always return link

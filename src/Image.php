@@ -381,6 +381,11 @@ class Image extends Base
         ]);
         $data = [];
         if ($fields) {
+            foreach ($fields as $key => $value) {
+                if ($value instanceof \DateTime) {
+                    $fields[$key] = $value ->setTimezone(new \DateTimeZone("UTC"))->format("Y-m-d\TH:i:s.v\Z");
+                }
+            }
             $data = ['json' => $fields];
         }
         $response = $this->call($method, $path, $data);
