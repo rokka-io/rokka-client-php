@@ -19,7 +19,7 @@ class Image extends Base
 {
     const SOURCEIMAGE_RESOURCE = 'sourceimages';
     const DYNAMIC_META_RESOURCE = 'meta/dynamic';
-    const STATIC_META_RESOURCE = 'meta/static';
+    const USER_META_RESOURCE = 'meta/user';
 
     const STACK_RESOURCE = 'stacks';
     const OPERATIONS_RESOURCE = 'operations';
@@ -344,40 +344,40 @@ class Image extends Base
         throw new \LogicException($response->getBody()->getContents(), $response->getStatusCode());
     }
 
-    public function setStaticMetadataField($field, $value, $hash, $organization = '') {
-        return $this->doStaticMetadataRequest([$field => $value], $hash, "PATCH", $organization);
+    public function setUserMetadataField($field, $value, $hash, $organization = '') {
+        return $this->doUserMetadataRequest([$field => $value], $hash, "PATCH", $organization);
     }
 
-    public function addStaticMetadata($fields, $hash, $organization = '') {
-        return $this->doStaticMetadataRequest($fields, $hash, "PATCH", $organization);
+    public function addUserMetadata($fields, $hash, $organization = '') {
+        return $this->doUserMetadataRequest($fields, $hash, "PATCH", $organization);
     }
 
-    public function setStaticMetadata($fields, $hash, $organization = '') {
-        return $this->doStaticMetadataRequest($fields, $hash, "PUT", $organization);
+    public function setUserMetadata($fields, $hash, $organization = '') {
+        return $this->doUserMetadataRequest($fields, $hash, "PUT", $organization);
     }
 
-    public function deleteStaticMetadata($hash, $organization = '') {
-        return $this->doStaticMetadataRequest(null,  $hash, "DELETE", $organization);
+    public function deleteUserMetadata($hash, $organization = '') {
+        return $this->doUserMetadataRequest(null,  $hash, "DELETE", $organization);
     }
 
-    public function deleteStaticMetadataField($field, $hash, $organization = '') {
-        return $this->doStaticMetadataRequest([$field => null],  $hash, "PATCH", $organization);
+    public function deleteUserMetadataField($field, $hash, $organization = '') {
+        return $this->doUserMetadataRequest([$field => null],  $hash, "PATCH", $organization);
     }
 
-    public function deleteStaticMetadataFields($fields, $hash, $organization = '') {
+    public function deleteUserMetadataFields($fields, $hash, $organization = '') {
         $data = [];
         foreach ($fields as $value) {
             $data[$value] = null;
         }
-        return $this->doStaticMetadataRequest($data,  $hash, "PATCH", $organization);
+        return $this->doUserMetadataRequest($data,  $hash, "PATCH", $organization);
     }
 
-    private function doStaticMetadataRequest($fields, $hash, $method, $organization = '') {
+    private function doUserMetadataRequest($fields, $hash, $method, $organization = '') {
         $path = implode('/', [
             self::SOURCEIMAGE_RESOURCE,
             $this->getOrganization($organization),
             $hash,
-            self::STATIC_META_RESOURCE
+            self::USER_META_RESOURCE
         ]);
         $data = [];
         if ($fields) {

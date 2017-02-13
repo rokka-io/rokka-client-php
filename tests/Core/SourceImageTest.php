@@ -23,7 +23,7 @@ class SourceImageTest extends \PHPUnit_Framework_TestCase
                 'size' => $image->size,
                 'width' => $image->width,
                 'height' => $image->height,
-                'static_metadata' => $image->staticMetadata,
+                'user_metadata' => $image->userMetadata,
                 'dynamic_metadata' => [],
                 'created' => $image->created->format(DateTime::RFC3339),
                 'link' => $image->link,

@@ -50,9 +50,9 @@ class SourceImage
     public $height;
 
     /**
-     * @var array Static metadata
+     * @var array User metadata
      */
-    public $staticMetadata;
+    public $userMetadata;
 
     /**
      * @var DynamicMetadataInterface[] Dynamic metadata
@@ -80,7 +80,7 @@ class SourceImage
      * @param integer   $size            File size in bytes
      * @param integer   $width           Width in pixels
      * @param integer   $height          Height in pixels
-     * @param array     $staticMetadata  Static metadata
+     * @param array     $userMetadata    User metadata
      * @param array     $dynamicMetadata Dynamic metadata
      * @param \DateTime $created         Created at date
      * @param string    $link            Link to the image
@@ -94,7 +94,7 @@ class SourceImage
         $size,
         $width,
         $height,
-        array $staticMetadata,
+        array $userMetadata,
         array $dynamicMetadata,
         \DateTime $created,
         $link
@@ -107,7 +107,7 @@ class SourceImage
         $this->size = $size;
         $this->width = $width;
         $this->height = $height;
-        $this->staticMetadata = $staticMetadata;
+        $this->userMetadata = $userMetadata;
         $this->dynamicMetadata = $dynamicMetadata;
         $this->created = $created;
         $this->link = $link;
@@ -127,8 +127,8 @@ class SourceImage
             $data = json_decode($data, true);
         }
 
-        if (!isset($data['static_metadata'])) {
-            $data['static_metadata'] = [];
+        if (!isset($data['user_metadata'])) {
+            $data['user_metadata'] = [];
         }
 
         //FIXME: backend should always return link
@@ -160,7 +160,7 @@ class SourceImage
             $data['size'],
             $data['width'],
             $data['height'],
-            $data['static_metadata'],
+            $data['user_metadata'],
             $dynamic_metadata,
             new \DateTime($data['created']),
             $data['link']
