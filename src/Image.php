@@ -383,7 +383,7 @@ class Image extends Base
         if ($fields) {
             foreach ($fields as $key => $value) {
                 if ($value instanceof \DateTime) {
-                    $fields[$key] = $value ->setTimezone(new \DateTimeZone("UTC"))->format("Y-m-d\TH:i:s.v\Z");
+                    $fields[$key] = $value->setTimezone(new \DateTimeZone("UTC"))->format("Y-m-d\TH:i:s.v\Z");
                 }
             }
             $data = ['json' => $fields];
