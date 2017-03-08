@@ -32,7 +32,7 @@ class SubjectArea implements DynamicMetadataInterface
      * @param int $x      X-point
      * @param int $y      Y-point
      */
-    public function __construct($x, $y, $width, $height)
+    public function __construct($x, $y, $width = 1, $height = 1)
     {
         $this->x = $x;
         $this->y = $y;
@@ -68,8 +68,8 @@ class SubjectArea implements DynamicMetadataInterface
     /**
      * @return string The name of the metadata
      */
-    public function getName()
+    public static function getName()
     {
-        return 'SubjectArea';
+        return 'subject_area';
     }
 }

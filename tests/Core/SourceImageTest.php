@@ -31,7 +31,7 @@ class SourceImageTest extends \PHPUnit_Framework_TestCase
                 if ($meta instanceof SubjectArea) {
                     $metaAsArray = ['width' => $meta->width, 'height' => $meta->height, 'x' => $meta->x, 'y' => $meta->y];
                 }
-                $data['dynamic_metadata']['elements'][$name] = $metaAsArray;
+                $data['dynamic_metadata'][$name] = $metaAsArray;
             }
 
             return $data;
@@ -50,13 +50,13 @@ class SourceImageTest extends \PHPUnit_Framework_TestCase
         ];
 
         $subjectAres = new SubjectArea(10, 10, 100, 100);
-        $image = new SourceImage('organization', 'binaryHash', 'hash', 'name', 'format', 'size', 'width', 'height', [], ['SubjectArea' => $subjectAres], new DateTime(), 'link');
+        $image = new SourceImage('organization', 'binaryHash', 'hash', 'name', 'format', 'size', 'width', 'height', [], ['subject_area' => $subjectAres], new DateTime(), 'link');
         $testData['image-subject-area'] = [
             $image, $imageReverser($image), true,
         ];
 
         $subjectAres = new SubjectArea(10, 10, 100, 100);
-        $image = new SourceImage('organization', 'binaryHash', 'hash', 'name', 'format', 'size', 'width', 'height', [], ['SubjectArea' => $subjectAres], new DateTime(), 'link');
+        $image = new SourceImage('organization', 'binaryHash', 'hash', 'name', 'format', 'size', 'width', 'height', [], ['subject_area' => $subjectAres], new DateTime(), 'link');
         $testData['image-json-subject-area'] = [
             $image, json_encode($imageReverser($image)),
         ];
@@ -75,5 +75,28 @@ class SourceImageTest extends \PHPUnit_Framework_TestCase
     {
         $sourceImage = SourceImage::createFromJsonResponse($data, $isArray);
         $this->assertEquals($expected, $sourceImage);
+    }
+
+    /**
+     * @return array
+     */
+    public function provideGetDynamicMetadataClassNameData()
+    {
+        return [
+            ['Rokka\Client\Core\DynamicMetadata\A', 'a'],
+            ['Rokka\Client\Core\DynamicMetadata\SubjectArea', 'subject_area'],
+            ['Rokka\Client\Core\DynamicMetadata\SomeOtherFancyDynamicMetadata', 'some_other_fancy_dynamic_metadata'],
+        ];
+    }
+
+    /**
+     * @dataProvider provideGetDynamicMetadataClassNameData
+     *
+     * @param $expected
+     * @param $name
+     */
+    public function testGetDynamicMetadataClassName($expected, $name)
+    {
+        $this->assertEquals($expected, SourceImage::getDynamicMetadataClassName($name));
     }
 }

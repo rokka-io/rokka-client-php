@@ -137,17 +137,12 @@ class SourceImage
             }
         }
 
-        //FIXME: backend should always return link
-        if (!isset($data['link'])) {
-            $data['link'] = null;
-        }
-
         $dynamic_metadata = [];
 
         // Rebuild the DynamicMetadata associated to the current SourceImage
-        if (isset($data['dynamic_metadata']) && !empty($data['dynamic_metadata']['elements'])) {
-            foreach ($data['dynamic_metadata']['elements'] as $name => $metadata) {
-                $metaClass = 'Rokka\Client\Core\DynamicMetadata\\'.$name;
+        if (isset($data['dynamic_metadata'])) {
+            foreach ($data['dynamic_metadata'] as $name => $metadata) {
+                $metaClass = self::getDynamicMetadataClassName($name);
                 if (class_exists($metaClass)) {
                     /** @var DynamicMetadataInterface $metaClass */
                     $meta = $metaClass::createFromJsonResponse($metadata, true);
@@ -170,5 +165,23 @@ class SourceImage
             new \DateTime($data['created']),
             $data['link']
         );
+    }
+
+    /**
+     * Returns the Dynamic Metadata class name from the API name.
+     *
+     * @param string $name The Metadata name from the API
+     *
+     * @return string The DynamicMetadata class name, as fully qualified class name
+     */
+    public static function getDynamicMetadataClassName($name)
+    {
+        // Convert to a CamelCase class name.
+        // See Symfony\Component\Serializer\NameConverter\CamelCaseToSnakeCaseNameConverter::denormalize()
+        $camelCasedName = preg_replace_callback('/(^|_|\.)+(.)/', function ($match) {
+            return ('.' === $match[1] ? '_' : '').strtoupper($match[2]);
+        }, $name);
+
+        return 'Rokka\Client\Core\DynamicMetadata\\'.$camelCasedName;
     }
 }

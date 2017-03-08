@@ -338,10 +338,11 @@ class Image extends Base
             $this->getOrganization($organization),
             $hash,
             self::DYNAMIC_META_RESOURCE,
-            $dynamicMetadata->getName(),
+            $dynamicMetadata::getName(),
         ]);
 
         $response = $this->call('PUT', $path, ['json' => $dynamicMetadata]);
+
         if ('204' == $response->getStatusCode()) {
             return $hash;
         }
