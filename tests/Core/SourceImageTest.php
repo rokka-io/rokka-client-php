@@ -76,27 +76,4 @@ class SourceImageTest extends \PHPUnit_Framework_TestCase
         $sourceImage = SourceImage::createFromJsonResponse($data, $isArray);
         $this->assertEquals($expected, $sourceImage);
     }
-
-    /**
-     * @return array
-     */
-    public function provideGetDynamicMetadataClassNameData()
-    {
-        return [
-            ['Rokka\Client\Core\DynamicMetadata\A', 'a'],
-            ['Rokka\Client\Core\DynamicMetadata\SubjectArea', 'subject_area'],
-            ['Rokka\Client\Core\DynamicMetadata\SomeOtherFancyDynamicMetadata', 'some_other_fancy_dynamic_metadata'],
-        ];
-    }
-
-    /**
-     * @dataProvider provideGetDynamicMetadataClassNameData
-     *
-     * @param $expected
-     * @param $name
-     */
-    public function testGetDynamicMetadataClassName($expected, $name)
-    {
-        $this->assertEquals($expected, SourceImage::getDynamicMetadataClassName($name));
-    }
 }
