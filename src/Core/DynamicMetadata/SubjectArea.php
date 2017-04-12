@@ -27,15 +27,27 @@ class SubjectArea implements DynamicMetadataInterface
     /**
      * SubjectArea constructor.
      *
-     * @param int $width  Width
-     * @param int $height Height
-     * @param int $x      X-point
-     * @param int $y      Y-point
+     * The SubjectArea can also be defined as a point, by setting both "width" and "height" to 1.
+     *
+     * @param int $x      X-point of the subject area, 0-based
+     * @param int $y      Y-point of the subject area, 0-based
+     * @param int $width  The width of the subject area box, default to 1px
+     * @param int $height The height of the subject area box, default to 1px
+     *
+     * @throws \InvalidArgumentException if the provided values are not valid
      */
-    public function __construct($x, $y, $width, $height)
+    public function __construct($x, $y, $width = 1, $height = 1)
     {
+        if ($x < 0 || $y < 0) {
+            throw new \InvalidArgumentException('Invalid SubjectArea position, "x" and "y" values must be positive integers');
+        }
+
         $this->x = $x;
         $this->y = $y;
+
+        if ($width < 1 || $height < 1) {
+            throw new \InvalidArgumentException('Invalid SubjectArea dimensions, "width" and "height" values must be greater than zero');
+        }
         $this->width = $width;
         $this->height = $height;
     }
@@ -68,8 +80,8 @@ class SubjectArea implements DynamicMetadataInterface
     /**
      * @return string The name of the metadata
      */
-    public function getName()
+    public static function getName()
     {
-        return 'SubjectArea';
+        return 'subject_area';
     }
 }

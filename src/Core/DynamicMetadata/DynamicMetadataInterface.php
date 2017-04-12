@@ -10,7 +10,7 @@ interface DynamicMetadataInterface
     /**
      * @return string The name of the metadata
      */
-    public function getName();
+    public static function getName();
 
     /**
      * Create a DynamicMetadata from the JSON data.

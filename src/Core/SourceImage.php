@@ -3,6 +3,7 @@
 namespace Rokka\Client\Core;
 
 use Rokka\Client\Core\DynamicMetadata\DynamicMetadataInterface;
+use Rokka\Client\DynamicMetadataHelper;
 
 /**
  * Represents the metadata of an image.
@@ -137,21 +138,14 @@ class SourceImage
             }
         }
 
-        //FIXME: backend should always return link
-        if (!isset($data['link'])) {
-            $data['link'] = null;
-        }
-
         $dynamic_metadata = [];
 
         // Rebuild the DynamicMetadata associated to the current SourceImage
-        if (isset($data['dynamic_metadata']) && !empty($data['dynamic_metadata']['elements'])) {
-            foreach ($data['dynamic_metadata']['elements'] as $name => $metadata) {
-                $metaClass = 'Rokka\Client\Core\DynamicMetadata\\'.$name;
-                if (class_exists($metaClass)) {
-                    /** @var DynamicMetadataInterface $metaClass */
-                    $meta = $metaClass::createFromJsonResponse($metadata, true);
-                    $dynamic_metadata[$name] = $meta;
+        if (isset($data['dynamic_metadata'])) {
+            foreach ($data['dynamic_metadata'] as $name => $metadata) {
+                $metadata = DynamicMetadataHelper::buildDynamicMetadata($name, $metadata);
+                if ($metadata) {
+                    $dynamic_metadata[$name] = $metadata;
                 }
             }
         }
