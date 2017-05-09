@@ -105,6 +105,33 @@ class Image extends Base
     }
 
     /**
+     * Delete source images by binaryhash
+     *
+     * Since the same binaryhash can have different images in rokka, this may delete more than one picture.
+     *
+     * @param string $binaryHash   Hash of the image
+     * @param string $organization Optional organization name
+     *
+     * @throws GuzzleException If the request fails for a different reason than image not found
+     *
+     * @return bool True if successful, false if image not found
+     */
+    public function deleteSourceImagesByBinaryHash($binaryHash, $organization = '')
+    {
+        try {
+            $response = $this->call('DELETE', implode('/', [self::SOURCEIMAGE_RESOURCE, $this->getOrganization($organization)]), ['query' => ['binaryHash' => $binaryHash]]);
+        } catch (GuzzleException $e) {
+            if (404 == $e->getCode()) {
+                return false;
+            }
+
+            throw $e;
+        }
+
+        return '204' == $response->getStatusCode();
+    }
+
+    /**
      * Search and list source images.
      *
      * Sort direction can either be: "asc", "desc" (or the boolean TRUE value, treated as "asc")
@@ -171,28 +198,45 @@ class Image extends Base
      * Load a source image's metadata from Rokka.
      *
      * @param string $hash         Hash of the image
-     * @param bool   $binaryHash   use the binary hash to load the image metadata, rather than the normal hash
      * @param string $organization Optional organization name
      *
      * @return SourceImage
      */
-    public function getSourceImage($hash, $binaryHash = false, $organization = '')
+    public function getSourceImage($hash, $organization = '')
     {
-        $options = [];
         $path = self::SOURCEIMAGE_RESOURCE.'/'.$this->getOrganization($organization);
 
-        if ($binaryHash) {
-            $options['query'] = ['binaryHash' => $hash];
-        } else {
-            $path .= '/'.$hash;
-        }
+
+        $path .= '/'.$hash;
 
         $contents = $this
-            ->call('GET', $path, $options)
+            ->call('GET', $path)
             ->getBody()
             ->getContents();
 
         return SourceImage::createFromJsonResponse($contents);
+    }
+
+    /**
+     * Loads source images metadata from Rokka by binaryhash
+     *
+     * Since the same binaryhash can have different images in rokka, this may return more than one picture.
+     *
+     * @param string $binaryHash         Hash of the image
+     * @param string $organization Optional organization name
+     *
+     * @return SourceImageCollection
+     */
+    public function getSourceImagesByBinaryHash($binaryHash, $organization = '')
+    {
+        $path = self::SOURCEIMAGE_RESOURCE.'/'.$this->getOrganization($organization);
+
+        $options['query'] = ['binaryHash' => $binaryHash];
+        $contents = $this
+            ->call('GET', $path, $options)
+            ->getBody()
+            ->getContents();
+        return SourceImageCollection::createFromJsonResponse($contents);
     }
 
     /**
@@ -325,13 +369,21 @@ class Image extends Base
      * Returns the new Hash for the SourceImage, it could be the same as the input one if the operation
      * did not change it.
      *
+     * The only option currently can be
+     *
+     * ['deletePrevious' => true]
+     *
+     * which deletes the previous image from rokka (but not the binary, since that's still used)
+     * If not set, the original image is kept in rokka.
+     *
      * @param DynamicMetadataInterface $dynamicMetadata The Dynamic Metadata
      * @param string                   $hash            The Image hash
      * @param string                   $organization    Optional organization name
+     * @param options                  $options         Optional options
      *
      * @return string|false
      */
-    public function setDynamicMetadata(DynamicMetadataInterface $dynamicMetadata, $hash, $organization = '')
+    public function setDynamicMetadata(DynamicMetadataInterface $dynamicMetadata, $hash, $organization = '', $options = array())
     {
         $path = implode('/', [
             self::SOURCEIMAGE_RESOURCE,
@@ -340,13 +392,15 @@ class Image extends Base
             self::DYNAMIC_META_RESOURCE,
             $dynamicMetadata::getName(),
         ]);
-
-        $response = $this->call('PUT', $path, ['json' => $dynamicMetadata]);
-
-        if ('204' == $response->getStatusCode()) {
-            return $hash;
+        $callOptions = [];
+        $callOptions['json'] = $dynamicMetadata;
+        if (isset($options['deletePrevious']) && $options['deletePrevious']) {
+            $callOptions['query'] = ['deletePrevious' => 'true'];
         }
-        if ('201' == $response->getStatusCode()) {
+
+        $response = $this->call('PUT', $path, $callOptions);
+
+        if ($response->getStatusCode() >= 200 && $response->getStatusCode() < 300) {
             return $this->extractHashFromLocationHeader($response->getHeader('Location'));
         }
 
@@ -385,7 +439,7 @@ class Image extends Base
 
         $response = $this->call('DELETE', $path);
 
-        if ('204' == $response->getStatusCode()) {
+        if ($response->getStatusCode() >= 200 && $response->getStatusCode() < 300) {
             return $this->extractHashFromLocationHeader($response->getHeader('Location'));
         }
 
