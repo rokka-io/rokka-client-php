@@ -116,7 +116,7 @@ class Image extends Base
      *
      * @return bool True if successful, false if image not found
      */
-    public function deleteSourceImagesByBinaryHash($binaryHash, $organization = '')
+    public function deleteSourceImagesWithBinaryHash($binaryHash, $organization = '')
     {
         try {
             $response = $this->call('DELETE', implode('/', [self::SOURCEIMAGE_RESOURCE, $this->getOrganization($organization)]), ['query' => ['binaryHash' => $binaryHash]]);
@@ -226,7 +226,7 @@ class Image extends Base
      *
      * @return SourceImageCollection
      */
-    public function getSourceImagesByBinaryHash($binaryHash, $organization = '')
+    public function getSourceImagesWithBinaryHash($binaryHash, $organization = '')
     {
         $path = self::SOURCEIMAGE_RESOURCE.'/'.$this->getOrganization($organization);
 
