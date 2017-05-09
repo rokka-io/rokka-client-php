@@ -105,7 +105,7 @@ class Image extends Base
     }
 
     /**
-     * Delete source images by binaryhash
+     * Delete source images by binaryhash.
      *
      * Since the same binaryhash can have different images in rokka, this may delete more than one picture.
      *
@@ -206,7 +206,6 @@ class Image extends Base
     {
         $path = self::SOURCEIMAGE_RESOURCE.'/'.$this->getOrganization($organization);
 
-
         $path .= '/'.$hash;
 
         $contents = $this
@@ -218,11 +217,11 @@ class Image extends Base
     }
 
     /**
-     * Loads source images metadata from Rokka by binaryhash
+     * Loads source images metadata from Rokka by binaryhash.
      *
      * Since the same binaryhash can have different images in rokka, this may return more than one picture.
      *
-     * @param string $binaryHash         Hash of the image
+     * @param string $binaryHash   Hash of the image
      * @param string $organization Optional organization name
      *
      * @return SourceImageCollection
@@ -236,6 +235,7 @@ class Image extends Base
             ->call('GET', $path, $options)
             ->getBody()
             ->getContents();
+
         return SourceImageCollection::createFromJsonResponse($contents);
     }
 
@@ -383,7 +383,7 @@ class Image extends Base
      *
      * @return string|false
      */
-    public function setDynamicMetadata(DynamicMetadataInterface $dynamicMetadata, $hash, $organization = '', $options = array())
+    public function setDynamicMetadata(DynamicMetadataInterface $dynamicMetadata, $hash, $organization = '', $options = [])
     {
         $path = implode('/', [
             self::SOURCEIMAGE_RESOURCE,
