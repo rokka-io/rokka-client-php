@@ -370,7 +370,6 @@ class Image extends Base
      * did not change it.
      *
      * The only option currently can be
-     *
      * ['deletePrevious' => true]
      *
      * which deletes the previous image from rokka (but not the binary, since that's still used)
@@ -379,7 +378,7 @@ class Image extends Base
      * @param DynamicMetadataInterface $dynamicMetadata The Dynamic Metadata
      * @param string                   $hash            The Image hash
      * @param string                   $organization    Optional organization name
-     * @param options                  $options         Optional options
+     * @param array                    $options         Optional options
      *
      * @return string|false
      */
@@ -413,13 +412,19 @@ class Image extends Base
      * Returns the new Hash for the SourceImage, it could be the same as the input one if the operation
      * did not change it.
      *
+     * The only option currently can be
+     * ['deletePrevious' => true]
+     * which deletes the previous image from rokka (but not the binary, since that's still used)
+     * If not set, the original image is kept in rokka.
+     *
      * @param string $dynamicMetadataName The DynamicMetadata name
      * @param string $hash                The Image hash
      * @param string $organization        Optional organization name
+     * @param array  $options             Optional options
      *
      * @return string|false
      */
-    public function deleteDynamicMetadata($dynamicMetadataName, $hash, $organization = '')
+    public function deleteDynamicMetadata($dynamicMetadataName, $hash, $organization = '', $options = [])
     {
         if (empty($hash)) {
             throw new \LogicException('Missing image Hash.');
@@ -437,7 +442,12 @@ class Image extends Base
             $dynamicMetadataName,
         ]);
 
-        $response = $this->call('DELETE', $path);
+        $callOptions = [];
+        if (isset($options['deletePrevious']) && $options['deletePrevious']) {
+            $callOptions['query'] = ['deletePrevious' => 'true'];
+        }
+
+        $response = $this->call('DELETE', $path, $callOptions);
 
         if ($response->getStatusCode() >= 200 && $response->getStatusCode() < 300) {
             return $this->extractHashFromLocationHeader($response->getHeader('Location'));

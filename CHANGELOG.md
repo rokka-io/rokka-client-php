@@ -15,4 +15,6 @@ This document mainly describes API changes important to users of this library.
 * Add `Rokka\Client\Image::getSourceImagesWithBinaryHash($binaryHash, $organization = '')`.
 * Add options parameter to `Rokka\Client\Image::setDynamicMetadata(DynamicMetadataInterface $dynamicMetadata, $hash, $organization = '', $options = [])`.
   Only option right now is `['deletePrevious' => true]`, defaults to `false`.
+* Add options parameter to `Rokka\Client\Image::deleteDynamicMetadata(DynamicMetadataInterface $dynamicMetadata, $hash, $organization = '', $options = [])`.
+  Only option right now is `['deletePrevious' => true]`, defaults to `false`.
 
