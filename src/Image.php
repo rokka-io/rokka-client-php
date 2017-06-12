@@ -289,26 +289,25 @@ class Image extends Base
      * @return Stack
      */
     public function createStack(
-                                $stackName,
-                                array $stackOperations,
-                                $organization = '',
-                                array $stackOptions = [],
-                                $overwrite = false
-    )
-    {
+        $stackName,
+        array $stackOperations,
+        $organization = '',
+        array $stackOptions = [],
+        $overwrite = false
+    ) {
         $stackData = [
             'operations' => $stackOperations,
             'options' => $stackOptions,
         ];
-        $queryString = '';
+        $queryString = [];
         if ($overwrite) {
-            $queryString = '?overwrite=true';
+            $queryString['overwrite'] = 'true';
         }
         $contents = $this
             ->call(
                 'PUT',
-                implode('/', [self::STACK_RESOURCE, $this->getOrganization($organization), $stackName]) . $queryString,
-                ['json' => $stackData]
+                implode('/', [self::STACK_RESOURCE, $this->getOrganization($organization), $stackName]),
+                ['json' => $stackData, 'query' => $queryString]
             )
             ->getBody()
             ->getContents();
