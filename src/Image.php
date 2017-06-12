@@ -284,21 +284,30 @@ class Image extends Base
      * @param array  $stackOperations Stack operations
      * @param string $organization    Optional organization name
      * @param array  $stackOptions    Stack options
+     * @param bool   $overwrite       If an existing stack should be overwritten
      *
      * @return Stack
      */
-    public function createStack($stackName, array $stackOperations, $organization = '', array $stackOptions = [])
-    {
+    public function createStack(
+        $stackName,
+        array $stackOperations,
+        $organization = '',
+        array $stackOptions = [],
+        $overwrite = false
+    ) {
         $stackData = [
             'operations' => $stackOperations,
             'options' => $stackOptions,
         ];
-
+        $queryString = [];
+        if ($overwrite) {
+            $queryString['overwrite'] = 'true';
+        }
         $contents = $this
             ->call(
                 'PUT',
                 implode('/', [self::STACK_RESOURCE, $this->getOrganization($organization), $stackName]),
-                ['json' => $stackData]
+                ['json' => $stackData, 'query' => $queryString]
             )
             ->getBody()
             ->getContents();
