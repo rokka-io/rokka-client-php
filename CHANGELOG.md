@@ -7,7 +7,12 @@ but small API changes may happen between MINOR versions.
 
 This document mainly describes API changes important to users of this library.
 
-## 0.7.0 - unreleased
+## 0.8.0 - 2017-06-15
+
+* Add overwrite paramater to `Rokka\Client\Image::createStack($stackName, $stackOperations, $organization = '',  $stackOptions = [], $overwrite = false)`. If set to true, a stack will be overwritten, if it already exists.
+
+
+## 0.7.0 - 2017-05-17
 
 * BC break! Change `Rokka\Client\Image::getSourceImage($hash, $binaryHash = false, $organization = '')`
   to `Rokka\Client\Image::getSourceImage($hash, $organization = '')`.
