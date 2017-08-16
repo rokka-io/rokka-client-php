@@ -10,7 +10,8 @@ class UriHelper
     /**
      * Allows you to add stack options to a Rokka URL.
      *
-     * Useful eg. if you just want to add "options-dpr-2" to an existing URL
+     * Useful eg. if you just want to add "options-dpr-2" to an existing URL.
+     * Returns the original URL, if it can't parse it as valid Rokka URL.
      *
      * @param string $url     The rokka image render URL
      * @param string $options The options you want to add as string
@@ -26,6 +27,7 @@ class UriHelper
      * Allows you to add stack options to a Rokka URL.
      *
      * Useful eg. if you just want to add "options-dpr-2" to an existing URL
+     * Returns the original URL, if it can't parse it as valid Rokka URL.
      *
      * @param UriInterface $uri     The rokka image render URL
      * @param string       $options The options you want to add as string
@@ -50,6 +52,9 @@ class UriHelper
                 $newOptions[] = $newOption;
             }
             $options = implode('--', $newOptions);
+        } else {
+            //if nothing matches, it's not a proper rokka URL, just return the original uri
+            return $uri;
         }
 
         return $uri->withPath('/'.$matches['stack'].'/'.$options.'/'.$matches['rest']);
