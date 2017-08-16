@@ -7,6 +7,10 @@ but small API changes may happen between MINOR versions.
 
 This document mainly describes API changes important to users of this library.
 
+## 0.9 - 2017-07-16
+
+* Add  `\Rokka\Client\UrlHelper::addOptionsToUrl($url, $options)` for easily adding stack options to an existing URL. 
+
 ## 0.8.0 - 2017-06-15
 
 * Add overwrite parameter to `Rokka\Client\Image::createStack($stackName, $stackOperations, $organization = '',  $stackOptions = [], $overwrite = false)`. If set to true, a stack will be overwritten, if it already exists.
