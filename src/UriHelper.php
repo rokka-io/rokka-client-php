@@ -19,7 +19,7 @@ class UriHelper
      */
     public static function addOptionsToUriString($url, $options)
     {
-        return self::addOptionsToUri(new Uri($url), $options);
+        return (string) self::addOptionsToUri(new Uri($url), $options);
     }
 
     /**
@@ -27,10 +27,10 @@ class UriHelper
      *
      * Useful eg. if you just want to add "options-dpr-2" to an existing URL
      *
-     * @param UriInterface $uri The rokka image render URL
-     * @param $options The options you want to add as string
+     * @param UriInterface $uri     The rokka image render URL
+     * @param string       $options The options you want to add as string
      *
-     * @return static
+     * @return UriInterface
      */
     public static function addOptionsToUri(UriInterface $uri, $options)
     {
@@ -56,7 +56,7 @@ class UriHelper
     }
 
     /**
-     * @param $options
+     * @param string $options
      *
      * @return array
      */

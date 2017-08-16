@@ -26,11 +26,9 @@ class UriHelperTest extends \PHPUnit_Framework_TestCase
      * @param $inputUrl
      * @param $options
      * @param $expected
-     *
-     * @internal param $name
      */
     public function testAddOptionsToUri($inputUrl, $options, $expected)
     {
-        $this->assertEquals($expected, UriHelper::addOptionsToUriString($inputUrl, $options));
+        $this->assertSame($expected, UriHelper::addOptionsToUriString($inputUrl, $options));
     }
 }
