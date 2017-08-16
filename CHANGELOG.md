@@ -9,7 +9,7 @@ This document mainly describes API changes important to users of this library.
 
 ## 0.9 - 2017-07-16
 
-* Add `\Rokka\Client\UrlHelper::addOptionsToUrl($url, $options)` for easily adding stack options to an existing URL.
+* Add `\Rokka\Client\UrlHelper::addOptionsToUriString(string $url, $options)` and `\Rokka\Client\UrlHelper::addOptionsToUri(UriInterface $url, $options)` for easily adding stack options to an existing URL.
 * Drop support for PHP 5.5.  
 
 ## 0.8.0 - 2017-06-15

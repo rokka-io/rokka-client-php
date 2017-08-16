@@ -2,14 +2,14 @@
 
 namespace Rokka\Client\Tests;
 
-use Rokka\Client\UrlHelper;
+use Rokka\Client\UriHelper;
 
-class UrlHelperTest extends \PHPUnit_Framework_TestCase
+class UriHelperTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @return array
      */
-    public function provideGetDynamicMetadataClassNameData()
+    public function provideAddOptionsToUri()
     {
         return [
             ['https://test.rokka.io/stackname/b537639e539efcc3df4459ef87c5963aa5079ca6.jpg', 'options-dpr-2', 'https://test.rokka.io/stackname/options-dpr-2/b537639e539efcc3df4459ef87c5963aa5079ca6.jpg'],
@@ -21,13 +21,16 @@ class UrlHelperTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @dataProvider provideGetDynamicMetadataClassNameData
+     * @dataProvider provideAddOptionsToUri
      *
+     * @param $inputUrl
+     * @param $options
      * @param $expected
-     * @param $name
+     *
+     * @internal param $name
      */
-    public function testAddOptionsToUrl($inputUrl, $options, $expected)
+    public function testAddOptionsToUri($inputUrl, $options, $expected)
     {
-        $this->assertEquals($expected, UrlHelper::addOptionsToUrl($inputUrl, $options));
+        $this->assertEquals($expected, UriHelper::addOptionsToUriString($inputUrl, $options));
     }
 }

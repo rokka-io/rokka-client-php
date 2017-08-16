@@ -2,7 +2,10 @@
 
 namespace Rokka\Client;
 
-class UrlHelper
+use GuzzleHttp\Psr7\Uri;
+use Psr\Http\Message\UriInterface;
+
+class UriHelper
 {
     /**
      * Allows you to add stack options to a Rokka URL.
@@ -14,12 +17,27 @@ class UrlHelper
      *
      * @return string
      */
-    public static function addOptionsToUrl($url, $options)
+    public static function addOptionsToUriString($url, $options)
     {
-        $components = parse_url($url);
-        if (preg_match('#^/(?<stack>[^/]+)/(?<rest>[0-9a-f]{40}.*)$#', $components['path'], $matches)) {
+        return self::addOptionsToUri(new Uri($url), $options);
+    }
+
+    /**
+     * Allows you to add stack options to a Rokka URL.
+     *
+     * Useful eg. if you just want to add "options-dpr-2" to an existing URL
+     *
+     * @param UriInterface $uri The rokka image render URL
+     * @param $options The options you want to add as string
+     *
+     * @return static
+     */
+    public static function addOptionsToUri(UriInterface $uri, $options)
+    {
+        $path = $uri->getPath();
+        if (preg_match('#^/(?<stack>[^/]+)/(?<rest>[0-9a-f]{40}.*)$#', $path, $matches)) {
             // nothing to do here
-        } elseif (preg_match('#^/(?<stack>[^/]+)/(?<options>[^/]+)/(?<rest>[0-9a-f]{40}.*)$#', $components['path'], $matches)) {
+        } elseif (preg_match('#^/(?<stack>[^/]+)/(?<options>[^/]+)/(?<rest>[0-9a-f]{40}.*)$#', $path, $matches)) {
             $urlOptions = self::decomposeOptions($matches['options']);
             $inputOptions = self::decomposeOptions($options);
             $combinedOptions = array_replace_recursive($urlOptions, $inputOptions);
@@ -33,9 +51,8 @@ class UrlHelper
             }
             $options = implode('--', $newOptions);
         }
-        $newUrl = $components['scheme'].'://'.$components['host'].'/'.$matches['stack'].'/'.$options.'/'.$matches['rest'];
 
-        return $newUrl;
+        return $uri->withPath('/'.$matches['stack'].'/'.$options.'/'.$matches['rest']);
     }
 
     /**
