@@ -144,6 +144,9 @@ class SourceImage
                 }
             }
         }
+        if (!isset($data['static_metadata'])) {
+            $data['static_metadata'] = [];
+        }
 
         $dynamic_metadata = [];
 

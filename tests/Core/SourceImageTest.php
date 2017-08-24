@@ -50,13 +50,13 @@ class SourceImageTest extends \PHPUnit_Framework_TestCase
         ];
 
         $subjectAres = new SubjectArea(10, 10, 100, 100);
-        $image = new SourceImage('organization', 'binaryHash', 'hash', 'name', 'format', 'size', 'width', 'height', [], [], ['subject_area' => $subjectAres], new DateTime(), 'link');
+        $image = new SourceImage('organization', 'binaryHash', 'hash', 'name', 'format', 'size', 'width', 'height', [], ['subject_area' => $subjectAres], [], new DateTime(), 'link');
         $testData['image-subject-area'] = [
             $image, $imageReverser($image), true,
         ];
 
         $subjectAres = new SubjectArea(10, 10, 100, 100);
-        $image = new SourceImage('organization', 'binaryHash', 'hash', 'name', 'format', 'size', 'width', 'height', [], [], ['subject_area' => $subjectAres], new DateTime(), 'link');
+        $image = new SourceImage('organization', 'binaryHash', 'hash', 'name', 'format', 'size', 'width', 'height', [], ['subject_area' => $subjectAres], [], new DateTime(), 'link');
         $testData['image-json-subject-area'] = [
             $image, json_encode($imageReverser($image)),
         ];
