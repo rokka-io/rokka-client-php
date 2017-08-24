@@ -51,28 +51,42 @@ class Image extends Base
     /**
      * Upload a source image.
      *
-     * @param string $contents     Image contents
-     * @param string $fileName     Image file name
-     * @param string $organization Optional organization
+     * @param string     $contents     Image contents
+     * @param string     $fileName     Image file name
+     * @param string     $organization Optional organization
+     * @param array|null $options      Options for creating the image (like meta_user and meta_dynamic)
      *
-     * @throws \LogicException If no image contents are provided to be uploaded
-     *
-     * @return SourceImageCollection
+     * @return SourceImageCollection If no image contents are provided to be uploaded
      */
-    public function uploadSourceImage($contents, $fileName, $organization = '')
+    public function uploadSourceImage($contents, $fileName, $organization = '', $options = null)
     {
         if (empty($contents)) {
             throw new \LogicException('You need to provide an image content to be uploaded');
         }
+        $requestOptions = [[
+            'name' => 'filedata',
+            'contents' => $contents,
+            'filename' => $fileName,
+        ]];
+
+        if (isset($options['meta_user'])) {
+            $requestOptions[] = [
+                'name' => 'meta_user[0]',
+                'contents' => json_encode($options['meta_user']),
+                ];
+        }
+
+        if (isset($options['meta_dynamic'])) {
+            foreach ($options['meta_dynamic'] as $key => $value) {
+                $requestOptions[] = [
+                    'name' => 'meta_dynamic[0]['.$key.']',
+                    'contents' => json_encode($value),
+                ];
+            }
+        }
 
         $contents = $this
-            ->call('POST', self::SOURCEIMAGE_RESOURCE.'/'.$this->getOrganization($organization), ['multipart' => [
-                [
-                    'name' => 'filedata',
-                    'contents' => $contents,
-                    'filename' => $fileName,
-                ],
-            ]])
+            ->call('POST', self::SOURCEIMAGE_RESOURCE.'/'.$this->getOrganization($organization), ['multipart' => $requestOptions])
             ->getBody()
             ->getContents();
 
