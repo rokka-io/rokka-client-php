@@ -7,6 +7,10 @@ but small API changes may happen between MINOR versions.
 
 This document mainly describes API changes important to users of this library.
 
+## 0.10 - 2017-08-24
+
+* Add $options to `\Rokka\Client\Image::uploadSourceImage($contents, $fileName, $organization = '', $options = null)` and `\Rokka\Client\UriHelper::addOptionsToUri(UriInterface $url, $options)` for directly adding meta data while uploading
+
 ## 0.9 - 2017-08-16
 
 * Add `\Rokka\Client\UriHelper::addOptionsToUriString(string $url, $options)` and `\Rokka\Client\UriHelper::addOptionsToUri(UriInterface $url, $options)` for easily adding stack options to an existing URL.
