@@ -2,8 +2,34 @@
 
 namespace Rokka\Client\Core\DynamicMetadata;
 
-class DetectionFace extends SubjectArea
+class DetectionFace implements DynamicMetadataInterface
 {
+    /**
+     * @var int
+     */
+    public $width;
+
+    /**
+     * @var int
+     */
+    public $height;
+
+    /**
+     * @var int
+     */
+    public $x;
+
+    /**
+     * @var int
+     */
+    public $y;
+
+    /**
+     * DetectionFace constructor.
+     */
+    public function __construct()
+    {
+    }
     /**
      * Create a SubjectArea from the JSON data.
      *
@@ -21,12 +47,13 @@ class DetectionFace extends SubjectArea
         // Make sure to build the SubjectArea with correct defaults in case of missing attributes.
         $data = array_merge(['x' => 0, 'y' => 0, 'width' => 1, 'height' => 1], $data);
 
-        return new self(
-            max(0, $data['x']),
-            max(0, $data['y']),
-            max(1, $data['width']),
-            max(1, $data['height'])
-        );
+        $object = new self();
+        $object->x = $data['x'];
+        $object->y = $data['y'];
+        $object->width = $data['width'];
+        $object->height = $data['height'];
+        return $object;
+
     }
     
     /**
