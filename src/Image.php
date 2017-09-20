@@ -70,6 +70,7 @@ class Image extends Base
         ]];
 
         if (isset($options['meta_user'])) {
+            $options['meta_user'] = $this->applyValueTransformationsToUserMeta($options['meta_user']);
             $requestOptions[] = [
                 'name' => 'meta_user[0]',
                 'contents' => json_encode($options['meta_user']),
@@ -579,11 +580,7 @@ class Image extends Base
         ]);
         $data = [];
         if ($fields) {
-            foreach ($fields as $key => $value) {
-                if ($value instanceof \DateTime) {
-                    $fields[$key] = $value->setTimezone(new \DateTimeZone('UTC'))->format("Y-m-d\TH:i:s.v\Z");
-                }
-            }
+            $fields = $this->applyValueTransformationsToUserMeta($fields);
             $data = ['json' => $fields];
         }
         $response = $this->call($method, $path, $data);
@@ -664,5 +661,19 @@ class Image extends Base
     private function getOrganization($organization)
     {
         return empty($organization) ? $this->defaultOrganization : $organization;
+    }
+
+    /**
+     * @param $fields
+     * @return mixed
+     */
+    private function applyValueTransformationsToUserMeta($fields)
+    {
+        foreach ($fields as $key => $value) {
+            if ($value instanceof \DateTime) {
+                $fields[$key] = $value->setTimezone(new \DateTimeZone('UTC'))->format("Y-m-d\TH:i:s.v\Z");
+            }
+        }
+        return $fields;
     }
 }
