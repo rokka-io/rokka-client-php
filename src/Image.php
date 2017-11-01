@@ -665,6 +665,7 @@ class Image extends Base
 
     /**
      * @param $fields
+     *
      * @return mixed
      */
     private function applyValueTransformationsToUserMeta($fields)
@@ -674,6 +675,7 @@ class Image extends Base
                 $fields[$key] = $value->setTimezone(new \DateTimeZone('UTC'))->format("Y-m-d\TH:i:s.v\Z");
             }
         }
+
         return $fields;
     }
 }
