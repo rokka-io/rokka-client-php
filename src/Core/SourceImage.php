@@ -132,7 +132,7 @@ class SourceImage
             $data['user_metadata'] = [];
         } else {
             foreach ($data['user_metadata'] as $key => $value) {
-                if (strpos($key, 'date:') === 0) {
+                if (0 === strpos($key, 'date:')) {
                     $data['user_metadata'][$key] = new \DateTime($value);
                 }
             }

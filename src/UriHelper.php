@@ -71,7 +71,7 @@ class UriHelper
         foreach (explode('--', $options) as $stringOperation) {
             $stringOperationWithOptions = explode('-', $stringOperation);
             $stringOperationName = $stringOperationWithOptions[0];
-            if ($stringOperationName == '') {
+            if ('' == $stringOperationName) {
                 continue;
             }
             $components[$stringOperationName] = self::parseOptions(array_slice($stringOperationWithOptions, 1));

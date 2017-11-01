@@ -90,7 +90,7 @@ class Factory
             if ($response) {
                 // Retry on server errors or overload
                 $statusCode = $response->getStatusCode();
-                if ($statusCode == 429 || $statusCode == 503 || $statusCode == 502) {
+                if (429 == $statusCode || 503 == $statusCode || 502 == $statusCode) {
                     return true;
                 }
             }
