@@ -30,6 +30,7 @@ class DetectionFace implements DynamicMetadataInterface
     public function __construct()
     {
     }
+
     /**
      * Create a SubjectArea from the JSON data.
      *
@@ -52,10 +53,10 @@ class DetectionFace implements DynamicMetadataInterface
         $object->y = $data['y'];
         $object->width = $data['width'];
         $object->height = $data['height'];
-        return $object;
 
+        return $object;
     }
-    
+
     /**
      * @return string The name of the metadata
      */
