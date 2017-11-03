@@ -2,10 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
-This project tries to follow [Semantic Versioning](http://semver.org/) since the beginning,
-but small API changes may happen between MINOR versions.
+This project tries to follow [Semantic Versioning](http://semver.org/) since the beginning.
 
 This document mainly describes API changes important to users of this library.
+
+## 1.0.0 - 2017-11-03
+
+* No more beta.
+* DateTime object is correctly converted in metadata uploading
 
 ## 0.10 - 2017-08-24
 
