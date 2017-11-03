@@ -9,7 +9,8 @@ This document mainly describes API changes important to users of this library.
 ## 1.0.0 - 2017-11-03
 
 * No more beta.
-* DateTime object is correctly converted in metadata uploading
+* DateTime object is correctly converted in metadata uploading.
+* Supports static metadata from the rokka API and face detection.
 
 ## 0.10 - 2017-08-24
 
