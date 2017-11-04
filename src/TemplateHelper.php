@@ -60,6 +60,9 @@ class TemplateHelper
             return $hash;
         }
         if (!$hash = $this->callbacks->getHash($image)) {
+            if (!$this->isImage($image)) {
+                return null;
+            }
             $hash = $this->imageUpload($image);
             $this->callbacks->saveHash($image, $hash);
         }
@@ -335,7 +338,6 @@ class TemplateHelper
 
     protected function imageUpload(LocalImageAbstract $image)
     {
-        //FIXME:: CHeck if an image type we support, otherwise return null
         $imageClient = $this->getRokkaClient();
         $metadata = $this->callbacks->getMetadata($image);
         if (0 === count($metadata)) {
@@ -351,4 +353,57 @@ class TemplateHelper
 
         return $hash;
     }
+
+    /**
+     * @param LocalImageAbstract $image
+     * @return string
+     */
+    protected function getMimeType(LocalImageAbstract $image)
+    {
+        if ($realpath = $image->getRealpath()) {
+            $mimeType = finfo_file(finfo_open(FILEINFO_MIME_TYPE), $realpath);
+        } else {
+            $mimeType = finfo_buffer(finfo_open(FILEINFO_MIME_TYPE), $image->getContent());
+        }
+
+        if ($mimeType == 'text/html' || $mimeType == 'text/plain') {
+            if ($this->isSvg($image)) {
+                $mimeType = 'image/svg+xml';
+            }
+        }
+        return $mimeType;
+    }
+
+    protected function isImage(LocalImageAbstract $image) {
+        $mimeType = $this->getMimeType($image);
+        if (substr($mimeType,0,6) == 'image/') {
+            return true;
+        }
+
+        if ($mimeType == 'application/pdf') {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Checks, if a file is svg (needed when xml declaration is missing).
+     *
+     * @param string $path
+     *
+     * @return bool
+     */
+    protected function isSvg(LocalImageAbstract $image)
+    {
+        $dom = new \DOMDocument();
+        if (@$dom->loadXML($image->getContent())) {
+            $root = $dom->childNodes->item(0);
+            if ($root->localName == 'svg' && $root->namespaceURI == 'http://www.w3.org/2000/svg') {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
 }

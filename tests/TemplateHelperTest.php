@@ -44,7 +44,7 @@ class TemplateHelperTest extends \PHPUnit_Framework_TestCase
 
             'SplFileInfo seo' => [new FileInfo(new \SplFileInfo($testimage)), 'seo-string', $urlPrefix.'/seo-string.jpg'],
             'Native SplFileInfo seo' => [new \SplFileInfo($testimage), 'seo-string', $urlPrefix.'/seo-string.jpg'],
-            'String path' => [$testimage, 'seo-string', $urlPrefix.'/seo-string.jpg'],
+            'String path seo' => [$testimage, 'seo-string', $urlPrefix.'/seo-string.jpg'],
             'String content seo' => [new StringContent(file_get_contents($testimage)), 'seo-string', $urlPrefix.'/seo-string.jpg'],
             'RokkaHash seo' => [new RokkaHash($this->testImages['small']['hash']),  'seo-string', $urlPrefix.'/seo-string.jpg'],
         ];
