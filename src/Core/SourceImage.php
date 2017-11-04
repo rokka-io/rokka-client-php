@@ -61,6 +61,11 @@ class SourceImage
     public $dynamicMetadata;
 
     /**
+     * @var array Static metadata
+     */
+    public $staticMetadata;
+
+    /**
      * @var \DateTime When this image was first created
      */
     public $created;
@@ -97,6 +102,7 @@ class SourceImage
         $height,
         array $userMetadata,
         array $dynamicMetadata,
+        array $staticMetadata,
         \DateTime $created,
         $link
     ) {
@@ -110,6 +116,7 @@ class SourceImage
         $this->height = $height;
         $this->userMetadata = $userMetadata;
         $this->dynamicMetadata = $dynamicMetadata;
+        $this->staticMetadata = $staticMetadata;
         $this->created = $created;
         $this->link = $link;
     }
@@ -137,6 +144,9 @@ class SourceImage
                 }
             }
         }
+        if (!isset($data['static_metadata'])) {
+            $data['static_metadata'] = [];
+        }
 
         $dynamic_metadata = [];
 
@@ -161,6 +171,7 @@ class SourceImage
             $data['height'],
             $data['user_metadata'],
             $dynamic_metadata,
+            $data['static_metadata'],
             new \DateTime($data['created']),
             $data['link']
         );
