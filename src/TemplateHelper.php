@@ -104,8 +104,6 @@ class TemplateHelper
     /**
      * Return the rokka URL for getting a resized image.
      *
-     * FIXME: make height optional
-     *
      * @param LocalImageAbstract|string|\SplFileInfo $image The image to be resized
      * @param string|int $width The width of the image
      * @param string|int|null $height The height of the image
@@ -129,16 +127,16 @@ class TemplateHelper
     }
 
     /**
-     * Return the rokka URL for getting a resized image.
+     * Return the rokka URL for getting a resized and cropped image.
      *
      *
      * @param LocalImageAbstract|string|\SplFileInfo $image The image to be resized
      * @param string|int $width The width of the image
      * @param string|int $height The height of the image
      * @param string $format The image format of the image (jpg, png, webp, ...)
-     *
      * @param string|null $seo
      * @param string $seoLanguage
+     *
      * @return string
      */
     public function getResizeCropUrl($image, $width, $height, $format = 'jpg', $seo = null, $seoLanguage = '')
@@ -146,6 +144,26 @@ class TemplateHelper
         $imageObject = self::getImageObject($image);
 
         $stack = "dynamic/resize-width-$width-height-$height-mode-fill--crop-width-$width-height-$height--options-autoformat-true-jpg.transparency.autoformat-true";
+
+        return $this->getStackUrl($imageObject, $stack, $format, $seo, $seoLanguage);
+    }
+
+    /**
+     * Return the rokka URL for getting the image in it's original size.
+     *
+     *
+     * @param LocalImageAbstract|string|\SplFileInfo $image The image to be resized
+     * @param string $format The image format of the image (jpg, png, webp, ...)
+     * @param string|null $seo
+     * @param string $seoLanguage
+     *
+     * @return string
+     */
+    public function getOriginalSizeUrl($image, $format = 'jpg', $seo = null, $seoLanguage = '')
+    {
+        $imageObject = self::getImageObject($image);
+
+        $stack = "dynamic/noop--options-autoformat-true-jpg.transparency.autoformat-true";
 
         return $this->getStackUrl($imageObject, $stack, $format, $seo, $seoLanguage);
     }
