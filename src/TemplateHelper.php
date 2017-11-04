@@ -2,9 +2,9 @@
 
 namespace Rokka\Client;
 
+use Rokka\Client\Base as BaseClient;
 use Rokka\Client\LocalImage\FileInfo;
 use Rokka\Client\LocalImage\LocalImageAbstract;
-use Rokka\Client\LocalImage\StringContent;
 
 /**
  * Class TemplateHelper.
@@ -18,18 +18,28 @@ class TemplateHelper
      * @var TemplateHelperCallbacksAbstract
      */
     private $callbacks = null;
+    /**
+     * @var string
+     */
+    private $rokkaApiHost;
 
     /**
      * TemplateHelper constructor.
-     * @param string $org
-     * @param string $key
+     * @param string $organization
+     * @param string $apiKey
      * @param TemplateHelperCallbacksAbstract|null $callbacks
      * @param string|null $publicRokkaDomain
      */
-    public function __construct($org, $key, TemplateHelperCallbacksAbstract $callbacks = null, $publicRokkaDomain = null)
-    {
-        $this->rokkaApiKey = $key;
-        $this->rokkaOrg = $org;
+    public function __construct(
+        $organization,
+        $apiKey,
+        TemplateHelperCallbacksAbstract $callbacks = null,
+        $publicRokkaDomain = null,
+        $rokkaApiHost = BaseClient::DEFAULT_API_BASE_URL
+    ) {
+        $this->rokkaApiKey = $apiKey;
+        $this->rokkaOrg = $organization;
+        $this->rokkaApiHost = $rokkaApiHost;
         if ($publicRokkaDomain) {
             $scheme = parse_url($publicRokkaDomain, PHP_URL_SCHEME);
             if (is_null($scheme)) {
@@ -38,7 +48,7 @@ class TemplateHelper
                 $this->rokkaDomain = $publicRokkaDomain;
             }
         } else {
-            $this->rokkaDomain = 'https://'.$org.'.rokka.io';
+            $this->rokkaDomain = 'https://'.$organization.'.rokka.io';
         }
         if (null === $callbacks) {
             $callbacks = new TemplateHelperDefaultCallbacks();
@@ -259,7 +269,7 @@ class TemplateHelper
      */
     public function getRokkaClient()
     {
-        $imageClient = Factory::getImageClient($this->rokkaOrg, $this->rokkaApiKey, '');
+        $imageClient = Factory::getImageClient($this->rokkaOrg, $this->rokkaApiKey, '', $this->rokkaApiHost);
 
         return $imageClient;
     }
