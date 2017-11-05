@@ -61,6 +61,47 @@ class UriHelper
     }
 
     /**
+     * @param string $url
+     * @param string $size
+     * @param null|string $custom
+     * @return UriInterface
+     */
+    public static function getSrcSetUrlString($url, $size, $custom = null) {
+        return self::getSrcSetUrl($size, new Uri($url), $custom);
+    }
+
+    /**
+     * @param string $size
+     * @param UriInterface $url
+     * @return UriInterface
+     */
+    public static function getSrcSetUrl($size, UriInterface $url, $custom = null) {
+        $identifier = substr($size, -1,1);
+        $size = substr($size,0, -1);
+        if ('x' === $identifier) {
+            $uri = self::addOptionsToUri($url, 'options-dpr-'.$size);
+        }
+        if ('w' === $identifier) {
+            $uri = self::addOptionsToUri($url, 'resize-width-'.$size);
+        }
+        if ($custom != null) {
+            if (preg_match("#^([0-9]+)x$#", $custom, $matches)) {
+                $uri = self::addOptionsToUri($uri, 'options-dpr-' . $matches[1] . '--resize-width-' . (int) ceil($size/$matches[1]));
+            } else {
+                $options = self::decomposeOptions($custom);
+                // if dpr is given in custom option, but not width, calculate correct width
+                if (isset($options['options']['dpr']) && !isset($options['resize']['width'])) {
+                    $custom .= '--resize-width-' . (int) ceil($size/$options['options']['dpr']);
+                }
+
+                $uri = self::addOptionsToUri($uri, $custom);
+            }
+        }
+        return $uri;
+    }
+
+
+    /**
      * @param string $options
      *
      * @return array
