@@ -112,9 +112,10 @@ class UriHelper
         $size = substr($size,0, -1);
         if ('x' === $identifier) {
             $uri = self::addOptionsToUri($url, 'options-dpr-'.$size);
-        }
-        if ('w' === $identifier) {
+        } else if ('w' === $identifier) {
             $uri = self::addOptionsToUri($url, 'resize-width-'.$size);
+        } else {
+            return $url;
         }
         if ($custom != null) {
             if (preg_match("#^([0-9]+)x$#", $custom, $matches)) {
