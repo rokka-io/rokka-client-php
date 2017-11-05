@@ -108,13 +108,28 @@ class TemplateHelperTest extends \PHPUnit_Framework_TestCase
             $this->rokka->getSrcAttributes($url)
         );
         $this->assertEquals(
-            'src="https://testorg.rokka.io/test/71775293697709c1a1ce66f05d7c011a6982a6a9/small-bratpfanne.jpg" srcset="https://testorg.rokka.io/test/options-dpr-2/71775293697709c1a1ce66f05d7c011a6982a6a9/small-bratpfanne.jpg 2x https://testorg.rokka.io/test/options-dpr-3/71775293697709c1a1ce66f05d7c011a6982a6a9/small-bratpfanne.jpg 3x"',
-            $this->rokka->getSrcAttributes($url, [2, 3])
+            'src="https://testorg.rokka.io/test/71775293697709c1a1ce66f05d7c011a6982a6a9/small-bratpfanne.jpg" srcset="https://testorg.rokka.io/test/options-dpr-2/71775293697709c1a1ce66f05d7c011a6982a6a9/small-bratpfanne.jpg 2x, https://testorg.rokka.io/test/options-dpr-3/71775293697709c1a1ce66f05d7c011a6982a6a9/small-bratpfanne.jpg 3x"',
+            $this->rokka->getSrcAttributes($url, ['2x', '3x'])
         );
+
+        $this->assertEquals(
+            'src="https://testorg.rokka.io/test/71775293697709c1a1ce66f05d7c011a6982a6a9/small-bratpfanne.jpg" srcset="https://testorg.rokka.io/test/options-dpr-2-jpg.quality-50/71775293697709c1a1ce66f05d7c011a6982a6a9/small-bratpfanne.jpg 2x"',
+            $this->rokka->getSrcAttributes($url, ['2x' => 'options-jpg.quality-50'])
+        );
+
+        $this->assertEquals(
+            'src="https://testorg.rokka.io/test/71775293697709c1a1ce66f05d7c011a6982a6a9/small-bratpfanne.jpg" srcset="https://testorg.rokka.io/test/resize-width-200/71775293697709c1a1ce66f05d7c011a6982a6a9/small-bratpfanne.jpg 200w, https://testorg.rokka.io/test/resize-width-500/71775293697709c1a1ce66f05d7c011a6982a6a9/small-bratpfanne.jpg 500w"',
+            $this->rokka->getSrcAttributes($url, ['200w', '500w'])
+        );
+        $this->assertEquals(
+            'src="https://testorg.rokka.io/test/71775293697709c1a1ce66f05d7c011a6982a6a9/small-bratpfanne.jpg" srcset="https://testorg.rokka.io/test/resize-width-250--options-dpr-2/71775293697709c1a1ce66f05d7c011a6982a6a9/small-bratpfanne.jpg 500w"',
+            $this->rokka->getSrcAttributes($url, [ '500w' => '2x'])
+        );
+
         // non rokka url
         $this->assertEquals(
             'src="https://some.example.com/files/image.jpg"',
-            $this->rokka->getSrcAttributes('https://some.example.com/files/image.jpg', [2, 3])
+            $this->rokka->getSrcAttributes('https://some.example.com/files/image.jpg', ['2x', '3x'])
         );
     }
 
@@ -130,11 +145,11 @@ class TemplateHelperTest extends \PHPUnit_Framework_TestCase
         );
         $this->assertEquals(
             "background-image:url('https://testorg.rokka.io/test/71775293697709c1a1ce66f05d7c011a6982a6a9/small-bratpfanne.jpg'); background-image: -webkit-image-set(url('https://testorg.rokka.io/test/71775293697709c1a1ce66f05d7c011a6982a6a9/small-bratpfanne.jpg') 1x, url('https://testorg.rokka.io/test/options-dpr-2/71775293697709c1a1ce66f05d7c011a6982a6a9/small-bratpfanne.jpg') 2x, url('https://testorg.rokka.io/test/options-dpr-3/71775293697709c1a1ce66f05d7c011a6982a6a9/small-bratpfanne.jpg') 3x);",
-            $this->rokka->getBackgroundImageStyle($url, [2, 3])
+            $this->rokka->getBackgroundImageStyle($url, ['2x', '3x'])
         );
         $this->assertEquals(
             "background-image:url('https://some.example.com/files/image.jpg');",
-            $this->rokka->getBackgroundImageStyle('https://some.example.com/files/image.jpg', [2, 3])
+            $this->rokka->getBackgroundImageStyle('https://some.example.com/files/image.jpg', ['2x', '3x'])
         );
     }
 

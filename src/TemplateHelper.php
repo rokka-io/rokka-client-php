@@ -181,32 +181,45 @@ class TemplateHelper
         return $this->getStackUrl($imageObject, $stack, $format, $seo, $seoLanguage);
     }
 
-    public function getSrcAttributes($url, $multipliers = [2])
+    /**
+     * @param string $url
+     * @param array $sizes
+     * @return string
+     */
+    public function getSrcAttributes($url, $sizes = ['2x'])
     {
         $attrs = 'src="'.$url.'"';
-        $srcSet = '';
-        foreach ($multipliers as $multiply) {
-            $urlx2 = UriHelper::addOptionsToUriString($url, 'options-dpr-'.$multiply);
+        $srcSets = [];
+        foreach ($sizes as $size => $custom) {
+            if (is_int($size)) {
+                $size = $custom;
+                $custom = null;
+            }
+            $urlx2 = UriHelper::getSrcSetUrlString($url, $size, $custom);
             if ($urlx2 != $url) {
-                $srcSet .= $urlx2.' '.$multiply.'x ';
+                $srcSets[] = "${urlx2} ${size}";
             }
         }
-        if ('' != $srcSet) {
-            $attrs .= ' srcset="'.trim($srcSet).'"';
+        if (count($srcSets) > 0) {
+            $attrs .= ' srcset="'.implode(", "  ,($srcSets)).'"';
         }
 
         return $attrs;
     }
 
-    public function getBackgroundImageStyle($url, $multipliers = [2])
+    public function getBackgroundImageStyle($url, $sizes = ['2x'])
     {
         $style = "background-image:url('$url');";
 
         $srcSets = [];
-        foreach ($multipliers as $multiply) {
-            $urlx2 = UriHelper::addOptionsToUriString($url, 'options-dpr-'.$multiply);
+        foreach ($sizes as $size => $custom) {
+            if (is_int($size)) {
+                $size = $custom;
+                $custom = null;
+            }
+            $urlx2 = UriHelper::getSrcSetUrlString($url, $size, $custom);
             if ($urlx2 != $url) {
-                $srcSets[] = "url('${urlx2}') ${multiply}x";
+                $srcSets[] = "url('${urlx2}') ${size}";
             }
         }
         if (count($srcSets) > 0) {
