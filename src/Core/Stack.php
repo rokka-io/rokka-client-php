@@ -177,11 +177,13 @@ class Stack
      * @since 1.1.0
      *
      * @param string $name
+     *
      * @return $this
      */
-    public function setName($name): Stack
+    public function setName($name): self
     {
         $this->name = $name;
+
         return $this;
     }
 
@@ -262,8 +264,9 @@ class Stack
      * Sets a single Stack option to the list of existing Stack options.
      *
      * @since 1.1.0
+     *
      * @param string $key
-     * @param mixed $value
+     * @param mixed  $value
      *
      * @return $this
      */
@@ -284,9 +287,10 @@ class Stack
     public function setStackExpressions(array $stackExpressions)
     {
         $this->stackExpressions = [];
-        foreach($stackExpressions as $stackExpression) {
+        foreach ($stackExpressions as $stackExpression) {
             $this->addStackExpression($stackExpression);
         }
+
         return $this;
     }
 
@@ -296,9 +300,11 @@ class Stack
      * @since 1.1.0
      *
      * @param StackExpression $stackExpression
+     *
      * @return $this
      */
-    public function addStackExpression(StackExpression $stackExpression) {
+    public function addStackExpression(StackExpression $stackExpression)
+    {
         $this->stackExpressions[] = $stackExpression;
 
         return $this;

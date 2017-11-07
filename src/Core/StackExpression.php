@@ -1,15 +1,12 @@
 <?php
 
-
 namespace Rokka\Client\Core;
-
 
 /**
  * @since 1.1.0
  */
 class StackExpression
 {
-
     /**
      * @var string
      */
@@ -42,6 +39,7 @@ class StackExpression
 
         $expression = new self($data['expression']);
         $expression->overrides = $data['overrides'];
+
         return $expression;
     }
 
@@ -55,11 +53,13 @@ class StackExpression
 
     /**
      * @param string $expression
+     *
      * @return StackExpression
      */
     public function setExpression($expression)
     {
         $this->expression = $expression;
+
         return $this;
     }
 
@@ -87,14 +87,14 @@ class StackExpression
      * Adds a single option override to the options overrides.
      *
      * @param string $key
-     * @param mixed $value
+     * @param mixed  $value
      *
      * @return $this
      */
-    public function addOptionOverride($key, $value) {
+    public function addOptionOverride($key, $value)
+    {
         $this->overrides['options'][$key] = $value;
 
         return $this;
     }
-
 }

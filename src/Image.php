@@ -338,12 +338,12 @@ class Image extends Base
      *
      * @return Stack
      *
-     * @throws \LogicException When stack name is not set.
+     * @throws \LogicException when stack name is not set
      */
     public function saveStack(Stack $stack, array $requestConfig = [])
     {
         if (empty($stack->getName())) {
-            throw new \LogicException("Stack has no name, please set one.");
+            throw new \LogicException('Stack has no name, please set one.');
         }
         if (empty($stack->getOrganization())) {
             $stack->setOrganization($this->defaultOrganization);
