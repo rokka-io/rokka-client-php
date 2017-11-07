@@ -9,6 +9,13 @@ This document mainly describes API changes important to users of this library.
 ## 1.1.x - Unreleased
 
 * Add support for the new `short_hash` property on SourceImage.
+* Client supports the new rokka Stack Expression in the `Stack` Object.
+* Added `Rokka\Client\Image::saveStack(Stack $stack, array $requestConfig)`. Supersedes `Rokka\Client\Image::createStack()`,
+  which is marked as deprecated for now. See docs for more info.
+* Added static method `Stack::createFromConfig(string $stackName, array $config, string $organization = null): Stack`.
+* Added setters and getters to the Stack class. 
+* Officially deprecated `Rokka\Client\Image::listSourceImages`, use `Rokka\Client\Image::searchSourceImages` instead
+* For your info: Deprecated methods will work fine until the next major release (2.0), when they may be removed.
 
 ## 1.0.0 - 2017-11-03
 

@@ -196,13 +196,15 @@ class Image extends Base
     /**
      * List source images.
      *
+     * @deprecated 2.0.0
+     * @deprecated Use Image::searchSourceImages()
+     * @see Image::searchSourceImages()
+     *
      * @param null|int        $limit        Optional limit
      * @param null|int|string $offset       Optional offset, either integer or the "Cursor" value
      * @param string          $organization Optional organization name
      *
      * @return SourceImageCollection
-     *
-     * @deprecated Use Image::searchSourceImages()
      */
     public function listSourceImages($limit = null, $offset = null, $organization = '')
     {
@@ -295,6 +297,10 @@ class Image extends Base
     /**
      * Create a stack.
      *
+     * @deprecated 2.0.0
+     * @deprecated Use Image::saveStack() instead
+     * @see Image::saveStack()
+     *
      * @param string $stackName       Name of the stack
      * @param array  $stackOperations Stack operations
      * @param string $organization    Optional organization name
@@ -314,15 +320,39 @@ class Image extends Base
             'operations' => $stackOperations,
             'options' => $stackOptions,
         ];
+        $stack = Stack::createFromConfig($stackName, $stackData, $organization);
+
+        return $this->saveStack($stack, ['overwrite' => $overwrite]);
+    }
+
+    /**
+     * Save a stack on rokka.
+     *
+     * The only requestConfig option currently can be
+     * ['overwrite' => true|false] (false is the default)
+     *
+     * @since 1.1.0
+     *
+     * @param Stack $stack         the Stack object to be saved
+     * @param array $requestConfig options for the request
+     *
+     * @return Stack
+     */
+    public function saveStack(Stack $stack, array $requestConfig = [])
+    {
+        if (empty($stack->getOrganization())) {
+            $stack->setOrganization($this->defaultOrganization);
+        }
+
         $queryString = [];
-        if ($overwrite) {
+        if (isset($requestConfig['overwrite']) && true === $requestConfig['overwrite']) {
             $queryString['overwrite'] = 'true';
         }
         $contents = $this
             ->call(
                 'PUT',
-                implode('/', [self::STACK_RESOURCE, $this->getOrganization($organization), $stackName]),
-                ['json' => $stackData, 'query' => $queryString]
+                implode('/', [self::STACK_RESOURCE, $stack->getOrganization(), $stack->getName()]),
+                ['json' => $stack->getConfig(), 'query' => $queryString]
             )
             ->getBody()
             ->getContents();
