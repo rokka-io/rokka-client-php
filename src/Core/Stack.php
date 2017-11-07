@@ -45,12 +45,12 @@ class Stack
      * @see Stack::createFromConfig()
      *
      * @param string|null $organization    Organization name
-     * @param string      $name            Stack name
+     * @param string|null $name            Stack name
      * @param array       $stackOperations Collection of stack operations
      * @param array       $stackOptions    Collection of stack options
      * @param \DateTime   $created         Created at
      */
-    public function __construct($organization, $name, array $stackOperations = [], array $stackOptions = [], \DateTime $created = null)
+    public function __construct($organization = null, $name = null, array $stackOperations = [], array $stackOptions = [], \DateTime $created = null)
     {
         $this->organization = $organization;
         $this->name = $name;
@@ -145,6 +145,20 @@ class Stack
     }
 
     /**
+     * @since 1.1.0
+     *
+     * @param null|string $organization
+     *
+     * @return $this
+     */
+    public function setOrganization($organization)
+    {
+        $this->organization = $organization;
+
+        return $this;
+    }
+
+    /**
      * Get name of stack for url.
      *
      * @return string
@@ -152,6 +166,18 @@ class Stack
     public function getName()
     {
         return $this->name;
+    }
+
+    /**
+     * @since 1.1.0
+     *
+     * @param string $name
+     * @return $this
+     */
+    public function setName($name): Stack
+    {
+        $this->name = $name;
+        return $this;
     }
 
     /**
@@ -279,20 +305,6 @@ class Stack
     public function getStackExpressions(): array
     {
         return $this->stackExpressions;
-    }
-
-    /**
-     * @since 1.1.0
-     *
-     * @param null|string $organization
-     *
-     * @return $this
-     */
-    public function setOrganization($organization)
-    {
-        $this->organization = $organization;
-
-        return $this;
     }
 
     /**
