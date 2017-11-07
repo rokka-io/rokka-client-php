@@ -33,7 +33,7 @@ class Stack
     public $stackOptions;
 
     /**
-     * @var array Array of stack expressions that this stack has
+     * @var StackExpression[]
      */
     protected $stackExpressions = [];
 
@@ -91,7 +91,12 @@ class Stack
         }
 
         if (isset($data['stack_expressions'])) {
-            $stack->setStackExpressions($data['stack_expressions']);
+            $stack_expressions = [];
+            foreach ($data['stack_expressions'] as $expression) {
+                $stack_expressions[] = StackExpression::createFromJsonResponse($expression, true);
+            }
+
+            $stack->setStackExpressions($stack_expressions);
         }
 
         return $stack;
@@ -209,7 +214,7 @@ class Stack
     {
         $this->stackOperations = [];
         foreach ($operations as $operation) {
-            $this->addOperation($operation);
+            $this->addStackOperation($operation);
         }
 
         return $this;
@@ -272,14 +277,16 @@ class Stack
     /**
      * @since 1.1.0
      *
-     * @param array $stackExpressions
+     * @param StackExpression[] $stackExpressions
      *
      * @return $this
      */
     public function setStackExpressions(array $stackExpressions)
     {
-        $this->stackExpressions = $stackExpressions;
-
+        $this->stackExpressions = [];
+        foreach($stackExpressions as $stackExpression) {
+            $this->addStackExpression($stackExpression);
+        }
         return $this;
     }
 
@@ -288,10 +295,10 @@ class Stack
      *
      * @since 1.1.0
      *
-     * @param array $stackExpression
+     * @param StackExpression $stackExpression
      * @return $this
      */
-    public function addStackExpression(array $stackExpression) {
+    public function addStackExpression(StackExpression $stackExpression) {
         $this->stackExpressions[] = $stackExpression;
 
         return $this;
@@ -300,9 +307,9 @@ class Stack
     /**
      * @since 1.1.0
      *
-     * @return array
+     * @return StackExpression[]
      */
-    public function getStackExpressions(): array
+    public function getStackExpressions()
     {
         return $this->stackExpressions;
     }
