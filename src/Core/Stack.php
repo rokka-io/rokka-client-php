@@ -198,7 +198,7 @@ class Stack
      *
      * @return $this
      */
-    public function addOperation(StackOperation $stackOperation)
+    public function addStackOperation(StackOperation $stackOperation)
     {
         $this->stackOperations[] = $stackOperation;
 
@@ -228,6 +228,22 @@ class Stack
     }
 
     /**
+     * Sets a single Stack option to the list of existing Stack options.
+     *
+     * @since 1.1.0
+     * @param string $key
+     * @param mixed $value
+     *
+     * @return $this
+     */
+    public function addStackOption($key, $value)
+    {
+        $this->stackOptions[$key] = $value;
+
+        return $this;
+    }
+
+    /**
      * @since 1.1.0
      *
      * @param array $stackExpressions
@@ -237,6 +253,20 @@ class Stack
     public function setStackExpressions(array $stackExpressions)
     {
         $this->stackExpressions = $stackExpressions;
+
+        return $this;
+    }
+
+    /**
+     * Adds a Stack Expression to the list of existing Stack Expression.
+     *
+     * @since 1.1.0
+     *
+     * @param array $stackExpression
+     * @return $this
+     */
+    public function addStackExpression(array $stackExpression) {
+        $this->stackExpressions[] = $stackExpression;
 
         return $this;
     }
