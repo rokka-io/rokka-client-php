@@ -83,19 +83,19 @@ class SourceImage
     /**
      * Constructor.
      *
-     * @param string $organization Organization
-     * @param string $binaryHash Binary hash
-     * @param string $hash Hash
-     * @param string $name Original name
-     * @param string $format Format
-     * @param int $size File size in bytes
-     * @param int $width Width in pixels
-     * @param int $height Height in pixels
-     * @param array $userMetadata User metadata
-     * @param array $dynamicMetadata Dynamic metadata
-     * @param array $staticMetadata
-     * @param \DateTime $created Created at date
-     * @param string $link Link to the image
+     * @param string    $organization    Organization
+     * @param string    $binaryHash      Binary hash
+     * @param string    $hash            Hash
+     * @param string    $name            Original name
+     * @param string    $format          Format
+     * @param int       $size            File size in bytes
+     * @param int       $width           Width in pixels
+     * @param int       $height          Height in pixels
+     * @param array     $userMetadata    User metadata
+     * @param array     $dynamicMetadata Dynamic metadata
+     * @param array     $staticMetadata
+     * @param \DateTime $created         Created at date
+     * @param string    $link            Link to the image
      * @param $shortHash
      */
     public function __construct(
