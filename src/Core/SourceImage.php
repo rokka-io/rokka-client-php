@@ -23,6 +23,11 @@ class SourceImage
     /**
      * @var string
      */
+    public $shortHash;
+
+    /**
+     * @var string
+     */
     public $hash;
 
     /**
@@ -78,18 +83,20 @@ class SourceImage
     /**
      * Constructor.
      *
-     * @param string    $organization    Organization
-     * @param string    $binaryHash      Binary hash
-     * @param string    $hash            Hash
-     * @param string    $name            Original name
-     * @param string    $format          Format
-     * @param int       $size            File size in bytes
-     * @param int       $width           Width in pixels
-     * @param int       $height          Height in pixels
-     * @param array     $userMetadata    User metadata
-     * @param array     $dynamicMetadata Dynamic metadata
-     * @param \DateTime $created         Created at date
-     * @param string    $link            Link to the image
+     * @param string $organization Organization
+     * @param string $binaryHash Binary hash
+     * @param string $hash Hash
+     * @param string $name Original name
+     * @param string $format Format
+     * @param int $size File size in bytes
+     * @param int $width Width in pixels
+     * @param int $height Height in pixels
+     * @param array $userMetadata User metadata
+     * @param array $dynamicMetadata Dynamic metadata
+     * @param array $staticMetadata
+     * @param \DateTime $created Created at date
+     * @param string $link Link to the image
+     * @param $shortHash
      */
     public function __construct(
         $organization,
@@ -104,7 +111,8 @@ class SourceImage
         array $dynamicMetadata,
         array $staticMetadata,
         \DateTime $created,
-        $link
+        $link,
+        $shortHash = null
     ) {
         $this->organization = $organization;
         $this->binaryHash = $binaryHash;
@@ -119,6 +127,10 @@ class SourceImage
         $this->staticMetadata = $staticMetadata;
         $this->created = $created;
         $this->link = $link;
+        if (null === $shortHash) {
+            $shortHash = $hash;
+        }
+        $this->shortHash = $shortHash;
     }
 
     /**
@@ -160,6 +172,13 @@ class SourceImage
             }
         }
 
+        // Can be removed, when we're sure the API is always returning a short_hash
+        if (isset($data['short_hash'])) {
+            $short_hash = $data['short_hash'];
+        } else {
+            $short_hash = null;
+        }
+
         return new self(
             $data['organization'],
             $data['binary_hash'],
@@ -173,7 +192,8 @@ class SourceImage
             $dynamic_metadata,
             $data['static_metadata'],
             new \DateTime($data['created']),
-            $data['link']
+            $data['link'],
+            $short_hash
         );
     }
 }
