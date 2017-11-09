@@ -172,13 +172,6 @@ class SourceImage
             }
         }
 
-        // Can be removed, when we're sure the API is always returning a short_hash
-        if (isset($data['short_hash'])) {
-            $short_hash = $data['short_hash'];
-        } else {
-            $short_hash = null;
-        }
-
         return new self(
             $data['organization'],
             $data['binary_hash'],
@@ -193,7 +186,7 @@ class SourceImage
             $data['static_metadata'],
             new \DateTime($data['created']),
             $data['link'],
-            $short_hash
+            $data['short_hash']
         );
     }
 }
