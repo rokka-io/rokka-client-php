@@ -196,8 +196,7 @@ class Image extends Base
     /**
      * List source images.
      *
-     * @deprecated 2.0.0
-     * @deprecated Use Image::searchSourceImages()
+     * @deprecated 2.0.0 Use Image::searchSourceImages()
      * @see Image::searchSourceImages()
      *
      * @param null|int        $limit        Optional limit
@@ -297,8 +296,7 @@ class Image extends Base
     /**
      * Create a stack.
      *
-     * @deprecated 2.0.0
-     * @deprecated Use Image::saveStack() instead
+     * @deprecated 2.0.0 Use Image::saveStack() instead
      * @see Image::saveStack()
      *
      * @param string $stackName       Name of the stack
