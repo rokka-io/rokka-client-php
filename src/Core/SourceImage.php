@@ -96,7 +96,7 @@ class SourceImage
      * @param array     $staticMetadata
      * @param \DateTime $created         Created at date
      * @param string    $link            Link to the image
-     * @param $shortHash
+     * @param string    $shortHash       The short hash
      */
     public function __construct(
         $organization,
