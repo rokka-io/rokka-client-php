@@ -66,7 +66,7 @@ class StackExpression
     /**
      * @return array
      */
-    public function getOptionsOverrides(): array
+    public function getOptionsOverrides()
     {
         return $this->overrides['options'];
     }
