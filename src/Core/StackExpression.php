@@ -74,7 +74,7 @@ class StackExpression
     /**
      * @param array $overrides
      *
-     * @return $this
+     * @return self
      */
     public function setOptionsOverrides(array $overrides)
     {
@@ -89,7 +89,7 @@ class StackExpression
      * @param string $key
      * @param mixed  $value
      *
-     * @return $this
+     * @return self
      */
     public function addOptionOverride($key, $value)
     {

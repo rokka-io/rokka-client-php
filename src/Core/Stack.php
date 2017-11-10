@@ -154,7 +154,7 @@ class Stack
      *
      * @param null|string $organization
      *
-     * @return $this
+     * @return self
      */
     public function setOrganization($organization)
     {
@@ -178,7 +178,7 @@ class Stack
      *
      * @param string $name
      *
-     * @return $this
+     * @return self
      */
     public function setName($name)
     {
@@ -210,7 +210,7 @@ class Stack
      *
      * @param StackOperation[] $operations
      *
-     * @return $this
+     * @return self
      */
     public function setStackOperations(array $operations)
     {
@@ -229,7 +229,7 @@ class Stack
      *
      * @param StackOperation $stackOperation
      *
-     * @return $this
+     * @return self
      */
     public function addStackOperation(StackOperation $stackOperation)
     {
@@ -251,7 +251,7 @@ class Stack
      *
      * @param array $options
      *
-     * @return $this
+     * @return self
      */
     public function setStackOptions(array $options)
     {
@@ -268,7 +268,7 @@ class Stack
      * @param string $key
      * @param mixed  $value
      *
-     * @return $this
+     * @return self
      */
     public function addStackOption($key, $value)
     {
@@ -282,7 +282,7 @@ class Stack
      *
      * @param StackExpression[] $stackExpressions
      *
-     * @return $this
+     * @return self
      */
     public function setStackExpressions(array $stackExpressions)
     {
@@ -301,7 +301,7 @@ class Stack
      *
      * @param StackExpression $stackExpression
      *
-     * @return $this
+     * @return self
      */
     public function addStackExpression(StackExpression $stackExpression)
     {
