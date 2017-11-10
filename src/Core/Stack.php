@@ -180,7 +180,7 @@ class Stack
      *
      * @return $this
      */
-    public function setName($name): self
+    public function setName($name)
     {
         $this->name = $name;
 
