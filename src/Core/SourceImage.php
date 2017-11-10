@@ -23,6 +23,11 @@ class SourceImage
     /**
      * @var string
      */
+    public $shortHash;
+
+    /**
+     * @var string
+     */
     public $hash;
 
     /**
@@ -88,8 +93,10 @@ class SourceImage
      * @param int       $height          Height in pixels
      * @param array     $userMetadata    User metadata
      * @param array     $dynamicMetadata Dynamic metadata
+     * @param array     $staticMetadata
      * @param \DateTime $created         Created at date
      * @param string    $link            Link to the image
+     * @param string    $shortHash       The short hash
      */
     public function __construct(
         $organization,
@@ -104,7 +111,8 @@ class SourceImage
         array $dynamicMetadata,
         array $staticMetadata,
         \DateTime $created,
-        $link
+        $link,
+        $shortHash = null
     ) {
         $this->organization = $organization;
         $this->binaryHash = $binaryHash;
@@ -119,6 +127,10 @@ class SourceImage
         $this->staticMetadata = $staticMetadata;
         $this->created = $created;
         $this->link = $link;
+        if (null === $shortHash) {
+            $shortHash = $hash;
+        }
+        $this->shortHash = $shortHash;
     }
 
     /**
@@ -173,7 +185,8 @@ class SourceImage
             $dynamic_metadata,
             $data['static_metadata'],
             new \DateTime($data['created']),
-            $data['link']
+            $data['link'],
+            $data['short_hash']
         );
     }
 }

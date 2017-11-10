@@ -6,6 +6,10 @@ This project tries to follow [Semantic Versioning](http://semver.org/) since the
 
 This document mainly describes API changes important to users of this library.
 
+## 1.1.x - Unreleased
+
+* Add support for the new `short_hash` property on SourceImage.
+
 ## 1.0.0 - 2017-11-03
 
 * No more beta.
