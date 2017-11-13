@@ -58,7 +58,7 @@ class UriHelper
      *
      * Can be used to generate rokka render urls without having to save the stack on rokka.
      *
-     * @since 1.1.0
+     * @since 1.2.0
      *
      * @param Stack $stack
      *
@@ -81,7 +81,7 @@ class UriHelper
      *
      * Can be used to generate rokka render urls without having to save the stack on rokka.
      *
-     * @since 1.1.0
+     * @since 1.2.0
      *
      * @param array $config
      *
