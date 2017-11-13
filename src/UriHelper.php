@@ -4,6 +4,7 @@ namespace Rokka\Client;
 
 use GuzzleHttp\Psr7\Uri;
 use Psr\Http\Message\UriInterface;
+use Rokka\Client\Core\Stack;
 
 class UriHelper
 {
@@ -43,21 +44,49 @@ class UriHelper
             $urlOptions = self::decomposeOptions($matches['options']);
             $inputOptions = self::decomposeOptions($options);
             $combinedOptions = array_replace_recursive($urlOptions, $inputOptions);
-            $newOptions = [];
-            foreach ($combinedOptions as $key => $values) {
-                $newOption = "$key";
-                foreach ($values as $k => $v) {
-                    $newOption .= "-$k-$v";
-                }
-                $newOptions[] = $newOption;
-            }
-            $options = implode('--', $newOptions);
+            $options = self::getUriStringFromStackConfig($combinedOptions);
         } else {
             //if nothing matches, it's not a proper rokka URL, just return the original uri
             return $uri;
         }
 
         return $uri->withPath('/'.$matches['stack'].'/'.$options.'/'.$matches['rest']);
+    }
+
+    /**
+     * Returns a dynamic stack as string from a Stack object
+     *
+     * Can be used to generate rokka render urls without having to save the stack on rokka.
+     * @since 1.1.0
+     *
+     * @param Stack $stack
+     * @return string
+     */
+    public static function getDynamicStackFromStackObject(Stack $stack)
+    {
+        return self::getUriStringFromStackConfig($stack->getConfigAsArray());
+    }
+
+    /**
+     * Returns a dynamic stack as String from a Stack config
+     *
+     * The array config looks like
+     * ['operations' => ['resize' => ['width' => 500]],
+     *  'options' => ['jpg.quality' => 80, 'autoformat' => true]
+     * ]
+     *
+     * Expressions are not supported in dynamic stack urls
+     *
+     * Can be used to generate rokka render urls without having to save the stack on rokka.
+     *
+     * @since 1.1.0
+     *
+     * @param array $config
+     * @return string
+     */
+    public static function getDynamicStackFromStackConfig(array $config)
+    {
+        return self::getUriStringFromStackConfig($config);
     }
 
     /**
@@ -100,5 +129,43 @@ class UriHelper
         }
 
         return array_combine($optionKeys, $optionValues);
+    }
+
+    /**
+     * @param $config
+     * @return string
+     */
+    private static function getUriStringFromStackConfig($config)
+    {
+        $newOptions = [];
+        // move operations to root, in case they are in their separate key
+        if (isset($config['operations'])) {
+            foreach ($config['operations'] as $name => $operation) {
+                $config[$name] = $operation;
+            }
+            unset ($config['operations']);
+        }
+        $newStackOptions = null;
+        foreach ($config as $key => $values) {
+            // do options in the end
+            $newOption = "$key";
+            ksort($values);
+            foreach ($values as $k => $v) {
+                $newOption .= "-$k-$v";
+            }
+            if ($key == 'options') {
+                $newStackOptions = $newOption;
+            } else {
+                $newOptions[] = $newOption;
+            }
+        }
+
+        $options = implode('--', $newOptions);
+
+        if ($newStackOptions !== null) {
+            $options .= '--' . $newStackOptions;
+        }
+
+        return $options;
     }
 }
