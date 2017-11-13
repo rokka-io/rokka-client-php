@@ -107,7 +107,8 @@ class UriHelper
     /**
      * @param string       $size
      * @param UriInterface $url
-     *
+     * @param null|string $custom
+     * 
      * @return UriInterface
      */
     public static function getSrcSetUrl($size, UriInterface $url, $custom = null)
