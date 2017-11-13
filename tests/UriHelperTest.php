@@ -2,7 +2,6 @@
 
 namespace Rokka\Client\Tests;
 
-use Rokka\Client\Core\Operation;
 use Rokka\Client\Core\Stack;
 use Rokka\Client\Core\StackOperation;
 use Rokka\Client\UriHelper;
@@ -37,7 +36,8 @@ class UriHelperTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($expected, UriHelper::addOptionsToUriString($inputUrl, $options));
     }
 
-    public function testGetDynamicStackFromStackObject() {
+    public function testGetDynamicStackFromStackObject()
+    {
         $stack = new Stack(null, 'teststack');
 
         $stack->addStackOperation(new StackOperation('resize', ['width' => 200, 'height' => 200]));
@@ -45,6 +45,5 @@ class UriHelperTest extends \PHPUnit_Framework_TestCase
         $stack->setStackOptions(['jpg.quality' => 80]);
         $stack->addStackOption('webp.quality', 80);
         $this->assertEquals('resize-height-200-width-200--rotate-angle-45--options-jpg.quality-80-webp.quality-80', UriHelper::getDynamicStackFromStackObject($stack));
-
     }
 }

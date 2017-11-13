@@ -54,12 +54,14 @@ class UriHelper
     }
 
     /**
-     * Returns a dynamic stack as string from a Stack object
+     * Returns a dynamic stack as string from a Stack object.
      *
      * Can be used to generate rokka render urls without having to save the stack on rokka.
+     *
      * @since 1.1.0
      *
      * @param Stack $stack
+     *
      * @return string
      */
     public static function getDynamicStackFromStackObject(Stack $stack)
@@ -68,7 +70,7 @@ class UriHelper
     }
 
     /**
-     * Returns a dynamic stack as String from a Stack config
+     * Returns a dynamic stack as String from a Stack config.
      *
      * The array config looks like
      * ['operations' => ['resize' => ['width' => 500]],
@@ -82,6 +84,7 @@ class UriHelper
      * @since 1.1.0
      *
      * @param array $config
+     *
      * @return string
      */
     public static function getDynamicStackFromStackConfig(array $config)
@@ -133,6 +136,7 @@ class UriHelper
 
     /**
      * @param $config
+     *
      * @return string
      */
     private static function getUriStringFromStackConfig($config)
@@ -143,7 +147,7 @@ class UriHelper
             foreach ($config['operations'] as $name => $operation) {
                 $config[$name] = $operation;
             }
-            unset ($config['operations']);
+            unset($config['operations']);
         }
         $newStackOptions = null;
         foreach ($config as $key => $values) {
@@ -153,7 +157,7 @@ class UriHelper
             foreach ($values as $k => $v) {
                 $newOption .= "-$k-$v";
             }
-            if ($key == 'options') {
+            if ('options' == $key) {
                 $newStackOptions = $newOption;
             } else {
                 $newOptions[] = $newOption;
@@ -162,8 +166,8 @@ class UriHelper
 
         $options = implode('--', $newOptions);
 
-        if ($newStackOptions !== null) {
-            $options .= '--' . $newStackOptions;
+        if (null !== $newStackOptions) {
+            $options .= '--'.$newStackOptions;
         }
 
         return $options;

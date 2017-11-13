@@ -1,6 +1,7 @@
 <?php
 
 namespace Rokka\Client\Core;
+
 use Rokka\Client\UriHelper;
 
 /**
@@ -341,21 +342,23 @@ class Stack
     }
 
     /**
-     * Gets stack operations / options as "flat" array
+     * Gets stack operations / options as "flat" array.
      *
      * Useful for generating dynamic stacks for example
      *
      * @since 1.1.0
      * @see UriHelper::getDynamicStackFromStackConfig()
-     * 
+     *
      * @return array
      */
-    public function getConfigAsArray() {
+    public function getConfigAsArray()
+    {
         $config = ['operations' => []];
         foreach ($this->getStackOperations() as $operation) {
             $config['operations'][$operation->name] = $operation->toArray()['options'];
         }
         $config['options'] = $this->getStackOptions();
+
         return $config;
     }
 }
