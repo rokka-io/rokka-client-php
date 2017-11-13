@@ -6,7 +6,7 @@ This project tries to follow [Semantic Versioning](http://semver.org/) since the
 
 This document mainly describes API changes important to users of this library.
 
-## 1.1.x - Unreleased
+## 1.1.0 - 2017-11-13
 
 * Add support for the new `short_hash` property on SourceImage.
 * Client supports the new rokka Stack Expression in the `Stack` Object.
