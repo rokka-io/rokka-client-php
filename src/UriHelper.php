@@ -37,9 +37,9 @@ class UriHelper
     public static function addOptionsToUri(UriInterface $uri, $options)
     {
         $path = $uri->getPath();
-        if (preg_match('#^/(?<stack>[^/]+)/(?<rest>[0-9a-f]{40}.*)$#', $path, $matches)) {
+        if (preg_match('#^/(?<stack>[^/]+)/(?<rest>[0-9a-f]{6,40}.*)$#', $path, $matches)) {
             // nothing to do here
-        } elseif (preg_match('#^/(?<stack>[^/]+)/(?<options>[^/]+)/(?<rest>[0-9a-f]{40}.*)$#', $path, $matches)) {
+        } elseif (preg_match('#^/(?<stack>[^/]+)/(?<options>[^/]+)/(?<rest>[0-9a-f]{6,40}.*)$#', $path, $matches)) {
             $urlOptions = self::decomposeOptions($matches['options']);
             $inputOptions = self::decomposeOptions($options);
             $combinedOptions = array_replace_recursive($urlOptions, $inputOptions);
