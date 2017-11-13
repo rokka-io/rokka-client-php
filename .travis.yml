@@ -6,7 +6,8 @@ php:
     - hhvm
     - 7
     - 7.1
-    - 7.2
+# PHP 7.2 was segfaulting on 13-11-2017. try later again
+#    - 7.2
 
 before_install:
     - composer self-update
