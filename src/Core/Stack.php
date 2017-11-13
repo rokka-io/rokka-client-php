@@ -8,7 +8,7 @@ namespace Rokka\Client\Core;
 class Stack
 {
     /**
-     * @var string Organization name
+     * @var string|null Organization name
      */
     public $organization;
 
@@ -28,20 +28,29 @@ class Stack
     public $stackOperations;
 
     /**
-     * @var array Collection of stack options that this stack has
+     * @var array Array of stack options that this stack has
      */
     public $stackOptions;
 
     /**
+     * @var StackExpression[]
+     */
+    protected $stackExpressions = [];
+
+    /**
      * Constructor.
      *
-     * @param string    $organization    Organization name
-     * @param string    $name            Stack name
-     * @param array     $stackOperations Collection of stack operations
-     * @param array     $stackOptions    Collection of stack options
-     * @param \DateTime $created         Created at
+     * It's recommended to use one of the helper static methods to create this object instead of the constructor directly
+     *
+     * @see Stack::createFromConfig()
+     *
+     * @param string|null $organization    Organization name
+     * @param string|null $name            Stack name
+     * @param array       $stackOperations Collection of stack operations
+     * @param array       $stackOptions    Collection of stack options
+     * @param \DateTime   $created         Created at
      */
-    public function __construct($organization, $name, array $stackOperations, array $stackOptions, \DateTime $created)
+    public function __construct($organization = null, $name = null, array $stackOperations = [], array $stackOptions = [], \DateTime $created = null)
     {
         $this->organization = $organization;
         $this->name = $name;
@@ -69,28 +78,89 @@ class Stack
             $stack_operations[] = StackOperation::createFromJsonResponse($operation, true);
         }
 
-        $stack_options = [];
-        if (isset($data['stack_options'])) {
-            $stack_options = $data['stack_options'];
-        }
-
-        return new self(
+        $stack = new self(
             $data['organization'],
             $data['name'],
             $stack_operations,
-            $stack_options,
+            [],
             new \DateTime($data['created'])
         );
+
+        if (isset($data['stack_options'])) {
+            $stack->setStackOptions($data['stack_options']);
+        }
+
+        if (isset($data['stack_expressions'])) {
+            $stack_expressions = [];
+            foreach ($data['stack_expressions'] as $expression) {
+                $stack_expressions[] = StackExpression::createFromJsonResponse($expression, true);
+            }
+
+            $stack->setStackExpressions($stack_expressions);
+        }
+
+        return $stack;
     }
 
     /**
-     * Get nanme of organization for url.
+     * Creates a Stack object from an array.
+     *
+     * $config = ['operations' => StackOperation[]
+     *            'options' => $options,
+     *            'expressions' => $expressions
+     * ]
+     *
+     * All are optional, if operations doesn't exist, it will be a noop operation.
+     *
+     * @since 1.1.0
+     *
+     * @param $stackName
+     * @param array $config
+     * @param null  $organization
+     *
+     * @return Stack
+     */
+    public static function createFromConfig($stackName, array $config, $organization = null)
+    {
+        $stack = new self($organization, $stackName);
+
+        if (isset($config['operations'])) {
+            $stack->setStackOperations($config['operations']);
+        }
+
+        if (isset($config['options'])) {
+            $stack->setStackOptions($config['options']);
+        }
+
+        if (isset($config['expressions'])) {
+            $stack->setStackExpressions($config['expressions']);
+        }
+
+        return $stack;
+    }
+
+    /**
+     * Get name of organization this stack belongs to.
      *
      * @return string
      */
     public function getOrganization()
     {
         return $this->organization;
+    }
+
+    /**
+     * @since 1.1.0
+     *
+     * @param null|string $organization
+     *
+     * @return self
+     */
+    public function setOrganization($organization)
+    {
+        $this->organization = $organization;
+
+        return $this;
     }
 
     /**
@@ -104,6 +174,20 @@ class Stack
     }
 
     /**
+     * @since 1.1.0
+     *
+     * @param string $name
+     *
+     * @return self
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
+
+        return $this;
+    }
+
+    /**
      * Get date of creation for this stack.
      *
      * @return \DateTime
@@ -114,8 +198,6 @@ class Stack
     }
 
     /**
-     * Get collection of operations.
-     *
      * @return StackOperation[]
      */
     public function getStackOperations()
@@ -124,12 +206,135 @@ class Stack
     }
 
     /**
-     * Get the collection of Stack's options.
+     * @since 1.1.0
      *
+     * @param StackOperation[] $operations
+     *
+     * @return self
+     */
+    public function setStackOperations(array $operations)
+    {
+        $this->stackOperations = [];
+        foreach ($operations as $operation) {
+            $this->addStackOperation($operation);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Adds a StackOperation to the list of existing Stack Operations.
+     *
+     * @since 1.1.0
+     *
+     * @param StackOperation $stackOperation
+     *
+     * @return self
+     */
+    public function addStackOperation(StackOperation $stackOperation)
+    {
+        $this->stackOperations[] = $stackOperation;
+
+        return $this;
+    }
+
+    /**
      * @return array
      */
     public function getStackOptions()
     {
         return $this->stackOptions;
+    }
+
+    /**
+     * @since 1.1.0
+     *
+     * @param array $options
+     *
+     * @return self
+     */
+    public function setStackOptions(array $options)
+    {
+        $this->stackOptions = $options;
+
+        return $this;
+    }
+
+    /**
+     * Sets a single Stack option to the list of existing Stack options.
+     *
+     * @since 1.1.0
+     *
+     * @param string $key
+     * @param mixed  $value
+     *
+     * @return self
+     */
+    public function addStackOption($key, $value)
+    {
+        $this->stackOptions[$key] = $value;
+
+        return $this;
+    }
+
+    /**
+     * @since 1.1.0
+     *
+     * @param StackExpression[] $stackExpressions
+     *
+     * @return self
+     */
+    public function setStackExpressions(array $stackExpressions)
+    {
+        $this->stackExpressions = [];
+        foreach ($stackExpressions as $stackExpression) {
+            $this->addStackExpression($stackExpression);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Adds a Stack Expression to the list of existing Stack Expression.
+     *
+     * @since 1.1.0
+     *
+     * @param StackExpression $stackExpression
+     *
+     * @return self
+     */
+    public function addStackExpression(StackExpression $stackExpression)
+    {
+        $this->stackExpressions[] = $stackExpression;
+
+        return $this;
+    }
+
+    /**
+     * @since 1.1.0
+     *
+     * @return StackExpression[]
+     */
+    public function getStackExpressions()
+    {
+        return $this->stackExpressions;
+    }
+
+    /**
+     * Gets stack operations / options / expressions as one array.
+     *
+     * Useful for using this to sent as json to the Rokka API
+     *
+     * @since 1.1.0
+     *
+     * @return array
+     */
+    public function getConfig()
+    {
+        return [
+            'operations' => $this->getStackOperations(),
+            'options' => $this->getStackOptions(),
+            'expressions' => $this->getStackExpressions(),
+            ];
     }
 }
