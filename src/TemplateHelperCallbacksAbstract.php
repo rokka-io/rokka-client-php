@@ -2,6 +2,7 @@
 
 namespace Rokka\Client;
 
+use Rokka\Client\Core\SourceImage;
 use Rokka\Client\LocalImage\LocalImageAbstract;
 
 abstract class TemplateHelperCallbacksAbstract
@@ -15,12 +16,10 @@ abstract class TemplateHelperCallbacksAbstract
 
     /**
      * @param LocalImageAbstract $file
-     * @param string             $hash
-     * @param string             $shortHash
-     *
+     * @param SourceImage $sourceImage
      * @return string
      */
-    abstract public function saveHash(LocalImageAbstract $file, $hash, $shortHash);
+    abstract public function saveHash(LocalImageAbstract $file, SourceImage $sourceImage);
 
     /**
      * @param LocalImageAbstract $file

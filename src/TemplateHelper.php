@@ -77,7 +77,7 @@ class TemplateHelper
             }
             $sourceImage = $this->imageUpload($image);
             if (!is_null($sourceImage)) {
-                $hash = $this->callbacks->saveHash($image, $sourceImage->hash, $sourceImage->shortHash);
+                $hash = $this->callbacks->saveHash($image, $sourceImage);
             }
         }
 
