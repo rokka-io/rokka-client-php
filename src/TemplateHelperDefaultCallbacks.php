@@ -19,6 +19,7 @@ class TemplateHelperDefaultCallbacks extends TemplateHelperCallbacksAbstract
         $hashFile = $this->getHashFileName($file);
         if (file_exists($hashFile)) {
             $data = json_decode(file_get_contents($hashFile), true);
+
             return $data['hash'];
         }
 
@@ -27,17 +28,19 @@ class TemplateHelperDefaultCallbacks extends TemplateHelperCallbacksAbstract
 
     /**
      * @param LocalImageAbstract $file
-     * @param string $hash
-     * @param string $shortHash
+     * @param string             $hash
+     * @param string             $shortHash
      */
     public function saveHash(LocalImageAbstract $file, $hash, $shortHash)
     {
         file_put_contents($this->getHashFileName($file), json_encode(['hash' => $shortHash]));
+
         return $shortHash;
     }
 
     /**
      * @param LocalImageAbstract $image
+     *
      * @return string
      */
     private function getHashFileName(LocalImageAbstract $image)

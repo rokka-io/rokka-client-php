@@ -10,9 +10,10 @@ class StringContent extends LocalImageAbstract
 
     /**
      * StringContent constructor.
-     * @param string $image
+     *
+     * @param string      $image
      * @param string|null $identifier
-     * @param mixed $context
+     * @param mixed       $context
      */
     public function __construct($image, $identifier = null, $context = null)
     {

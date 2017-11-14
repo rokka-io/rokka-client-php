@@ -16,7 +16,7 @@ class TemplateHelperTest extends \PHPUnit_Framework_TestCase
      */
     private $rokka;
 
-    private $testImages = ['small' => ['path' => __DIR__ . '/Fixtures/Images/small-bratpfanne.jpg', 'hash' => '71775293697709c1a1ce66f05d7c011a6982a6a9']];
+    private $testImages = ['small' => ['path' => __DIR__.'/Fixtures/Images/small-bratpfanne.jpg', 'hash' => '71775293697709c1a1ce66f05d7c011a6982a6a9']];
 
     public function setUp()
     {
@@ -123,7 +123,7 @@ class TemplateHelperTest extends \PHPUnit_Framework_TestCase
         );
         $this->assertEquals(
             'src="https://testorg.rokka.io/test/71775293697709c1a1ce66f05d7c011a6982a6a9/small-bratpfanne.jpg" srcset="https://testorg.rokka.io/test/resize-width-250--options-dpr-2/71775293697709c1a1ce66f05d7c011a6982a6a9/small-bratpfanne.jpg 500w"',
-            $this->rokka->getSrcAttributes($url, [ '500w' => '2x'])
+            $this->rokka->getSrcAttributes($url, ['500w' => '2x'])
         );
 
         // non rokka url

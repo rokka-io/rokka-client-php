@@ -15,9 +15,10 @@ class FileInfo extends LocalImageAbstract
 
     /**
      * FileInfo constructor.
+     *
      * @param \SplFileInfo $image
-     * @param string|null $identifier
-     * @param mixed $context
+     * @param string|null  $identifier
+     * @param mixed        $context
      */
     public function __construct(\SplFileInfo $image, $identifier = null, $context = null)
     {
