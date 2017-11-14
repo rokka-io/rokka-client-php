@@ -28,10 +28,11 @@ class TemplateHelperDefaultCallbacks extends TemplateHelperCallbacksAbstract
     /**
      * @param LocalImageAbstract $file
      * @param string $hash
+     * @param string $shortHash
      */
-    public function saveHash(LocalImageAbstract $file, $hash)
+    public function saveHash(LocalImageAbstract $file, $hash, $shortHash)
     {
-        file_put_contents($this->getHashFileName($file), json_encode(['hash' => $hash]));
+        file_put_contents($this->getHashFileName($file), json_encode(['hash' => $shortHash]));
     }
 
     /**

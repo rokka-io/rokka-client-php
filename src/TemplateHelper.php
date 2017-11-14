@@ -3,6 +3,7 @@
 namespace Rokka\Client;
 
 use Rokka\Client\Base as BaseClient;
+use Rokka\Client\Core\SourceImage;
 use Rokka\Client\LocalImage\FileInfo;
 use Rokka\Client\LocalImage\LocalImageAbstract;
 
@@ -73,8 +74,10 @@ class TemplateHelper
             if (!$this->isImage($image)) {
                 return null;
             }
-            $hash = $this->imageUpload($image);
-            $this->callbacks->saveHash($image, $hash);
+            $sourceImage = $this->imageUpload($image);
+            if(!is_null($sourceImage)) {
+                $hash = $this->callbacks->saveHash($image, $sourceImage->hash, $sourceImage->shortHash);
+            }
         }
 
         return $hash;
@@ -359,6 +362,10 @@ class TemplateHelper
         return $this->generateRokkaUrl($hash, $stack, $format, $this->getImagename($image), $seoLanguage);
     }
 
+    /**
+     * @param LocalImageAbstract $image
+     * @return null|SourceImage
+     */
     protected function imageUpload(LocalImageAbstract $image)
     {
         $imageClient = $this->getRokkaClient();
@@ -372,9 +379,11 @@ class TemplateHelper
           '',
           $metadata
         );
-        $hash = $answer->getSourceImages()[0]->hash;
-
-        return $hash;
+        $sourceImages = $answer->getSourceImages();
+        if (count($sourceImages) > 0) {
+            return $sourceImages[0];
+        }
+        return null;
     }
 
     /**
