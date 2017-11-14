@@ -186,7 +186,7 @@ class TestCallbacks extends TemplateHelperCallbacksAbstract
         return sha1($file->getContent());
     }
 
-    public function saveHash(LocalImageAbstract $file, $hash)
+    public function saveHash(LocalImageAbstract $file, $hash, $shortHash)
     {
         // do nothing
     }
