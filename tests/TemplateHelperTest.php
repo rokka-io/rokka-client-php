@@ -2,6 +2,7 @@
 
 namespace Rokka\Client\Tests;
 
+use Rokka\Client\Core\SourceImage;
 use Rokka\Client\LocalImage\FileInfo;
 use Rokka\Client\LocalImage\LocalImageAbstract;
 use Rokka\Client\LocalImage\RokkaHash;
@@ -186,7 +187,7 @@ class TestCallbacks extends TemplateHelperCallbacksAbstract
         return sha1($file->getContent());
     }
 
-    public function saveHash(LocalImageAbstract $file, $hash, $shortHash)
+    public function saveHash(LocalImageAbstract $file, SourceImage $sourceImage)
     {
         // do nothing
     }
