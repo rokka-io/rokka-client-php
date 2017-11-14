@@ -2,6 +2,7 @@
 
 namespace Rokka\Client;
 
+use Rokka\Client\Core\SourceImage;
 use Rokka\Client\LocalImage\LocalImageAbstract;
 
 class TemplateHelperDefaultCallbacks extends TemplateHelperCallbacksAbstract
@@ -28,14 +29,14 @@ class TemplateHelperDefaultCallbacks extends TemplateHelperCallbacksAbstract
 
     /**
      * @param LocalImageAbstract $file
-     * @param string             $hash
-     * @param string             $shortHash
+     * @param SourceImage        $sourceImage
+     * @return string
      */
-    public function saveHash(LocalImageAbstract $file, $hash, $shortHash)
+    public function saveHash(LocalImageAbstract $file, SourceImage $sourceImage)
     {
-        file_put_contents($this->getHashFileName($file), json_encode(['hash' => $shortHash]));
+        file_put_contents($this->getHashFileName($file), json_encode(['hash' => $sourceImage->shortHash]));
 
-        return $shortHash;
+        return $sourceImage->shortHash;
     }
 
     /**
