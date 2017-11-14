@@ -26,10 +26,11 @@ class TemplateHelper
 
     /**
      * TemplateHelper constructor.
-     * @param string $organization
-     * @param string $apiKey
+     *
+     * @param string                               $organization
+     * @param string                               $apiKey
      * @param TemplateHelperCallbacksAbstract|null $callbacks
-     * @param string|null $publicRokkaDomain
+     * @param string|null                          $publicRokkaDomain
      */
     public function __construct(
         $organization,
@@ -75,7 +76,7 @@ class TemplateHelper
                 return null;
             }
             $sourceImage = $this->imageUpload($image);
-            if(!is_null($sourceImage)) {
+            if (!is_null($sourceImage)) {
                 $hash = $this->callbacks->saveHash($image, $sourceImage->hash, $sourceImage->shortHash);
             }
         }
@@ -120,13 +121,13 @@ class TemplateHelper
     /**
      * Return the rokka URL for getting a resized image.
      *
-     * @param LocalImageAbstract|string|\SplFileInfo $image The image to be resized
-     * @param string|int $width The width of the image
-     * @param string|int|null $height The height of the image
-     * @param string $format The image format of the image (jpg, png, webp, ...)
+     * @param LocalImageAbstract|string|\SplFileInfo $image       The image to be resized
+     * @param string|int                             $width       The width of the image
+     * @param string|int|null                        $height      The height of the image
+     * @param string                                 $format      The image format of the image (jpg, png, webp, ...)
+     * @param string|null                            $seo
+     * @param string                                 $seoLanguage
      *
-     * @param string|null $seo
-     * @param string $seoLanguage
      * @return string
      */
     public function getResizeUrl($image, $width, $height = null, $format = 'jpg', $seo = null, $seoLanguage = 'de')
@@ -146,12 +147,12 @@ class TemplateHelper
      * Return the rokka URL for getting a resized and cropped image.
      *
      *
-     * @param LocalImageAbstract|string|\SplFileInfo $image The image to be resized
-     * @param string|int $width The width of the image
-     * @param string|int $height The height of the image
-     * @param string $format The image format of the image (jpg, png, webp, ...)
-     * @param string|null $seo
-     * @param string $seoLanguage
+     * @param LocalImageAbstract|string|\SplFileInfo $image       The image to be resized
+     * @param string|int                             $width       The width of the image
+     * @param string|int                             $height      The height of the image
+     * @param string                                 $format      The image format of the image (jpg, png, webp, ...)
+     * @param string|null                            $seo
+     * @param string                                 $seoLanguage
      *
      * @return string
      */
@@ -168,10 +169,10 @@ class TemplateHelper
      * Return the rokka URL for getting the image in it's original size.
      *
      *
-     * @param LocalImageAbstract|string|\SplFileInfo $image The image to be resized
-     * @param string $format The image format of the image (jpg, png, webp, ...)
-     * @param string|null $seo
-     * @param string $seoLanguage
+     * @param LocalImageAbstract|string|\SplFileInfo $image       The image to be resized
+     * @param string                                 $format      The image format of the image (jpg, png, webp, ...)
+     * @param string|null                            $seo
+     * @param string                                 $seoLanguage
      *
      * @return string
      */
@@ -179,14 +180,15 @@ class TemplateHelper
     {
         $imageObject = self::getImageObject($image);
 
-        $stack = "dynamic/noop--options-autoformat-true-jpg.transparency.autoformat-true";
+        $stack = 'dynamic/noop--options-autoformat-true-jpg.transparency.autoformat-true';
 
         return $this->getStackUrl($imageObject, $stack, $format, $seo, $seoLanguage);
     }
 
     /**
      * @param string $url
-     * @param array $sizes
+     * @param array  $sizes
+     *
      * @return string
      */
     public function getSrcAttributes($url, $sizes = ['2x'])
@@ -204,7 +206,7 @@ class TemplateHelper
             }
         }
         if (count($srcSets) > 0) {
-            $attrs .= ' srcset="'.implode(", "  ,($srcSets)).'"';
+            $attrs .= ' srcset="'.implode(', ', ($srcSets)).'"';
         }
 
         return $attrs;
@@ -292,8 +294,8 @@ class TemplateHelper
 
     /**
      * @param LocalImageAbstract|string|\SplFileInfo $file
-     * @param string|null                                   $identifier
-     * @param mixed                                   $context
+     * @param string|null                            $identifier
+     * @param mixed                                  $context
      *
      * @return LocalImageAbstract
      */
@@ -364,6 +366,7 @@ class TemplateHelper
 
     /**
      * @param LocalImageAbstract $image
+     *
      * @return null|SourceImage
      */
     protected function imageUpload(LocalImageAbstract $image)
@@ -383,11 +386,13 @@ class TemplateHelper
         if (count($sourceImages) > 0) {
             return $sourceImages[0];
         }
+
         return null;
     }
 
     /**
      * @param LocalImageAbstract $image
+     *
      * @return string
      */
     protected function getMimeType(LocalImageAbstract $image)
@@ -398,23 +403,26 @@ class TemplateHelper
             $mimeType = finfo_buffer(finfo_open(FILEINFO_MIME_TYPE), $image->getContent());
         }
 
-        if ($mimeType == 'text/html' || $mimeType == 'text/plain') {
+        if ('text/html' == $mimeType || 'text/plain' == $mimeType) {
             if ($this->isSvg($image)) {
                 $mimeType = 'image/svg+xml';
             }
         }
+
         return $mimeType;
     }
 
-    protected function isImage(LocalImageAbstract $image) {
+    protected function isImage(LocalImageAbstract $image)
+    {
         $mimeType = $this->getMimeType($image);
-        if (substr($mimeType,0,6) == 'image/') {
+        if ('image/' == substr($mimeType, 0, 6)) {
             return true;
         }
 
-        if ($mimeType == 'application/pdf') {
+        if ('application/pdf' == $mimeType) {
             return true;
         }
+
         return false;
     }
 
@@ -430,12 +438,11 @@ class TemplateHelper
         $dom = new \DOMDocument();
         if (@$dom->loadXML($image->getContent())) {
             $root = $dom->childNodes->item(0);
-            if ($root->localName == 'svg' && $root->namespaceURI == 'http://www.w3.org/2000/svg') {
+            if ('svg' == $root->localName && 'http://www.w3.org/2000/svg' == $root->namespaceURI) {
                 return true;
             }
         }
 
         return false;
     }
-
 }

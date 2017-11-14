@@ -10,9 +10,10 @@ class RokkaHash extends LocalImageAbstract
 
     /**
      * RokkaHash constructor.
-     * @param string $hash
+     *
+     * @param string      $hash
      * @param string|null $identifier
-     * @param mixed null $context
+     * @param mixed null  $context
      */
     public function __construct($hash, $identifier = null, $context = null)
     {
