@@ -13,12 +13,12 @@ class Stack
     public $organization;
 
     /**
-     * @var string Name of the stack
+     * @var string|null Name of the stack
      */
     public $name;
 
     /**
-     * @var \DateTime When this stack was first created
+     * @var \DateTime|null When this stack was first created
      */
     public $created;
 
@@ -114,13 +114,13 @@ class Stack
      *
      * @since 1.1.0
      *
-     * @param $stackName
-     * @param array $config
-     * @param null  $organization
+     * @param string       $stackName
+     * @param array        $config
+     * @param string|null  $organization
      *
      * @return Stack
      */
-    public static function createFromConfig($stackName, array $config, $organization = null)
+    public static function createFromConfig(string $stackName, array $config, string $organization = null)
     {
         $stack = new self($organization, $stackName);
 
@@ -142,7 +142,7 @@ class Stack
     /**
      * Get name of organization this stack belongs to.
      *
-     * @return string
+     * @return string|null
      */
     public function getOrganization()
     {
@@ -166,7 +166,7 @@ class Stack
     /**
      * Get name of stack for url.
      *
-     * @return string
+     * @return null|string
      */
     public function getName()
     {
@@ -190,7 +190,7 @@ class Stack
     /**
      * Get date of creation for this stack.
      *
-     * @return \DateTime
+     * @return null|\DateTime
      */
     public function getCreated()
     {

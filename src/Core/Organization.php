@@ -62,7 +62,7 @@ class Organization
      *
      * @param string $jsonString JSON as a string
      *
-     * @return User
+     * @return self
      */
     public static function createFromJsonResponse($jsonString)
     {

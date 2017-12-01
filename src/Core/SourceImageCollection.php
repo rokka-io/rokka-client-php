@@ -24,7 +24,7 @@ class SourceImageCollection implements \Countable
     /**
      * When more than 10k items are returned a cursor is also created.
      *
-     * @var string
+     * @var string|null
      */
     private $cursor;
 
@@ -74,7 +74,7 @@ class SourceImageCollection implements \Countable
     /**
      * Returns the cursor value, if any.
      *
-     * @return string
+     * @return string|null
      */
     public function getCursor()
     {

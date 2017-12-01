@@ -37,7 +37,7 @@ class DetectionFace implements DynamicMetadataInterface
      * @param string|array $data    JSON data
      * @param bool         $isArray If the data provided is already an array
      *
-     * @return SubjectArea
+     * @return self
      */
     public static function createFromJsonResponse($data, $isArray = false)
     {

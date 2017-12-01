@@ -687,21 +687,16 @@ class Image extends Base
     /**
      * Return the organization or the default if empty.
      *
-     * @param string $organization Organization
+     * @param string|null $organization Organization
      *
      * @return string
      */
-    private function getOrganization($organization)
+    private function getOrganization(string $organization = null)
     {
-        return empty($organization) ? $this->defaultOrganization : $organization;
+        return (empty($organization) || is_null($organization)) ? $this->defaultOrganization : $organization;
     }
 
-    /**
-     * @param $fields
-     *
-     * @return mixed
-     */
-    private function applyValueTransformationsToUserMeta($fields)
+    private function applyValueTransformationsToUserMeta(array $fields)
     {
         foreach ($fields as $key => $value) {
             if ($value instanceof \DateTime) {
