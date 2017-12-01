@@ -64,7 +64,7 @@ class TemplateHelper
      *
      * @param LocalImageAbstract $image
      *
-     * @return string
+     * @return string|null
      */
     public function getHashMaybeUpload(LocalImageAbstract $image)
     {
@@ -237,11 +237,11 @@ class TemplateHelper
     /**
      * Returns the filename of the image without extension.
      *
-     * @param LocalImageAbstract $image
+     * @param LocalImageAbstract|null $image
      *
      * @return string
      */
-    public function getImagename(LocalImageAbstract $image)
+    public function getImagename(LocalImageAbstract $image = null)
     {
         if (null === $image) {
             return '';
@@ -256,9 +256,9 @@ class TemplateHelper
      *
      * @param string      $hash        The rokka hash
      * @param string      $stack       The stack name
-     * @param string      $format      The image format of the image (jpg, png, webp, ...)
+     * @param string|null $format      The image format of the image (jpg, png, webp, ...)
      * @param string|null $seo         If you want to use a seo string in the URL
-     * @param string      $seoLanguage Optional language to be used for slugifying (eg. 'de' slugifies 'ö' to 'oe')
+     * @param string|null $seoLanguage Optional language to be used for slugifying (eg. 'de' slugifies 'ö' to 'oe')
      *
      * @return string
      */
@@ -272,7 +272,10 @@ class TemplateHelper
         if (null === $format) {
             $format = 'jpg';
         }
-        if (!empty($seo)) {
+        if (!empty($seo) && null !== $seo) {
+            if (null === $seoLanguage) {
+                $seoLanguage = 'de';
+            }
             $slug = self::slugify($seo, $seoLanguage);
             if (!empty($slug)) {
                 return $this->rokkaDomain."/$stack/$hash/$slug.$format";
@@ -348,9 +351,9 @@ class TemplateHelper
      *
      * @param string             $hash        The rokka hash
      * @param string             $stack       The stack name
-     * @param string             $format      The image format of the image (jpg, png, webp, ...)
+     * @param string|null        $format      The image format of the image (jpg, png, webp, ...)
      * @param LocalImageAbstract $image       The image
-     * @param string             $seoLanguage Optional language to be used for slugifying (eg. 'de' slugifies 'ö' to 'oe')
+     * @param string|null        $seoLanguage Optional language to be used for slugifying (eg. 'de' slugifies 'ö' to 'oe')
      *
      * @return string
      */
@@ -366,8 +369,8 @@ class TemplateHelper
 
     /**
      * @param LocalImageAbstract $image
-     *
      * @return null|SourceImage
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     protected function imageUpload(LocalImageAbstract $image)
     {
@@ -376,15 +379,22 @@ class TemplateHelper
         if (0 === count($metadata)) {
             $metadata = null;
         }
-        $answer = $imageClient->uploadSourceImage(
-          $image->getContent(),
-          $image->getFilename(),
-          '',
-          $metadata
-        );
-        $sourceImages = $answer->getSourceImages();
-        if (count($sourceImages) > 0) {
-            return $sourceImages[0];
+        $content =  $image->getContent();
+        if (null !== $content) {
+            $filename = $image->getFilename();
+            if ($filename === null) {
+                $filename = 'unknown';
+            }
+            $answer = $imageClient->uploadSourceImage(
+                $content,
+                $filename,
+                '',
+                $metadata
+            );
+            $sourceImages = $answer->getSourceImages();
+            if (count($sourceImages) > 0) {
+                return $sourceImages[0];
+            }
         }
 
         return null;
@@ -429,7 +439,7 @@ class TemplateHelper
     /**
      * Checks, if a file is svg (needed when xml declaration is missing).
      *
-     * @param string $path
+     * @param LocalImageAbstract $image
      *
      * @return bool
      */

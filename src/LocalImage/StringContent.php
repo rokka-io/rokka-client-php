@@ -45,10 +45,6 @@ class StringContent extends LocalImageAbstract
      */
     public function getContent()
     {
-        if (null === $this->content) {
-            $this->content = file_get_contents($this->image->getPathname());
-        }
-
         return $this->content;
     }
 }

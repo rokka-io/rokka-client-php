@@ -107,8 +107,8 @@ class UriHelper
     /**
      * @param string       $size
      * @param UriInterface $url
-     * @param null|string $custom
-     * 
+     * @param null|string  $custom
+     *
      * @return UriInterface
      */
     public static function getSrcSetUrl($size, UriInterface $url, $custom = null)
@@ -122,7 +122,7 @@ class UriHelper
         } else {
             return $url;
         }
-        if (null != $custom) {
+        if (null !== $custom) {
             if (preg_match('#^([0-9]+)x$#', $custom, $matches)) {
                 $uri = self::addOptionsToUri($uri, 'options-dpr-'.$matches[1].'--resize-width-'.(int) ceil($size / $matches[1]));
             } else {

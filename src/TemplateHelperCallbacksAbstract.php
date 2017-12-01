@@ -16,7 +16,8 @@ abstract class TemplateHelperCallbacksAbstract
 
     /**
      * @param LocalImageAbstract $file
-     * @param SourceImage $sourceImage
+     * @param SourceImage        $sourceImage
+     *
      * @return string
      */
     abstract public function saveHash(LocalImageAbstract $file, SourceImage $sourceImage);

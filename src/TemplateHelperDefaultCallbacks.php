@@ -30,6 +30,7 @@ class TemplateHelperDefaultCallbacks extends TemplateHelperCallbacksAbstract
     /**
      * @param LocalImageAbstract $file
      * @param SourceImage        $sourceImage
+     *
      * @return string
      */
     public function saveHash(LocalImageAbstract $file, SourceImage $sourceImage)

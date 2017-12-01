@@ -8,13 +8,6 @@ class RokkaHash extends LocalImageAbstract
 
     private $hash = null;
 
-    /**
-     * RokkaHash constructor.
-     *
-     * @param string      $hash
-     * @param string|null $identifier
-     * @param mixed null  $context
-     */
     public function __construct($hash, $identifier = null, $context = null)
     {
         $this->identifier = $identifier;
@@ -44,10 +37,5 @@ class RokkaHash extends LocalImageAbstract
     {
         //FIXME: get it from rokka
         return null;
-        if (null === $this->content) {
-            $this->content = file_get_contents($this->image->getPathname());
-        }
-
-        return $this->content;
     }
 }
