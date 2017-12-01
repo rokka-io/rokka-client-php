@@ -114,9 +114,9 @@ class Stack
      *
      * @since 1.1.0
      *
-     * @param string       $stackName
-     * @param array        $config
-     * @param string|null  $organization
+     * @param string      $stackName
+     * @param array       $config
+     * @param string|null $organization
      *
      * @return Stack
      */

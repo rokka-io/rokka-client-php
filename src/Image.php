@@ -57,6 +57,8 @@ class Image extends Base
      * @param array|null $options      Options for creating the image (like meta_user and meta_dynamic)
      *
      * @return SourceImageCollection If no image contents are provided to be uploaded
+     *
+     * @throws GuzzleException
      */
     public function uploadSourceImage($contents, $fileName, $organization = '', $options = null)
     {
@@ -103,6 +105,8 @@ class Image extends Base
      * @throws GuzzleException If the request fails for a different reason than image not found
      *
      * @return bool True if successful, false if image not found
+     *
+     * @throws \Exception
      */
     public function deleteSourceImage($hash, $organization = '')
     {
@@ -130,6 +134,8 @@ class Image extends Base
      * @throws GuzzleException If the request fails for a different reason than image not found
      *
      * @return bool True if successful, false if image not found
+     *
+     * @throws \Exception
      */
     public function deleteSourceImagesWithBinaryHash($binaryHash, $organization = '')
     {
@@ -158,6 +164,8 @@ class Image extends Base
      * @param string          $organization Optional organization name
      *
      * @return SourceImageCollection
+     *
+     * @throws GuzzleException
      */
     public function searchSourceImages($search = [], $sorts = [], $limit = null, $offset = null, $organization = '')
     {
@@ -204,6 +212,8 @@ class Image extends Base
      * @param string          $organization Optional organization name
      *
      * @return SourceImageCollection
+     *
+     * @throws GuzzleException
      */
     public function listSourceImages($limit = null, $offset = null, $organization = '')
     {
@@ -217,6 +227,8 @@ class Image extends Base
      * @param string $organization Optional organization name
      *
      * @return SourceImage
+     *
+     * @throws GuzzleException
      */
     public function getSourceImage($hash, $organization = '')
     {
@@ -241,6 +253,8 @@ class Image extends Base
      * @param string $organization Optional organization name
      *
      * @return SourceImageCollection
+     *
+     * @throws GuzzleException
      */
     public function getSourceImagesWithBinaryHash($binaryHash, $organization = '')
     {
@@ -262,6 +276,8 @@ class Image extends Base
      * @param string $organization Optional organization name
      *
      * @return string
+     *
+     * @throws GuzzleException
      */
     public function getSourceImageContents($hash, $organization = '')
     {
@@ -282,6 +298,8 @@ class Image extends Base
      * List operations.
      *
      * @return OperationCollection
+     *
+     * @throws GuzzleException
      */
     public function listOperations()
     {
@@ -306,6 +324,8 @@ class Image extends Base
      * @param bool   $overwrite       If an existing stack should be overwritten
      *
      * @return Stack
+     *
+     * @throws GuzzleException
      */
     public function createStack(
         $stackName,
@@ -337,6 +357,7 @@ class Image extends Base
      * @return Stack
      *
      * @throws \LogicException when stack name is not set
+     * @throws GuzzleException
      */
     public function saveStack(Stack $stack, array $requestConfig = [])
     {
@@ -371,6 +392,8 @@ class Image extends Base
      * @param string   $organization Optional organization name
      *
      * @return StackCollection
+     *
+     * @throws GuzzleException
      */
     public function listStacks($limit = null, $offset = null, $organization = '')
     {
@@ -395,6 +418,8 @@ class Image extends Base
      * @param string $organization Optional organization name
      *
      * @return Stack
+     *
+     * @throws GuzzleException
      */
     public function getStack($stackName, $organization = '')
     {
@@ -413,6 +438,8 @@ class Image extends Base
      * @param string $organization Optional organization name
      *
      * @return bool True if successful
+     *
+     * @throws GuzzleException
      */
     public function deleteStack($stackName, $organization = '')
     {
@@ -438,6 +465,8 @@ class Image extends Base
      * @param array                    $options         Optional options
      *
      * @return string|false
+     *
+     * @throws GuzzleException
      */
     public function setDynamicMetadata(DynamicMetadataInterface $dynamicMetadata, $hash, $organization = '', $options = [])
     {
@@ -480,6 +509,8 @@ class Image extends Base
      * @param array  $options             Optional options
      *
      * @return string|false
+     *
+     * @throws GuzzleException
      */
     public function deleteDynamicMetadata($dynamicMetadataName, $hash, $organization = '', $options = [])
     {
@@ -691,7 +722,7 @@ class Image extends Base
      *
      * @return string
      */
-    private function getOrganization(string $organization = null)
+    private function getOrganization($organization = null)
     {
         return (empty($organization) || is_null($organization)) ? $this->defaultOrganization : $organization;
     }

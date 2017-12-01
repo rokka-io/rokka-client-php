@@ -2,6 +2,7 @@
 
 namespace Rokka\Client;
 
+use GuzzleHttp\Exception\GuzzleException;
 use Rokka\Client\Core\Membership;
 use Rokka\Client\Core\Organization;
 use Rokka\Client\Core\User as UserModel;
@@ -20,6 +21,8 @@ class User extends Base
      * @param string $email Email
      *
      * @return UserModel
+     *
+     * @throws GuzzleException
      */
     public function createUser($email)
     {
@@ -42,6 +45,8 @@ class User extends Base
      * @param string $displayName Optional display name
      *
      * @return Organization
+     *
+     * @throws GuzzleException
      */
     public function createOrganization($name, $billingMail, $displayName = '')
     {
@@ -68,6 +73,8 @@ class User extends Base
      * @param string $name Organization name
      *
      * @return Organization
+     *
+     * @throws GuzzleException
      */
     public function getOrganization($name)
     {
@@ -88,6 +95,8 @@ class User extends Base
      * @param string $role         Role to add
      *
      * @return Membership
+     *
+     * @throws GuzzleException
      */
     public function createMembership($organization, $email, $role = Membership::ROLE_READ)
     {
@@ -109,6 +118,8 @@ class User extends Base
      * @param string $email        Email
      *
      * @return Membership
+     *
+     * @throws GuzzleException
      */
     public function getMembership($organization, $email)
     {

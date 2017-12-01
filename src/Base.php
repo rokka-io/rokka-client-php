@@ -3,7 +3,7 @@
 namespace Rokka\Client;
 
 use GuzzleHttp\ClientInterface;
-use GuzzleHttp\Psr7\Response;
+use GuzzleHttp\Exception\GuzzleException;
 use Psr\Http\Message\ResponseInterface;
 
 /**
@@ -69,6 +69,8 @@ abstract class Base
      * @param bool   $needsCredentials True if credentials are needed
      *
      * @return ResponseInterface
+     *
+     * @throws GuzzleException
      */
     protected function call($method, $path, array $options = [], $needsCredentials = true)
     {
