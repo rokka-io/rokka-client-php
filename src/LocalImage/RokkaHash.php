@@ -44,10 +44,5 @@ class RokkaHash extends LocalImageAbstract
     {
         //FIXME: get it from rokka
         return null;
-        if (null === $this->content) {
-            $this->content = file_get_contents($this->image->getPathname());
-        }
-
-        return $this->content;
     }
 }
