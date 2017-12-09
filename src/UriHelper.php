@@ -135,11 +135,11 @@ class UriHelper
     }
 
     /**
-     * @param $config
+     * @param array $config
      *
      * @return string
      */
-    private static function getUriStringFromStackConfig($config)
+    private static function getUriStringFromStackConfig(array $config)
     {
         $newOptions = [];
         // move operations to root, in case they are in their separate key
