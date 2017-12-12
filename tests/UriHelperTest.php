@@ -2,9 +2,9 @@
 
 namespace Rokka\Client\Tests;
 
+use GuzzleHttp\Psr7\Uri;
 use Rokka\Client\Core\Stack;
 use Rokka\Client\Core\StackOperation;
-use GuzzleHttp\Psr7\Uri;
 use Rokka\Client\UriHelper;
 
 class UriHelperTest extends \PHPUnit_Framework_TestCase
@@ -51,8 +51,10 @@ class UriHelperTest extends \PHPUnit_Framework_TestCase
     {
         return [
             ['https://test.rokka.io/stackname/b537639e539efcc3df4459ef87c5963aa5079ca6.jpg', ['stack' => 'stackname', 'hash' => 'b537639e539efcc3df4459ef87c5963aa5079ca6', 'filename' => null, 'format' => 'jpg']],
-            ['https://test.rokka.io/stackname/resize-width-100/b537639e5.jpg', ['stack' => 'stackname', 'options' => 'resize-width-100', 'hash' => 'b537639e5', 'filename' => null, 'format' => 'jpg']],
-            ['https://test.rokka.io/dynamic/resize-width-100/b53763/seo-test.webp', ['stack' => 'dynamic', 'options' => 'resize-width-100', 'hash' => 'b53763', 'filename' => 'seo-test', 'format' => 'webp']],
+            ['https://test.rokka.io/stackname/resize-width-100/b537639e5.jpg', ['stack' => 'stackname', 'hash' => 'b537639e5', 'filename' => null, 'format' => 'jpg', 'operations' => ['resize' => ['width' => '100']]]],
+            ['https://test.rokka.io/stackname/resize-width-100--rotate-angle-20/b537639e5.jpg', ['stack' => 'stackname', 'hash' => 'b537639e5', 'filename' => null, 'format' => 'jpg', 'operations' => ['resize' => ['width' => '100'], 'rotate' => ['angle' => '20']]]],
+            ['https://test.rokka.io/dynamic/resize-height-200-width-100--options-jpg.quality-80/b53763/seo-test.webp', ['stack' => 'dynamic', 'hash' => 'b53763', 'filename' => 'seo-test', 'format' => 'webp',  'operations' => ['resize' => ['height' => '200', 'width' => '100']], 'options' => ['jpg.quality' => '80']]],
+            ['https://test.rokka.io/dynamic/options-autoformat-true/b53763/seo-test.webp', ['stack' => 'dynamic', 'hash' => 'b53763', 'filename' => 'seo-test', 'format' => 'webp', 'options' => ['autoformat' => 'true']]],
         ];
     }
 
@@ -76,9 +78,9 @@ class UriHelperTest extends \PHPUnit_Framework_TestCase
         $stack->addStackOperation(new StackOperation('rotate', ['angle' => 45]));
         $stack->setStackOptions(['jpg.quality' => 80]);
         $stack->addStackOption('webp.quality', 80);
-        $this->assertEquals('resize-height-200-width-200--rotate-angle-45--options-jpg.quality-80-webp.quality-80', UriHelper::getDynamicStackFromStackObject($stack));
+        $this->assertEquals('dynamic/resize-height-200-width-200--rotate-angle-45--options-jpg.quality-80-webp.quality-80', $stack->getDynamicStackUrl());
     }
-    
+
     /**
      * @dataProvider provideDecomposeUri
      *
@@ -87,7 +89,10 @@ class UriHelperTest extends \PHPUnit_Framework_TestCase
      */
     public function testDecomposeUri($inputUrl, $expected)
     {
-        $this->assertSame($expected, UriHelper::decomposeUri(new Uri($inputUrl)));
+        $uri = new Uri($inputUrl);
+        $components = UriHelper::decomposeUri($uri);
+        $this->assertSame($expected, $components);
+        $this->assertSame((string) UriHelper::composeUri($components, $uri), $inputUrl);
     }
 
     /**

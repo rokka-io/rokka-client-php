@@ -8,7 +8,8 @@ This document mainly describes API changes important to users of this library.
 
 ## 1.2.x - Unreleased
 
-* Add static method `UriHelper::getDynamicStackFromStackConfig` and `UriHelper::getDynamicStackFromStackObject`
+* Add static method `UriHelper::getDynamicStackFromStackConfig` 
+* Add decomposeUri and composeUri (tbd..)
 
 ## 1.1.0 - 2017-11-13
 

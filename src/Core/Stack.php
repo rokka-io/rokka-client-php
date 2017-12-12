@@ -350,7 +350,7 @@ class Stack
      */
     public function getDynamicStackUrl()
     {
-        $components = ['stack' => 'dynamic', 'options' => $this->getStackOperations()];
+        $components = array_merge(['stack' => 'dynamic'], $this->getConfigAsArray());
 
         return trim(UriHelper::composeUri($components)->getPath(), '/');
     }

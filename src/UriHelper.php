@@ -5,7 +5,6 @@ namespace Rokka\Client;
 use GuzzleHttp\Psr7\Uri;
 use Psr\Http\Message\UriInterface;
 use Rokka\Client\Core\Stack;
-use Rokka\Client\Core\StackOperation;
 
 class UriHelper
 {
@@ -44,12 +43,12 @@ class UriHelper
             return $uri;
         }
         if (isset($matches['options'])) {
-            $urlOptions = self::decomposeOptions($matches['options']);
+            $urlOptions = ['options' => $matches['options']];
             $inputOptions = self::decomposeOptions($options);
             $combinedOptions = array_replace_recursive($urlOptions, $inputOptions);
-            $matches['options'] = self::getUriStringFromStackConfig($combinedOptions);
+            $matches = array_merge($matches, $combinedOptions);
         } else {
-            $matches['options'] = $options;
+            $matches = array_merge($matches, self::decomposeOptions($options));
         }
 
         return self::composeUri($matches, $uri);
@@ -58,21 +57,38 @@ class UriHelper
     /**
      * Generate a rokka uri with the array format returned by decomposeUri().
      *
+     * The array config looks like
+     * ['stack' => 'stackname',
+     *  'hash' => 'hash',
+     *  'filename' => 'filename-for-url'
+     *  'format' => 'image format' # eg. jpg
+     *  'options' => ['jpg.quality' => 80, 'autoformat' => true]]
+     *  'operations' => ['resize' => ['width' => 500]]
+     * ]
+     *
+
      * @since 1.2.0
      *
-     * @param array $components
-     * @param UriInterface $uri If this is provided, it will change the path for that object
+     * @param array        $components
+     * @param UriInterface $uri        If this is provided, it will change the path for that object
      *
      * @return UriInterface
      */
     public static function composeUri(array $components, UriInterface $uri = null)
     {
         $path = '/'.$components['stack'];
-        if (isset($components['options']) && !empty($components['options'])) {
-            if (is_array($components['options'])) {
-                $components['options'] = self::getUriStringFromStackConfig($components['options']);
-            }
-            $path .= '/'.$components['options'];
+
+        $combinedOptions = [];
+
+        if (isset($components['options'])) {
+            $combinedOptions['options'] = $components['options'];
+        }
+        if (isset($components['operations'])) {
+            $combinedOptions['operations'] = $components['operations'];
+        }
+
+        if (count($combinedOptions) > 0) {
+            $path .= '/'.self::getUriStringFromStackConfig($combinedOptions);
         }
 
         if (isset($components['hash']) && !empty($components['hash'])) {
@@ -105,7 +121,7 @@ class UriHelper
     {
         $path = $uri->getPath();
         if (preg_match('#^/(?<stack>[^/]+)/(?<hash>[0-9a-f]{6,40})(?<rest>.*)$#', $path, $matches)) {
-        } elseif (preg_match('#^/(?<stack>[^/]+)/(?<options>[^/]+)/(?<hash>[0-9a-f]{6,40})(?<rest>.*)$#', $path, $matches)) {
+        } elseif (preg_match('#^/(?<stack>[^/]+)/(?<combinedOptions>[^/]+)/(?<hash>[0-9a-f]{6,40})(?<rest>.*)$#', $path, $matches)) {
         }
         if (0 === count($matches)) {
             return [];
@@ -117,6 +133,10 @@ class UriHelper
                 $matches['filename'] = null;
             }
         }
+        if (isset($matches['combinedOptions'])) {
+            $matches = array_merge($matches, self::decomposeOptions($matches['combinedOptions']));
+            unset($matches['combinedOptions']);
+        }
         foreach ($matches as $key => $value) {
             if (is_int($key)) {
                 unset($matches[$key]);
@@ -124,22 +144,6 @@ class UriHelper
         }
 
         return $matches;
-    }
-
-    /**
-     * Returns a dynamic stack as string from a Stack object.
-     *
-     * Can be used to generate rokka render urls without having to save the stack on rokka.
-     *
-     * @since 1.2.0
-     *
-     * @param Stack $stack
-     *
-     * @return string
-     */
-    public static function getDynamicStackFromStackObject(Stack $stack)
-    {
-        return self::getUriStringFromStackConfig($stack->getConfigAsArray());
     }
 
     /**
@@ -201,7 +205,7 @@ class UriHelper
             } else {
                 $options = self::decomposeOptions($custom);
                 // if dpr is given in custom option, but not width, calculate correct width
-                if (isset($options['options']['dpr']) && !isset($options['resize']['width'])) {
+                if (isset($options['options']['dpr']) && !isset($options['operations']['resize']['width'])) {
                     $custom .= '--resize-width-'.(int) ceil($size / $options['options']['dpr']);
                 }
 
@@ -219,14 +223,22 @@ class UriHelper
      */
     private static function decomposeOptions($options)
     {
-        $components = [];
+        $components = ['operations' => []];
         foreach (explode('--', $options) as $stringOperation) {
             $stringOperationWithOptions = explode('-', $stringOperation);
             $stringOperationName = $stringOperationWithOptions[0];
             if ('' == $stringOperationName) {
                 continue;
             }
-            $components[$stringOperationName] = self::parseOptions(array_slice($stringOperationWithOptions, 1));
+            if ('options' === $stringOperationName) {
+                $components[$stringOperationName] = self::parseOptions(array_slice($stringOperationWithOptions, 1));
+            } else {
+                $components['operations'][$stringOperationName] = self::parseOptions(array_slice($stringOperationWithOptions, 1));
+            }
+        }
+
+        if (0 === count($components['operations'])) {
+            unset($components['operations']);
         }
 
         return $components;
@@ -287,12 +299,13 @@ class UriHelper
         $options = implode('--', $newOptions);
 
         if (null !== $newStackOptions) {
-            if ($options === '') {
+            if ('' === $options) {
                 $options = $newStackOptions;
             } else {
-                $options .= '--' . $newStackOptions;
+                $options .= '--'.$newStackOptions;
             }
         }
+
         return $options;
     }
 }
