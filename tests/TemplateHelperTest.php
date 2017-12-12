@@ -54,8 +54,11 @@ class TemplateHelperTest extends \PHPUnit_Framework_TestCase
     /**
      * @dataProvider provideStackUrl
      *
-     * @param $stack
+     * @param $image
+     * @param $seo
      * @param $url
+     *
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function testGetStackUrl($image, $seo, $url)
     {

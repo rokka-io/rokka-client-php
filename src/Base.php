@@ -12,9 +12,11 @@ use Psr\Http\Message\ResponseInterface;
 abstract class Base
 {
     const DEFAULT_API_BASE_URL = 'https://api.rokka.io';
+
     const DEFAULT_API_VERSION = 1;
 
     const API_KEY_HEADER = 'Api-Key';
+
     const API_VERSION_HEADER = 'Api-Version';
 
     /**

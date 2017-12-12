@@ -8,6 +8,7 @@ use Rokka\Client\LocalImage\LocalImageAbstract;
 class TemplateHelperDefaultCallbacks extends TemplateHelperCallbacksAbstract
 {
     public static $fileExtension = '.rokka.txt';
+
     public static $hashesFolder = '/tmp/';
 
     /**

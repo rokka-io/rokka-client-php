@@ -338,7 +338,21 @@ class Stack
             'operations' => $this->getStackOperations(),
             'options' => $this->getStackOptions(),
             'expressions' => $this->getStackExpressions(),
-            ];
+        ];
+    }
+
+    /**
+     * Returns the stack url part as a dynamic stack for previewing.
+     *
+     * @since 1.2.0
+     *
+     * @return string
+     */
+    public function getDynamicStackUrl()
+    {
+        $components = ['stack' => 'dynamic', 'options' => $this->getStackOperations()];
+
+        return trim(UriHelper::composeUri($components)->getPath(), '/');
     }
 
     /**

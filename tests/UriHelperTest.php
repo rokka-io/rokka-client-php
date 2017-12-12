@@ -4,6 +4,7 @@ namespace Rokka\Client\Tests;
 
 use Rokka\Client\Core\Stack;
 use Rokka\Client\Core\StackOperation;
+use GuzzleHttp\Psr7\Uri;
 use Rokka\Client\UriHelper;
 
 class UriHelperTest extends \PHPUnit_Framework_TestCase
@@ -37,9 +38,21 @@ class UriHelperTest extends \PHPUnit_Framework_TestCase
             ['300w', '3x', 'https://test.rokka.io/stackname/resize-width-100--options-dpr-3/b537639e539efcc3df4459ef87c5963aa5079ca6.jpg'],
             ['2x', 'options-jpg.quality-50', 'https://test.rokka.io/stackname/options-dpr-2-jpg.quality-50/b537639e539efcc3df4459ef87c5963aa5079ca6.jpg'],
             ['300w', 'options-jpg.quality-50', 'https://test.rokka.io/stackname/resize-width-300--options-jpg.quality-50/b537639e539efcc3df4459ef87c5963aa5079ca6.jpg'],
-            ['300w', 'options-jpg.quality-50-dpr-2', 'https://test.rokka.io/stackname/resize-width-150--options-jpg.quality-50-dpr-2/b537639e539efcc3df4459ef87c5963aa5079ca6.jpg'],
-            ['300w', 'options-jpg.quality-50-dpr-2--resize-width-200', 'https://test.rokka.io/stackname/resize-width-200--options-jpg.quality-50-dpr-2/b537639e539efcc3df4459ef87c5963aa5079ca6.jpg'],
+            ['300w', 'options-jpg.quality-50-dpr-2', 'https://test.rokka.io/stackname/resize-width-150--options-dpr-2-jpg.quality-50/b537639e539efcc3df4459ef87c5963aa5079ca6.jpg'],
+            ['300w', 'options-jpg.quality-50-dpr-2--resize-width-200', 'https://test.rokka.io/stackname/resize-width-200--options-dpr-2-jpg.quality-50/b537639e539efcc3df4459ef87c5963aa5079ca6.jpg'],
             ['300w', 'options-jpg.quality-50--resize-width-200', 'https://test.rokka.io/stackname/resize-width-200--options-jpg.quality-50/b537639e539efcc3df4459ef87c5963aa5079ca6.jpg'],
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    public function provideDecomposeUri()
+    {
+        return [
+            ['https://test.rokka.io/stackname/b537639e539efcc3df4459ef87c5963aa5079ca6.jpg', ['stack' => 'stackname', 'hash' => 'b537639e539efcc3df4459ef87c5963aa5079ca6', 'filename' => null, 'format' => 'jpg']],
+            ['https://test.rokka.io/stackname/resize-width-100/b537639e5.jpg', ['stack' => 'stackname', 'options' => 'resize-width-100', 'hash' => 'b537639e5', 'filename' => null, 'format' => 'jpg']],
+            ['https://test.rokka.io/dynamic/resize-width-100/b53763/seo-test.webp', ['stack' => 'dynamic', 'options' => 'resize-width-100', 'hash' => 'b53763', 'filename' => 'seo-test', 'format' => 'webp']],
         ];
     }
 
@@ -67,9 +80,21 @@ class UriHelperTest extends \PHPUnit_Framework_TestCase
     }
     
     /**
+     * @dataProvider provideDecomposeUri
+     *
+     * @param string $inputUrl
+     * @param array  $expected
+     */
+    public function testDecomposeUri($inputUrl, $expected)
+    {
+        $this->assertSame($expected, UriHelper::decomposeUri(new Uri($inputUrl)));
+    }
+
+    /**
      * @dataProvider provideGetSrcSetUrl
      *
-     * @param $options
+     * @param $size
+     * @param $custom
      * @param $expected
      */
     public function testGetSrcSetUrl($size, $custom, $expected)

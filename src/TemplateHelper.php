@@ -13,25 +13,21 @@ use Rokka\Client\LocalImage\LocalImageAbstract;
 class TemplateHelper
 {
     private $rokkaApiKey = null;
+
     private $rokkaOrg = null;
+
     private $rokkaDomain = null;
+
     /**
      * @var TemplateHelperCallbacksAbstract
      */
     private $callbacks = null;
+
     /**
      * @var string
      */
     private $rokkaApiHost;
 
-    /**
-     * TemplateHelper constructor.
-     *
-     * @param string                               $organization
-     * @param string                               $apiKey
-     * @param TemplateHelperCallbacksAbstract|null $callbacks
-     * @param string|null                          $publicRokkaDomain
-     */
     public function __construct(
         $organization,
         $apiKey,
@@ -65,6 +61,8 @@ class TemplateHelper
      * @param LocalImageAbstract $image
      *
      * @return string|null
+     *
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function getHashMaybeUpload(LocalImageAbstract $image)
     {
@@ -95,6 +93,8 @@ class TemplateHelper
      * @param string|null                            $seoLanguage Optional language to be used for slugifying (eg. 'de' slugifies 'ö' to 'oe')
      *
      * @return string
+     *
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function getStackUrl(
       $image,
@@ -272,6 +272,7 @@ class TemplateHelper
         if (null === $format) {
             $format = 'jpg';
         }
+        $slug = null;
         if (!empty($seo) && null !== $seo) {
             if (null === $seoLanguage) {
                 $seoLanguage = 'de';
@@ -282,7 +283,9 @@ class TemplateHelper
             }
         }
 
-        return $this->rokkaDomain."/$stack/$hash.$format";
+        $path = UriHelper::composeUri(['stack' => $stack, 'hash' => $hash, 'format' => $format, 'filename' => $slug]);
+
+        return $this->rokkaDomain.$path->getPath();
     }
 
     /**
@@ -369,7 +372,9 @@ class TemplateHelper
 
     /**
      * @param LocalImageAbstract $image
+     *
      * @return null|SourceImage
+     *
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
     protected function imageUpload(LocalImageAbstract $image)
@@ -379,10 +384,10 @@ class TemplateHelper
         if (0 === count($metadata)) {
             $metadata = null;
         }
-        $content =  $image->getContent();
+        $content = $image->getContent();
         if (null !== $content) {
             $filename = $image->getFilename();
-            if ($filename === null) {
+            if (null === $filename) {
                 $filename = 'unknown';
             }
             $answer = $imageClient->uploadSourceImage(
