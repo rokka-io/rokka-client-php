@@ -287,6 +287,11 @@ class UriHelper
             $newOption = "$key";
             ksort($values);
             foreach ($values as $k => $v) {
+                if ($v === false) {
+                    $v = 'false';
+                } else if ($v === true) {
+                    $v = 'true';
+                }
                 $newOption .= "-$k-$v";
             }
             if ('options' == $key) {
@@ -298,7 +303,7 @@ class UriHelper
 
         $options = implode('--', $newOptions);
 
-        if (null !== $newStackOptions) {
+        if (null !== $newStackOptions && 'options' !== $newStackOptions ) {
             if ('' === $options) {
                 $options = $newStackOptions;
             } else {
