@@ -68,10 +68,9 @@ class UriHelper
     public static function composeUri(array $components, UriInterface $uri = null)
     {
         $path = '/'.$components['stack'];
-
         if (isset($components['options']) && !empty($components['options'])) {
             if (is_array($components['options'])) {
-                $components['options'] = self::optionsArrayToUrlString($components['options']);
+                $components['options'] = self::getUriStringFromStackConfig($components['options']);
             }
             $path .= '/'.$components['options'];
         }
@@ -288,33 +287,12 @@ class UriHelper
         $options = implode('--', $newOptions);
 
         if (null !== $newStackOptions) {
-            $options .= '--' . $newStackOptions;
+            if ($options === '') {
+                $options = $newStackOptions;
+            } else {
+                $options .= '--' . $newStackOptions;
+            }
         }
-
         return $options;
-    }
-
-    private static function optionsArrayToUrlString($combinedOptions)
-    {
-        $newOptions = [];
-        foreach ($combinedOptions as $key => $values) {
-            if ($values instanceof StackOperation) {
-                $key = $values->name;
-                $values = $values->options;
-            }
-            $newOption = "$key";
-            ksort($values);
-            foreach ($values as $k => $v) {
-                if (false === $v) {
-                    $v = 'false';
-                } elseif (true === $v) {
-                    $v = 'true';
-                }
-                $newOption .= "-$k-$v";
-            }
-            $newOptions[] = $newOption;
-        }
-
-        return implode('--', $newOptions);
     }
 }
