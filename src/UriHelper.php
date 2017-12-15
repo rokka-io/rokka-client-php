@@ -47,7 +47,7 @@ class UriHelper
             //if nothing matches, it's not a proper rokka URL, just return the original uri
             return $uri;
         }
-        $matches['stack'] = self::addOptionsToStackUrlObject($matches['stack'], $options);
+        $matches['stack']->addOptions($options);
 
         return self::composeUri($matches, $uri);
     }
@@ -132,7 +132,7 @@ class UriHelper
         }
         $stack = new StackUrl($matches['stack']);
         if (isset($matches['combinedOptions'])) {
-            $stack = self::addOptionsToStackUrlObject($stack, $matches['combinedOptions']);
+            $stack->addOptions($matches['combinedOptions']);
             unset($matches['combinedOptions']);
         }
         foreach ($matches as $key => $value) {
@@ -179,7 +179,8 @@ class UriHelper
             if (preg_match('#^([0-9]+)x$#', $custom, $matches)) {
                 $uri = self::addOptionsToUri($uri, 'options-dpr-'.$matches[1].'--resize-width-'.(int) ceil($size / $matches[1]));
             } else {
-                $stack = self::addOptionsToStackUrlObject(new StackUrl(), $custom);
+                $stack = new StackUrl();
+                $stack->addOptions($custom);
                 // if dpr is given in custom option, but not width, calculate correct width
                 $resizeOperations = $stack->getStackOperationsByName('resize');
                 $widthIsNotSet = true;
@@ -198,70 +199,6 @@ class UriHelper
         }
 
         return $uri;
-    }
-
-    /**
-     * @param StackUrl $stack
-     * @param string   $options
-     *
-     * @return StackUrl
-     */
-    private static function addOptionsToStackUrlObject(StackUrl $stack, $options)
-    {
-        $part = 0;
-        // if stack already has operations we assume we don't want to add more, it's just overriding parameters
-        if (count($stack->getStackOperations()) > 0) {
-            ++$part;
-        }
-        foreach (explode('/', $options) as $option) {
-            ++$part;
-            foreach (explode('--', $option) as $stringOperation) {
-                $stringOperationWithOptions = explode('-', $stringOperation);
-                $stringOperationName = $stringOperationWithOptions[0];
-                if ('' == $stringOperationName) {
-                    continue;
-                }
-                $parsedOptions = self::parseOptions(array_slice($stringOperationWithOptions, 1));
-                if ('options' === $stringOperationName) {
-                    $stack->setStackOptions(array_merge($stack->getStackOptions(), $parsedOptions));
-                } else {
-                    // only add as stack operation everything before the first /
-                    if (1 === $part) {
-                        $stackOperation = new StackOperation($stringOperationName, $parsedOptions);
-                        $stack->addStackOperation($stackOperation);
-                    } else {
-                        $stackOperations = $stack->getStackOperationsByName($stringOperationName);
-                        foreach ($stackOperations as $stackOperation) {
-                            $stackOperation->options = array_merge($stackOperation->options, $parsedOptions);
-                        }
-                    }
-                }
-            }
-        }
-
-        return $stack;
-    }
-
-    /**
-     * @param array $options
-     *
-     * @return array
-     */
-    private static function parseOptions(array $options)
-    {
-        $optionValues = array_filter($options, function ($key) {
-            return $key % 2;
-        }, ARRAY_FILTER_USE_KEY);
-
-        $optionKeys = array_filter($options, function ($key) {
-            return !($key % 2);
-        }, ARRAY_FILTER_USE_KEY);
-
-        if (count($optionKeys) !== count($optionValues)) {
-            throw new \InvalidArgumentException('The options given has to be an even array with key and value.');
-        }
-
-        return array_combine($optionKeys, $optionValues);
     }
 
     /**
