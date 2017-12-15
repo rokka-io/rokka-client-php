@@ -74,6 +74,9 @@ class UriHelper
     {
         /** @var StackUrl $stack */
         $stack = $components['stack'];
+        if (is_string($stack)) {
+            $stack = new StackUrl($components['stack']);
+        }
         $stackName = $stack->getName();
         $path = '/'.$stackName;
         $stackConfig = $stack->getConfigAsArray();
@@ -127,7 +130,7 @@ class UriHelper
                 $matches['filename'] = null;
             }
         }
-        $stack = new StackUrl(null, $matches['stack']);
+        $stack = new StackUrl($matches['stack']);
         if (isset($matches['combinedOptions'])) {
             $stack = self::addOptionsToStackUrlObject($stack, $matches['combinedOptions']);
             unset($matches['combinedOptions']);
