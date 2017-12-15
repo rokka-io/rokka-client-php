@@ -369,9 +369,10 @@ class Stack
      *
      * @return string
      */
-    public function getStackUrl()
+    public function getDynamicUrl()
     {
-        return trim(UriHelper::composeUri(['stack' => $this])->getPath(), '/');
+        $stack = new StackUrl(null, 'dynamic', $this->getStackOperations(), $this->getStackOptions());
+        return $stack->getStackUrl();
     }
 
     /**

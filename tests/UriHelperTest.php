@@ -116,7 +116,7 @@ class UriHelperTest extends \PHPUnit_Framework_TestCase
         $stack->addStackOperation(new StackOperation('rotate', ['angle' => 45]));
         $stack->setStackOptions(['jpg.quality' => 80]);
         $stack->addStackOption('webp.quality', 80);
-        $this->assertEquals('dynamic/resize-height-200-width-200--rotate-angle-45--options-jpg.quality-80-webp.quality-80', $stack->getStackUrl());
+        $this->assertEquals('dynamic/resize-height-200-width-200--rotate-angle-45--options-jpg.quality-80-webp.quality-80', $stack->getDynamicUrl());
     }
 
     /**

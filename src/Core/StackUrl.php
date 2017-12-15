@@ -2,6 +2,8 @@
 
 namespace Rokka\Client\Core;
 
+use Rokka\Client\UriHelper;
+
 class StackUrl extends Stack
 {
     /**
@@ -13,5 +15,18 @@ class StackUrl extends Stack
     {
         $this->baseUrl = $baseUrl;
         parent::__construct(null, $name, $stackOperations, $stackOptions);
+    }
+
+
+    /**
+     * Returns the stack url part as it should be with "addOptionsToUrl" calls
+     *
+     * @since 1.2.0
+     *
+     * @return string
+     */
+    public function getStackUrl()
+    {
+        return trim(UriHelper::composeUri(['stack' => $this])->getPath(), '/');
     }
 }
