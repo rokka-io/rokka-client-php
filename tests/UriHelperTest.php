@@ -17,11 +17,15 @@ class UriHelperTest extends \PHPUnit_Framework_TestCase
     {
         return [
             ['https://test.rokka.io/stackname/b537639e539efcc3df4459ef87c5963aa5079ca6.jpg', 'options-dpr-2', 'https://test.rokka.io/stackname/options-dpr-2/b537639e539efcc3df4459ef87c5963aa5079ca6.jpg'],
+            ['https://test.rokka.io/stackname/b537639e539efcc3df4459ef87c5963aa5079ca6.jpg', ['options' => ['dpr' => 2]], 'https://test.rokka.io/stackname/options-dpr-2/b537639e539efcc3df4459ef87c5963aa5079ca6.jpg'],
             ['https://test.rokka.io/stackname/b53763.jpg', 'options-dpr-2', 'https://test.rokka.io/stackname/options-dpr-2/b53763.jpg'],
-            ['https://test.rokka.io/stackname/resize-width-100/b537639e539efcc3df4459ef87c5963aa5079ca6.jpg', 'options-dpr-2', 'https://test.rokka.io/stackname/resize-width-100--options-dpr-2/b537639e539efcc3df4459ef87c5963aa5079ca6.jpg'],
+            ['https://test.rokka.io/stackname/resize-width-100/b537639e539efcc3df4459ef87c5963aa5079ca6.jpg', ['options' => ['dpr' => 2]], 'https://test.rokka.io/stackname/resize-width-100--options-dpr-2/b537639e539efcc3df4459ef87c5963aa5079ca6.jpg'],
             ['https://test.rokka.io/stackname/resize-width-100/options-dpr-3/b537639e539efcc3df4459ef87c5963aa5079ca6.jpg', 'options-dpr-2', 'https://test.rokka.io/stackname/resize-width-100--options-dpr-2/b537639e539efcc3df4459ef87c5963aa5079ca6.jpg'],
+            ['https://test.rokka.io/stackname/resize-width-100/options-dpr-3/b537639e539efcc3df4459ef87c5963aa5079ca6.jpg', ['options' => ['dpr' => 2]], 'https://test.rokka.io/stackname/resize-width-100--options-dpr-2/b537639e539efcc3df4459ef87c5963aa5079ca6.jpg'],
             ['https://test.rokka.io/stackname/resize-width-100/options-dpr-3/b537639e539efcc3df4459ef87c5963aa5079ca6.jpg', '', 'https://test.rokka.io/stackname/resize-width-100--options-dpr-3/b537639e539efcc3df4459ef87c5963aa5079ca6.jpg'],
-            ['https://test.rokka.io/dynamic/resize-width-100/b537639e539efcc3df4459ef87c5963aa5079ca6.jpg', 'options-dpr-2', 'https://test.rokka.io/dynamic/resize-width-100--options-dpr-2/b537639e539efcc3df4459ef87c5963aa5079ca6.jpg'],
+            ['https://test.rokka.io/dynamic/resize-width-100/b53763.jpg', 'options-dpr-2--resize-width-200', 'https://test.rokka.io/dynamic/resize-width-200--options-dpr-2/b53763.jpg'],
+            ['https://test.rokka.io/dynamic/resize-width-100/b53763.jpg', ['options' => ['dpr' => 2], 'operations' => [new StackOperation('resize', ['width' => 200])]], 'https://test.rokka.io/dynamic/resize-width-200--options-dpr-2/b53763.jpg'],
+            ['https://test.rokka.io/dynamic/resize-width-100/b53763.jpg', ['options' => ['dpr' => 2], 'operations' => [['name' => 'resize', "options" =>  ['width' => 200]]]], 'https://test.rokka.io/dynamic/resize-width-200--options-dpr-2/b53763.jpg'],
             ['https://test.rokka.io/dynamic/resize-width-100--resize-width-200/b537639e539efcc3df4459ef87c5963aa5079ca6.jpg', 'options-dpr-2', 'https://test.rokka.io/dynamic/resize-width-100--resize-width-200--options-dpr-2/b537639e539efcc3df4459ef87c5963aa5079ca6.jpg'],
             ['https://test.rokka.io/dynamic/resize-width-100--options-autoformat-true-dpr-3/b537639e539efcc3df4459ef87c5963aa5079ca6.jpg', 'options-dpr-2', 'https://test.rokka.io/dynamic/resize-width-100--options-autoformat-true-dpr-2/b537639e539efcc3df4459ef87c5963aa5079ca6.jpg'],
             ['https://test.rokka.io/dynamic/resize-width-100--options-autoformat-true-dpr-3/b537639e539efcc3df4459ef87c5963aa5079ca6/seo.jpg', 'options-dpr-2', 'https://test.rokka.io/dynamic/resize-width-100--options-autoformat-true-dpr-2/b537639e539efcc3df4459ef87c5963aa5079ca6/seo.jpg'],
@@ -132,8 +136,8 @@ class UriHelperTest extends \PHPUnit_Framework_TestCase
         $componentsTmp = $components;
         /** @var StackUrl $stack */
         $stack = $componentsTmp['stack'];
-        $componentsTmp['stackurl'] = $stack->getStackUrl();
         unset($componentsTmp['stack']);
+        $componentsTmp['stackurl'] = $stack->getStackUrl();
         $componentsTmp['stackoptions'] = $stack->getStackOptions();
         $this->assertSame($expected, $componentsTmp);
         if ($expectedComposeUrl === null) {
