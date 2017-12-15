@@ -17,9 +17,8 @@ class StackUrl extends Stack
         parent::__construct(null, $name, $stackOperations, $stackOptions);
     }
 
-
     /**
-     * Returns the stack url part as it should be with "addOptionsToUrl" calls
+     * Returns the stack url part as it should be with "addOptionsToUrl" calls.
      *
      * @since 1.2.0
      *

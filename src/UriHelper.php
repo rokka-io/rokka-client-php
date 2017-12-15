@@ -33,7 +33,7 @@ class UriHelper
      * Returns the original URL, if it can't parse it as valid Rokka URL.
      *
      * @param UriInterface $uri     The rokka image render URL
-     * @param array|string       $options The options you want to add as string
+     * @param array|string $options The options you want to add as string
      *
      * @return UriInterface
      */
@@ -47,7 +47,8 @@ class UriHelper
             //if nothing matches, it's not a proper rokka URL, just return the original uri
             return $uri;
         }
-        $matches['stack'] = self::addOptionsToStackUrlObject($matches['stack'],$options);
+        $matches['stack'] = self::addOptionsToStackUrlObject($matches['stack'], $options);
+
         return self::composeUri($matches, $uri);
     }
 
@@ -76,12 +77,12 @@ class UriHelper
         $stackName = $stack->getName();
         $path = '/'.$stackName;
         $stackConfig = $stack->getConfigAsArray();
-        if ($stackName === 'dynamic') {
+        if ('dynamic' === $stackName) {
             $path .= '/'.self::getUriStringFromStackConfig($stackConfig);
         } else {
             $stackUrl = self::getUriStringFromStackConfig($stackConfig);
             if (!empty($stackUrl)) {
-                $path .= '/' . $stackUrl;
+                $path .= '/'.$stackUrl;
             }
         }
         if (isset($components['hash']) && !empty($components['hash'])) {
@@ -137,6 +138,7 @@ class UriHelper
             }
         }
         $matches['stack'] = $stack;
+
         return $matches;
     }
 
@@ -178,7 +180,7 @@ class UriHelper
                 // if dpr is given in custom option, but not width, calculate correct width
                 $resizeOperations = $stack->getStackOperationsByName('resize');
                 $widthIsNotSet = true;
-                foreach($resizeOperations as $resizeOperation) {
+                foreach ($resizeOperations as $resizeOperation) {
                     if (isset($resizeOperation->options['width'])) {
                         $widthIsNotSet = false;
                     }
@@ -197,20 +199,19 @@ class UriHelper
 
     /**
      * @param StackUrl $stack
-     * @param string $options
+     * @param string   $options
      *
      * @return StackUrl
      */
     private static function addOptionsToStackUrlObject(StackUrl $stack, $options)
     {
-
         $part = 0;
         // if stack already has operations we assume we don't want to add more, it's just overriding parameters
         if (count($stack->getStackOperations()) > 0) {
-            $part++;
+            ++$part;
         }
         foreach (explode('/', $options) as $option) {
-            $part++;
+            ++$part;
             foreach (explode('--', $option) as $stringOperation) {
                 $stringOperationWithOptions = explode('-', $stringOperation);
                 $stringOperationName = $stringOperationWithOptions[0];
@@ -222,12 +223,12 @@ class UriHelper
                     $stack->setStackOptions(array_merge($stack->getStackOptions(), $parsedOptions));
                 } else {
                     // only add as stack operation everything before the first /
-                    if ($part === 1) {
+                    if (1 === $part) {
                         $stackOperation = new StackOperation($stringOperationName, $parsedOptions);
                         $stack->addStackOperation($stackOperation);
                     } else {
                         $stackOperations = $stack->getStackOperationsByName($stringOperationName);
-                        foreach($stackOperations as $stackOperation) {
+                        foreach ($stackOperations as $stackOperation) {
                             $stackOperation->options = array_merge($stackOperation->options, $parsedOptions);
                         }
                     }
@@ -283,7 +284,7 @@ class UriHelper
             $newStackOptions = self::getStringForOptions('options', $config['options']);
         }
         //don't return this, if it's only "options" as string
-        if ($newStackOptions !== 'options') {
+        if ('options' !== $newStackOptions) {
             $newOptions[] = $newStackOptions;
         }
         $options = implode('--', $newOptions);
@@ -293,7 +294,8 @@ class UriHelper
 
     /**
      * @param string $name
-     * @param array $values
+     * @param array  $values
+     *
      * @return string
      */
     private static function getStringForOptions($name, $values)
@@ -301,13 +303,14 @@ class UriHelper
         $newOption = $name;
         ksort($values);
         foreach ($values as $k => $v) {
-            if ($v === false) {
+            if (false === $v) {
                 $v = 'false';
-            } else if ($v === true) {
+            } elseif (true === $v) {
                 $v = 'true';
             }
             $newOption .= "-$k-$v";
         }
+
         return $newOption;
     }
 }
