@@ -11,7 +11,7 @@ class StackUrl extends Stack
      */
     private $baseUrl;
 
-    public function __construct($baseUrl = null, $name = null, array $stackOperations = [], array $stackOptions = [])
+    public function __construct($name = null, array $stackOperations = [], array $stackOptions = [], $baseUrl = null)
     {
         $this->baseUrl = $baseUrl;
         parent::__construct(null, $name, $stackOperations, $stackOptions);
