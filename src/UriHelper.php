@@ -33,12 +33,15 @@ class UriHelper
      * Returns the original URL, if it can't parse it as valid Rokka URL.
      *
      * @param UriInterface $uri     The rokka image render URL
-     * @param string       $options The options you want to add as string
+     * @param array|string       $options The options you want to add as string
      *
      * @return UriInterface
      */
     public static function addOptionsToUri(UriInterface $uri, $options)
     {
+        if (is_array($options)) {
+            return self::addOptionsToUri($uri, self::getUriStringFromStackConfig($options));
+        }
         $matches = self::decomposeUri($uri);
         if (empty($matches)) {
             //if nothing matches, it's not a proper rokka URL, just return the original uri
@@ -267,7 +270,11 @@ class UriHelper
         $newOptions = [];
         if (isset($config['operations'])) {
             foreach ($config['operations'] as $values) {
-                $newOptions[] = self::getStringForOptions($values['name'], $values['options']);
+                if ($values instanceof StackOperation) {
+                    $newOptions[] = self::getStringForOptions($values->name, $values->options);
+                } else {
+                    $newOptions[] = self::getStringForOptions($values['name'], $values['options']);
+                }
             }
         }
 
@@ -286,7 +293,7 @@ class UriHelper
 
     /**
      * @param string $name
-     * @param string $values
+     * @param array $values
      * @return string
      */
     private static function getStringForOptions($name, $values)
