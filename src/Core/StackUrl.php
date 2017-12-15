@@ -31,7 +31,8 @@ class StackUrl extends Stack
 
     /**
      * @since 1.2.0
-     * @param string   $options
+     *
+     * @param string $options
      *
      * @return StackUrl
      */

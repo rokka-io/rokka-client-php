@@ -16,8 +16,8 @@ class UriHelper
      * Useful eg. if you just want to add "options-dpr-2" to an existing URL.
      * Returns the original URL, if it can't parse it as valid Rokka URL.
      *
-     * @param string $url     The rokka image render URL
-     * @param string $options The options you want to add as string
+     * @param string       $url     The rokka image render URL
+     * @param array|string $options The options you want to add as string
      *
      * @return string
      */

@@ -103,9 +103,9 @@ class UriHelperTest extends \PHPUnit_Framework_TestCase
     /**
      * @dataProvider provideAddOptionsToUri
      *
-     * @param $inputUrl
-     * @param $options
-     * @param $expected
+     * @param string       $inputUrl
+     * @param string|array $options
+     * @param string       $expected
      */
     public function testAddOptionsToUri($inputUrl, $options, $expected)
     {
@@ -126,8 +126,9 @@ class UriHelperTest extends \PHPUnit_Framework_TestCase
     /**
      * @dataProvider provideDecomposeUri
      *
-     * @param string $inputUrl
-     * @param array  $expected
+     * @param string      $inputUrl
+     * @param array       $expected
+     * @param string|null $expectedComposeUrl
      */
     public function testDecomposeUri($inputUrl, $expected, $expectedComposeUrl = null)
     {
@@ -149,9 +150,9 @@ class UriHelperTest extends \PHPUnit_Framework_TestCase
     /**
      * @dataProvider provideGetSrcSetUrl
      *
-     * @param $size
-     * @param $custom
-     * @param $expected
+     * @param string      $size
+     * @param string|null $custom
+     * @param string      $expected
      */
     public function testGetSrcSetUrl($size, $custom, $expected)
     {
