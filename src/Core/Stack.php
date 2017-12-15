@@ -209,22 +209,24 @@ class Stack
         return $this->stackOperations;
     }
 
-
     /**
-     * Returns all operations matching name
+     * Returns all operations matching name.
      *
      * @since 1.2.0
+     *
      * @param string $name operation name
+     *
      * @return StackOperation[]
      */
     public function getStackOperationsByName($name)
     {
         $stackOperations = [];
-        foreach($this->stackOperations as $stackOperation) {
+        foreach ($this->stackOperations as $stackOperation) {
             if ($stackOperation->name === $name) {
                 $stackOperations[] = $stackOperation;
             }
         }
+
         return $stackOperations;
     }
 
@@ -372,6 +374,7 @@ class Stack
     public function getDynamicUrl()
     {
         $stack = new StackUrl(null, 'dynamic', $this->getStackOperations(), $this->getStackOptions());
+
         return $stack->getStackUrl();
     }
 
@@ -389,7 +392,7 @@ class Stack
     {
         $config = ['operations' => []];
         foreach ($this->getStackOperations() as $operation) {
-            $config['operations'][] =  $operation->toArray();
+            $config['operations'][] = $operation->toArray();
         }
         $config['options'] = $this->getStackOptions();
 
