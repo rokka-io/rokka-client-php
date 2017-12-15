@@ -56,7 +56,7 @@ class UriHelper
      * Generate a rokka uri with the array format returned by decomposeUri().
      *
      * The array config looks like
-     * ['stack' => 'stackname',
+     * ['stack' => 'stackname', #or StackUrl object
      *  'hash' => 'hash',
      *  'filename' => 'filename-for-url'
      *  'format' => 'image format' # eg. jpg
@@ -72,9 +72,9 @@ class UriHelper
      */
     public static function composeUri(array $components, UriInterface $uri = null)
     {
-        /** @var StackUrl $stack */
-        $stack = $components['stack'];
-        if (is_string($stack)) {
+        if ($components['stack'] instanceof  StackUrl) {
+            $stack = $components['stack'];
+        } else {
             $stack = new StackUrl($components['stack']);
         }
         $stackName = $stack->getName();
