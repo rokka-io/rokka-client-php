@@ -18,7 +18,7 @@ class StackUrl extends Stack
 
         if (strpos($name, '/') !== false) {
             list ($name, $options) = explode('/',$name,2);
-            $this->addOptions($options);
+            $this->addOverridingOptions($options);
             $this->setName($name);
         }
     }
@@ -42,7 +42,7 @@ class StackUrl extends Stack
      *
      * @return StackUrl
      */
-    public function addOptions($options)
+    public function addOverridingOptions($options)
     {
         $part = 0;
         // if stack already has operations we assume we don't want to add more, it's just overriding parameters
