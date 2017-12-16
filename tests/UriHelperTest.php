@@ -5,7 +5,7 @@ namespace Rokka\Client\Tests;
 use GuzzleHttp\Psr7\Uri;
 use Rokka\Client\Core\Stack;
 use Rokka\Client\Core\StackOperation;
-use Rokka\Client\Core\StackUrl;
+use Rokka\Client\Core\StackUri;
 use Rokka\Client\UriHelper;
 
 class UriHelperTest extends \PHPUnit_Framework_TestCase
@@ -135,10 +135,10 @@ class UriHelperTest extends \PHPUnit_Framework_TestCase
         $uri = new Uri($inputUrl);
         $components = UriHelper::decomposeUri($uri);
         $componentsTmp = $components;
-        /** @var StackUrl $stack */
+        /** @var StackUri $stack */
         $stack = $componentsTmp['stack'];
         unset($componentsTmp['stack']);
-        $componentsTmp['stackurl'] = $stack->getStackUrl();
+        $componentsTmp['stackurl'] = $stack->getStackUri();
         $componentsTmp['stackoptions'] = $stack->getStackOptions();
         $this->assertSame($expected, $componentsTmp);
         if (null === $expectedComposeUrl) {

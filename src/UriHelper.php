@@ -6,7 +6,7 @@ use GuzzleHttp\Psr7\Uri;
 use Psr\Http\Message\UriInterface;
 use Rokka\Client\Core\Stack;
 use Rokka\Client\Core\StackOperation;
-use Rokka\Client\Core\StackUrl;
+use Rokka\Client\Core\StackUri;
 
 class UriHelper
 {
@@ -47,7 +47,7 @@ class UriHelper
             //if nothing matches, it's not a proper rokka URL, just return the original uri
             return $uri;
         }
-        /** @var StackUrl $stack */
+        /** @var StackUri $stack */
         $stack = $matches['stack'];
         $stack->addOverridingOptions($options);
 
@@ -74,10 +74,10 @@ class UriHelper
      */
     public static function composeUri(array $components, UriInterface $uri = null)
     {
-        if ($components['stack'] instanceof  StackUrl) {
+        if ($components['stack'] instanceof  StackUri) {
             $stack = $components['stack'];
         } else {
-            $stack = new StackUrl($components['stack']);
+            $stack = new StackUri($components['stack']);
         }
         $stackName = $stack->getName();
         $path = '/'.$stackName;
@@ -132,7 +132,7 @@ class UriHelper
                 $matches['filename'] = null;
             }
         }
-        $stack = new StackUrl($matches['stack']);
+        $stack = new StackUri($matches['stack']);
         if (isset($matches['combinedOptions'])) {
             $stack->addOverridingOptions($matches['combinedOptions']);
             unset($matches['combinedOptions']);
@@ -143,7 +143,7 @@ class UriHelper
             }
         }
         $matches['stack'] = $stack;
-
+        //FIXME: This should be an object maybe. UriComponents or such.
         return $matches;
     }
 
@@ -181,7 +181,7 @@ class UriHelper
             if (preg_match('#^([0-9]+)x$#', $custom, $matches)) {
                 $uri = self::addOptionsToUri($uri, 'options-dpr-'.$matches[1].'--resize-width-'.(int) ceil($size / $matches[1]));
             } else {
-                $stack = new StackUrl();
+                $stack = new StackUri();
                 $stack->addOverridingOptions($custom);
                 // if dpr is given in custom option, but not width, calculate correct width
                 $resizeOperations = $stack->getStackOperationsByName('resize');

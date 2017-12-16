@@ -4,7 +4,7 @@ namespace Rokka\Client\Core;
 
 use Rokka\Client\UriHelper;
 
-class StackUrl extends Stack
+class StackUri extends Stack
 {
     /**
      * @var string|null
@@ -30,7 +30,7 @@ class StackUrl extends Stack
      *
      * @return string
      */
-    public function getStackUrl()
+    public function getStackUri()
     {
         return trim(UriHelper::composeUri(['stack' => $this])->getPath(), '/');
     }
@@ -40,7 +40,7 @@ class StackUrl extends Stack
      *
      * @param string $options
      *
-     * @return StackUrl
+     * @return StackUri
      */
     public function addOverridingOptions($options)
     {
