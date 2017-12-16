@@ -12,6 +12,7 @@ use Rokka\Client\Core\SourceImage;
 use Rokka\Client\Core\SourceImageCollection;
 use Rokka\Client\Core\Stack;
 use Rokka\Client\Core\StackCollection;
+use Rokka\Client\Core\StackUrl;
 
 /**
  * Image client for the rokka.io service.
@@ -369,6 +370,9 @@ class Image extends Base
         }
         if (empty($stack->getOrganization())) {
             $stack->setOrganization($this->defaultOrganization);
+        }
+        if ($stack instanceof StackUrl) {
+            throw new \LogicException('Stack is a StackUrl object, should be a Stack object');
         }
 
         $queryString = [];
