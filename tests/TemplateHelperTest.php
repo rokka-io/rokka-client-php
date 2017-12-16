@@ -72,15 +72,15 @@ class TemplateHelperTest extends \PHPUnit_Framework_TestCase
         $urlPrefix = 'https://testorg.rokka.io/dynamic';
 
         $this->assertEquals(
-            $urlPrefix."/resize-width-200-height-300--options-autoformat-true-jpg.transparency.autoformat-true/$hash/small-bratpfanne.jpg",
+            $urlPrefix."/resize-height-300-width-200--options-autoformat-true-jpg.transparency.autoformat-true/$hash/small-bratpfanne.jpg",
             $this->rokka->getResizeUrl($image, 200, 300)
         );
         $this->assertEquals(
-            $urlPrefix."/resize-width-200-height-300--options-autoformat-true-jpg.transparency.autoformat-true/$hash/seo-straeng.png",
+            $urlPrefix."/resize-height-300-width-200--options-autoformat-true-jpg.transparency.autoformat-true/$hash/seo-straeng.png",
             $this->rokka->getResizeUrl($image, 200, 300, 'png', 'seo-sträng')
         );
         $this->assertEquals(
-            $urlPrefix."/resize-width-200-height-300--options-autoformat-true-jpg.transparency.autoformat-true/$hash/seo-strang.png",
+            $urlPrefix."/resize-height-300-width-200--options-autoformat-true-jpg.transparency.autoformat-true/$hash/seo-strang.png",
             $this->rokka->getResizeUrl($image, 200, 300, 'png', 'seo-sträng', 'latin')
         );
         $this->assertEquals(
@@ -96,7 +96,7 @@ class TemplateHelperTest extends \PHPUnit_Framework_TestCase
         $urlPrefix = 'https://testorg.rokka.io/dynamic';
 
         $this->assertEquals(
-            $urlPrefix."/resize-width-200-height-300-mode-fill--crop-width-200-height-300--options-autoformat-true-jpg.transparency.autoformat-true/$hash/small-bratpfanne.jpg",
+            $urlPrefix."/resize-height-300-mode-fill-width-200--crop-height-300-width-200--options-autoformat-true-jpg.transparency.autoformat-true/$hash/small-bratpfanne.jpg",
             $this->rokka->getResizeCropUrl($image, 200, 300)
         );
     }
