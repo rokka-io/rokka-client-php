@@ -15,6 +15,12 @@ use Rokka\Client\Core\StackCollection;
 
 /**
  * Image client for the rokka.io service.
+ *
+ * All code examples assume you already have a Rokka Image Client in `$client` with:
+ *
+ * ```language-php
+ * $client = \Rokka\Client\Factory::getImageClient('testorganization', 'apiKey', 'apiSecret');
+ * ```
  */
 class Image extends Base
 {
@@ -349,6 +355,16 @@ class Image extends Base
     /**
      * Save a stack on rokka.
      *
+     * Example:
+     * ```language-php
+        $stack = new Stack(null, 'teststack');
+        $stack->addStackOperation(new StackOperation('resize', ['width' => 200, 'height' => 200]));
+        $stack->addStackOperation(new StackOperation('rotate', ['angle' => 45]));
+        $stack->setStackOptions(['jpg.quality' => 80]);
+        $requestConfig = ['overwrite' => true];
+        $stack = $client->saveStack($stack, $requestConfig);
+        echo 'Created stack ' . $stack->getName() . PHP_EOL;
+     * ```
      * The only requestConfig option currently can be
      * ['overwrite' => true|false] (false is the default)
      *

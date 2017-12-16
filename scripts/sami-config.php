@@ -11,16 +11,23 @@ $iterator = Finder::create()
     ->name('*.php')
     ->in($dir.'/src')
 ;
-$versions = GitVersionCollection::create($dir)
-    ->add('master', 'master branch')
-    ->addFromTags('1.1.*');
+$versions = GitVersionCollection::create($dir);
 
-if (!empty(getenv("_SAMI_BRANCH"))) {
-    $versions->add(getenv("_SAMI_BRANCH"));
+if (!empty(getenv('_SAMI_BRANCH'))) {
+    $versions->add(getenv('_SAMI_BRANCH'));
+} else {
+    $versions->addFromTags('1.1.*')
+        ->add('master', 'master branch');
+}
+if (!empty(getenv('_SAMI_TEMPLATE_DIR'))) {
+    $templatedir = getenv('_SAMI_TEMPLATE_DIR');
+} else {
+    $templatedir = $dir;
 }
 
 return new Sami($iterator, [
-    // 'theme'                => 'symfony',
+    'template_dirs' => [$templatedir],
+    'theme' => 'sami_highlight',
     'title' => 'Rokka PHP Client API',
     'versions' => $versions,
     'build_dir' => $dir.'/sami-output/build/client-php-api/%version%',

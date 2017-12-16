@@ -10,6 +10,8 @@ if [[ ! -f  /tmp/sami.phar ]]; then
 fi
 mkdir -p ./sami-output/build/client-php-api/
 cp scripts/redirect_sami.html ./sami-output/build/client-php-api/index.html
+cp -r scripts/sami_highlight /tmp/
+export _SAMI_TEMPLATE_DIR=/tmp/
 set -e
 php /tmp/sami.phar update ./scripts/sami-config.php
 
