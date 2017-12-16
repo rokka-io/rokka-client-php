@@ -390,6 +390,15 @@ class Image extends Base
     /**
      * List stacks.
      *
+     * ```php
+     * use Rokka\Client\Core\Stack;
+     * $client = \Rokka\Client\Factory::getImageClient('testorganization', 'apiKey', 'apiSecret');
+     * $stacks = $client->listStacks();
+     * foreach ($stacks as $stack) {
+     * echo 'Stack ' . $stack->getName() . PHP_EOL;
+     * }
+     * ```
+     *
      * @param null|int $limit        Optional limit
      * @param null|int $offset       Optional offset
      * @param string   $organization Optional organization name
