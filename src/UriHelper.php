@@ -47,7 +47,9 @@ class UriHelper
             //if nothing matches, it's not a proper rokka URL, just return the original uri
             return $uri;
         }
-        $matches['stack']->addOptions($options);
+        /** @var StackUrl $stack */
+        $stack = $matches['stack'];
+        $stack->addOverridingOptions($options);
 
         return self::composeUri($matches, $uri);
     }
@@ -132,7 +134,7 @@ class UriHelper
         }
         $stack = new StackUrl($matches['stack']);
         if (isset($matches['combinedOptions'])) {
-            $stack->addOptions($matches['combinedOptions']);
+            $stack->addOverridingOptions($matches['combinedOptions']);
             unset($matches['combinedOptions']);
         }
         foreach ($matches as $key => $value) {
@@ -180,7 +182,7 @@ class UriHelper
                 $uri = self::addOptionsToUri($uri, 'options-dpr-'.$matches[1].'--resize-width-'.(int) ceil($size / $matches[1]));
             } else {
                 $stack = new StackUrl();
-                $stack->addOptions($custom);
+                $stack->addOverridingOptions($custom);
                 // if dpr is given in custom option, but not width, calculate correct width
                 $resizeOperations = $stack->getStackOperationsByName('resize');
                 $widthIsNotSet = true;
