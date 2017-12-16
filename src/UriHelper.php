@@ -81,13 +81,9 @@ class UriHelper
         $stackName = $stack->getName();
         $path = '/'.$stackName;
         $stackConfig = $stack->getConfigAsArray();
-        if ('dynamic' === $stackName) {
-            $path .= '/'.self::getUriStringFromStackConfig($stackConfig);
-        } else {
-            $stackUrl = self::getUriStringFromStackConfig($stackConfig);
-            if (!empty($stackUrl)) {
-                $path .= '/'.$stackUrl;
-            }
+        $stackUrl = self::getUriStringFromStackConfig($stackConfig);
+        if (!empty($stackUrl)) {
+            $path .= '/'.$stackUrl;
         }
         if (!empty($components->getHash())) {
             $path .= '/'.$components->getHash();
