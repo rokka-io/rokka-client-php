@@ -4,7 +4,7 @@ namespace Rokka\Client\Core;
 
 use Rokka\Client\UriHelper;
 
-class StackUri extends Stack
+class StackUri extends StackAbstract
 {
     /**
      * @var string|null
@@ -14,10 +14,10 @@ class StackUri extends Stack
     public function __construct($name = null, array $stackOperations = [], array $stackOptions = [], $baseUrl = null)
     {
         $this->baseUrl = $baseUrl;
-        parent::__construct(null, $name, $stackOperations, $stackOptions);
+        parent::__construct($name, $stackOperations, $stackOptions);
 
-        if (strpos($name, '/') !== false) {
-            list ($name, $options) = explode('/',$name,2);
+        if (false !== strpos($name, '/')) {
+            list($name, $options) = explode('/', $name, 2);
             $this->addOverridingOptions($options);
             $this->setName($name);
         }
@@ -33,6 +33,26 @@ class StackUri extends Stack
     public function getStackUri()
     {
         return trim(UriHelper::composeUri(['stack' => $this])->getPath(), '/');
+    }
+
+    /**
+     * Gets stack operations / options as "flat" array.
+     *
+     * Useful for generating dynamic stacks for example
+     *
+     * @since 1.2.0
+     *
+     * @return array
+     */
+    public function getConfigAsArray()
+    {
+        $config = ['operations' => []];
+        foreach ($this->getStackOperations() as $operation) {
+            $config['operations'][] = $operation->toArray();
+        }
+        $config['options'] = $this->getStackOptions();
+
+        return $config;
     }
 
     /**
