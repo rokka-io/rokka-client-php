@@ -4,7 +4,7 @@ namespace Rokka\Client;
 
 use Rokka\Client\Base as BaseClient;
 use Rokka\Client\Core\SourceImage;
-use Rokka\Client\Core\StackUrl;
+use Rokka\Client\Core\StackUri;
 use Rokka\Client\LocalImage\FileInfo;
 use Rokka\Client\LocalImage\LocalImageAbstract;
 
@@ -257,7 +257,7 @@ class TemplateHelper
      * Doesn't upload it, if we don't have a local hash for it. Use getImageUrl for that.
      *
      * @param string      $hash        The rokka hash
-     * @param string|StackUrl      $stack       The stack name or a StackUrl object
+     * @param string|StackUri      $stack       The stack name or a StackUrl object
      * @param string|null $format      The image format of the image (jpg, png, webp, ...)
      * @param string|null $seo         If you want to use a seo string in the URL
      * @param string|null $seoLanguage Optional language to be used for slugifying (eg. 'de' slugifies 'ö' to 'oe')
