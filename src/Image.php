@@ -698,21 +698,13 @@ class Image extends Base
         $parts = explode('.', $apiUri->getHost(), 2);
         $baseHost = array_pop($parts);
 
-        // Building path
-        $path = '/'.$stack.'/'.$hash;
-
-        if (null !== $name) {
-            $path .= '/'.$name;
-        }
-
-        $path .= '.'.$format;
-
+        $path = UriHelper::composeUri(['stack' => $stack, 'hash' => $hash, 'format' => $format, 'filename' => $name]);
         // Building the URI as "{scheme}://{organization}.{baseHost}[:{port}]/{stackName}/{hash}[/{name}].{format}"
         $parts = [
             'scheme' => $apiUri->getScheme(),
             'port' => $apiUri->getPort(),
             'host' => $this->getOrganization($organization).'.'.$baseHost,
-            'path' => $path,
+            'path' => $path->getPath(),
         ];
 
         return Uri::fromParts($parts);

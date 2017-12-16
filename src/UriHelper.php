@@ -4,6 +4,7 @@ namespace Rokka\Client;
 
 use GuzzleHttp\Psr7\Uri;
 use Psr\Http\Message\UriInterface;
+use Rokka\Client\Core\Stack;
 
 class UriHelper
 {
@@ -36,28 +37,183 @@ class UriHelper
      */
     public static function addOptionsToUri(UriInterface $uri, $options)
     {
-        $path = $uri->getPath();
-        if (preg_match('#^/(?<stack>[^/]+)/(?<rest>[0-9a-f]{6,40}.*)$#', $path, $matches)) {
-            // nothing to do here
-        } elseif (preg_match('#^/(?<stack>[^/]+)/(?<options>[^/]+)/(?<rest>[0-9a-f]{6,40}.*)$#', $path, $matches)) {
-            $urlOptions = self::decomposeOptions($matches['options']);
-            $inputOptions = self::decomposeOptions($options);
-            $combinedOptions = array_replace_recursive($urlOptions, $inputOptions);
-            $newOptions = [];
-            foreach ($combinedOptions as $key => $values) {
-                $newOption = "$key";
-                foreach ($values as $k => $v) {
-                    $newOption .= "-$k-$v";
-                }
-                $newOptions[] = $newOption;
-            }
-            $options = implode('--', $newOptions);
-        } else {
+        $matches = self::decomposeUri($uri);
+        if (empty($matches)) {
             //if nothing matches, it's not a proper rokka URL, just return the original uri
             return $uri;
         }
+        if (isset($matches['options'])) {
+            $urlOptions = ['options' => $matches['options']];
+            $inputOptions = self::decomposeOptions($options);
+            $combinedOptions = array_replace_recursive($urlOptions, $inputOptions);
+            $matches = array_merge($matches, $combinedOptions);
+        } else {
+            $matches = array_merge($matches, self::decomposeOptions($options));
+        }
 
-        return $uri->withPath('/'.$matches['stack'].'/'.$options.'/'.$matches['rest']);
+        return self::composeUri($matches, $uri);
+    }
+
+    /**
+     * Generate a rokka uri with the array format returned by decomposeUri().
+     *
+     * The array config looks like
+     * ['stack' => 'stackname',
+     *  'hash' => 'hash',
+     *  'filename' => 'filename-for-url'
+     *  'format' => 'image format' # eg. jpg
+     *  'options' => ['jpg.quality' => 80, 'autoformat' => true]]
+     *  'operations' => ['resize' => ['width' => 500]]
+     * ]
+     *
+
+     * @since 1.2.0
+     *
+     * @param array        $components
+     * @param UriInterface $uri        If this is provided, it will change the path for that object
+     *
+     * @return UriInterface
+     */
+    public static function composeUri(array $components, UriInterface $uri = null)
+    {
+        $path = '/'.$components['stack'];
+
+        $combinedOptions = [];
+
+        if (isset($components['options'])) {
+            $combinedOptions['options'] = $components['options'];
+        }
+        if (isset($components['operations'])) {
+            $combinedOptions['operations'] = $components['operations'];
+        }
+
+        if (count($combinedOptions) > 0) {
+            $path .= '/'.self::getUriStringFromStackConfig($combinedOptions);
+        }
+
+        if (isset($components['hash']) && !empty($components['hash'])) {
+            $path .= '/'.$components['hash'];
+
+            if (isset($components['filename']) && !empty($components['filename'])) {
+                $path .= '/'.$components['filename'];
+            }
+
+            $path .= '.'.$components['format'];
+        }
+
+        if (null !== $uri) {
+            return  $uri->withPath($path);
+        }
+
+        return new Uri($path);
+    }
+
+    /**
+     * Return components of a rokka URL.
+     *
+     * @since 1.2.0
+     *
+     * @param UriInterface $uri
+     *
+     * @return array
+     */
+    public static function decomposeUri(UriInterface $uri)
+    {
+        $path = $uri->getPath();
+        if (preg_match('#^/(?<stack>[^/]+)/(?<hash>[0-9a-f]{6,40})(?<rest>.*)$#', $path, $matches)) {
+        } elseif (preg_match('#^/(?<stack>[^/]+)/(?<combinedOptions>[^/]+)/(?<hash>[0-9a-f]{6,40})(?<rest>.*)$#', $path, $matches)) {
+        }
+        if (0 === count($matches)) {
+            return [];
+        }
+        if (preg_match('#^/{0,1}(?<filename>[a-z\-\0-\9]*)\.(?<format>.{3,4}$)#', $matches['rest'], $matches2)) {
+            unset($matches['rest']);
+            $matches = array_merge($matches, $matches2);
+            if (empty($matches['filename'])) {
+                $matches['filename'] = null;
+            }
+        }
+        if (isset($matches['combinedOptions'])) {
+            $matches = array_merge($matches, self::decomposeOptions($matches['combinedOptions']));
+            unset($matches['combinedOptions']);
+        }
+        foreach ($matches as $key => $value) {
+            if (is_int($key)) {
+                unset($matches[$key]);
+            }
+        }
+
+        return $matches;
+    }
+
+    /**
+     * Returns a dynamic stack as String from a Stack config.
+     *
+     * The array config looks like
+     * ['operations' => ['resize' => ['width' => 500]],
+     *  'options' => ['jpg.quality' => 80, 'autoformat' => true]
+     * ]
+     *
+     * Expressions are not supported in dynamic stack urls
+     *
+     * Can be used to generate rokka render urls without having to save the stack on rokka.
+     *
+     * @since 1.2.0
+     *
+     * @param array $config
+     *
+     * @return string
+     */
+    public static function getDynamicStackFromStackConfig(array $config)
+    {
+        return self::getUriStringFromStackConfig($config);
+    }
+
+    /**
+     * @param string      $url
+     * @param string      $size
+     * @param null|string $custom
+     *
+     * @return UriInterface
+     */
+    public static function getSrcSetUrlString($url, $size, $custom = null)
+    {
+        return self::getSrcSetUrl($size, new Uri($url), $custom);
+    }
+
+    /**
+     * @param string       $size
+     * @param UriInterface $url
+     * @param null|string  $custom
+     *
+     * @return UriInterface
+     */
+    public static function getSrcSetUrl($size, UriInterface $url, $custom = null)
+    {
+        $identifier = substr($size, -1, 1);
+        $size = substr($size, 0, -1);
+        if ('x' === $identifier) {
+            $uri = self::addOptionsToUri($url, 'options-dpr-'.$size);
+        } elseif ('w' === $identifier) {
+            $uri = self::addOptionsToUri($url, 'resize-width-'.$size);
+        } else {
+            return $url;
+        }
+        if (null !== $custom) {
+            if (preg_match('#^([0-9]+)x$#', $custom, $matches)) {
+                $uri = self::addOptionsToUri($uri, 'options-dpr-'.$matches[1].'--resize-width-'.(int) ceil($size / $matches[1]));
+            } else {
+                $options = self::decomposeOptions($custom);
+                // if dpr is given in custom option, but not width, calculate correct width
+                if (isset($options['options']['dpr']) && !isset($options['operations']['resize']['width'])) {
+                    $custom .= '--resize-width-'.(int) ceil($size / $options['options']['dpr']);
+                }
+
+                $uri = self::addOptionsToUri($uri, $custom);
+            }
+        }
+
+        return $uri;
     }
 
     /**
@@ -67,14 +223,22 @@ class UriHelper
      */
     private static function decomposeOptions($options)
     {
-        $components = [];
+        $components = ['operations' => []];
         foreach (explode('--', $options) as $stringOperation) {
             $stringOperationWithOptions = explode('-', $stringOperation);
             $stringOperationName = $stringOperationWithOptions[0];
             if ('' == $stringOperationName) {
                 continue;
             }
-            $components[$stringOperationName] = self::parseOptions(array_slice($stringOperationWithOptions, 1));
+            if ('options' === $stringOperationName) {
+                $components[$stringOperationName] = self::parseOptions(array_slice($stringOperationWithOptions, 1));
+            } else {
+                $components['operations'][$stringOperationName] = self::parseOptions(array_slice($stringOperationWithOptions, 1));
+            }
+        }
+
+        if (0 === count($components['operations'])) {
+            unset($components['operations']);
         }
 
         return $components;
@@ -100,5 +264,53 @@ class UriHelper
         }
 
         return array_combine($optionKeys, $optionValues);
+    }
+
+    /**
+     * @param array $config
+     *
+     * @return string
+     */
+    private static function getUriStringFromStackConfig(array $config)
+    {
+        $newOptions = [];
+        // move operations to root, in case they are in their separate key
+        if (isset($config['operations'])) {
+            foreach ($config['operations'] as $name => $operation) {
+                $config[$name] = $operation;
+            }
+            unset($config['operations']);
+        }
+        $newStackOptions = null;
+        foreach ($config as $key => $values) {
+            // do options in the end
+            $newOption = "$key";
+            ksort($values);
+            foreach ($values as $k => $v) {
+                if ($v === false) {
+                    $v = 'false';
+                } else if ($v === true) {
+                    $v = 'true';
+                }
+                $newOption .= "-$k-$v";
+            }
+            if ('options' == $key) {
+                $newStackOptions = $newOption;
+            } else {
+                $newOptions[] = $newOption;
+            }
+        }
+
+        $options = implode('--', $newOptions);
+
+        if (null !== $newStackOptions && 'options' !== $newStackOptions ) {
+            if ('' === $options) {
+                $options = $newStackOptions;
+            } else {
+                $options .= '--'.$newStackOptions;
+            }
+        }
+
+        return $options;
     }
 }

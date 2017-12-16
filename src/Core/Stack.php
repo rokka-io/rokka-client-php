@@ -2,6 +2,8 @@
 
 namespace Rokka\Client\Core;
 
+use Rokka\Client\UriHelper;
+
 /**
  * Represents a collection of stack operations for an organization.
  */
@@ -322,8 +324,9 @@ class Stack
 
     /**
      * Gets stack operations / options / expressions as one array.
+     * The values of the keys are objects for operations and expressions.
      *
-     * Useful for using this to sent as json to the Rokka API
+     * Useful for using this to sent a stack as json to the Rokka API
      *
      * @since 1.1.0
      *
@@ -335,6 +338,41 @@ class Stack
             'operations' => $this->getStackOperations(),
             'options' => $this->getStackOptions(),
             'expressions' => $this->getStackExpressions(),
-            ];
+        ];
+    }
+
+    /**
+     * Returns the stack url part as a dynamic stack for previewing.
+     *
+     * @since 1.2.0
+     *
+     * @return string
+     */
+    public function getDynamicStackUrl()
+    {
+        $components = array_merge(['stack' => 'dynamic'], $this->getConfigAsArray());
+
+        return trim(UriHelper::composeUri($components)->getPath(), '/');
+    }
+
+    /**
+     * Gets stack operations / options as "flat" array.
+     *
+     * Useful for generating dynamic stacks for example
+     *
+     * @since 1.1.0
+     * @see UriHelper::getDynamicStackFromStackConfig()
+     *
+     * @return array
+     */
+    public function getConfigAsArray()
+    {
+        $config = ['operations' => []];
+        foreach ($this->getStackOperations() as $operation) {
+            $config['operations'][$operation->name] = $operation->toArray()['options'];
+        }
+        $config['options'] = $this->getStackOptions();
+
+        return $config;
     }
 }
