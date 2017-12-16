@@ -373,9 +373,9 @@ class Stack
      */
     public function getDynamicUrl()
     {
-        $stack = new StackUrl('dynamic', $this->getStackOperations(), $this->getStackOptions());
+        $stack = new StackUri('dynamic', $this->getStackOperations(), $this->getStackOptions());
 
-        return $stack->getStackUrl();
+        return $stack->getStackUri();
     }
 
     /**
