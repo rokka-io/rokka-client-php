@@ -68,7 +68,7 @@ class UriHelper
      * @since 1.2.0
      *
      * @param array|UriComponents $components
-     * @param UriInterface             $uri        If this is provided, it will change the path for that object
+     * @param UriInterface        $uri        If this is provided, it will change the path for that object
      *
      * @return UriInterface
      */
