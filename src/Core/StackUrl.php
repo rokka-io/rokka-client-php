@@ -15,6 +15,12 @@ class StackUrl extends Stack
     {
         $this->baseUrl = $baseUrl;
         parent::__construct(null, $name, $stackOperations, $stackOptions);
+
+        if (strpos($name, '/') !== false) {
+            list ($name, $options) = explode('/',$name,2);
+            $this->addOptions($options);
+            $this->setName($name);
+        }
     }
 
     /**
