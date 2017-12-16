@@ -5,7 +5,7 @@ namespace Rokka\Client\Core;
 /**
  * Represents a collection of image transformation operations in a stack.
  */
-class OperationCollection implements \Countable
+class OperationCollection implements \Countable, \Iterator
 {
     /**
      * Array of operations.
@@ -13,6 +13,11 @@ class OperationCollection implements \Countable
      * @var Operation[]
      */
     private $operations = [];
+
+    /**
+     * @var int
+     */
+    private $current = 0;
 
     /**
      * Constructor.
@@ -64,5 +69,30 @@ class OperationCollection implements \Countable
         }
 
         return new self($operations);
+    }
+
+    public function current()
+    {
+        return $this->operations[$this->current];
+    }
+
+    public function next()
+    {
+        ++$this->current;
+    }
+
+    public function key()
+    {
+        return $this->current;
+    }
+
+    public function valid()
+    {
+        return $this->current < count($this->operations);
+    }
+
+    public function rewind()
+    {
+        $this->current = 0;
     }
 }

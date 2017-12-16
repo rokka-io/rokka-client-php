@@ -5,12 +5,17 @@ namespace Rokka\Client\Core;
 /**
  * Holds a list of stacks.
  */
-class StackCollection implements \Countable
+class StackCollection implements \Countable, \Iterator
 {
     /**
      * @var Stack[]
      */
     private $stacks = [];
+
+    /**
+     * @var int
+     */
+    private $current = 0;
 
     /**
      * Constructor.
@@ -67,5 +72,30 @@ class StackCollection implements \Countable
         }, $data['items']);
 
         return new self($stacks);
+    }
+
+    public function current()
+    {
+        return $this->stacks[$this->current];
+    }
+
+    public function next()
+    {
+        ++$this->current;
+    }
+
+    public function key()
+    {
+        return $this->current;
+    }
+
+    public function valid()
+    {
+        return $this->current < count($this->stacks);
+    }
+
+    public function rewind()
+    {
+        $this->current = 0;
     }
 }

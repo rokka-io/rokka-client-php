@@ -6,6 +6,10 @@ This project tries to follow [Semantic Versioning](http://semver.org/) since the
 
 This document mainly describes API changes important to users of this library.
 
+## 1.2.0 - unreleased
+
+* `OperationCollection`, `SourceImageCollection` and `StackCollection` implement now the `Iterator` interface.
+
 ## 1.1.0 - 2017-11-13
 
 * Add support for the new `short_hash` property on SourceImage.
