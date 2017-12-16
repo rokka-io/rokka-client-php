@@ -7,7 +7,7 @@ use Psr\Http\Message\UriInterface;
 use Rokka\Client\Core\Stack;
 use Rokka\Client\Core\StackOperation;
 use Rokka\Client\Core\StackUri;
-use Rokka\Client\Core\StackUriComponents;
+use Rokka\Client\Core\UriComponents;
 
 class UriHelper
 {
@@ -48,8 +48,7 @@ class UriHelper
             //if nothing matches, it's not a proper rokka URL, just return the original uri
             return $uri;
         }
-        /** @var StackUri $stack */
-        $stack = $matches['stack'];
+        $stack = $matches->getStack();
         $stack->addOverridingOptions($options);
 
         return self::composeUri($matches, $uri);
@@ -68,7 +67,7 @@ class UriHelper
      *
      * @since 1.2.0
      *
-     * @param array|StackUriComponents $components
+     * @param array|UriComponents $components
      * @param UriInterface             $uri        If this is provided, it will change the path for that object
      *
      * @return UriInterface
@@ -76,7 +75,7 @@ class UriHelper
     public static function composeUri($components, UriInterface $uri = null)
     {
         if (is_array($components)) {
-            $components = StackUriComponents::createFromArray($components);
+            $components = UriComponents::createFromArray($components);
         }
         $stack = $components->getStack();
         $stackName = $stack->getName();
@@ -114,33 +113,15 @@ class UriHelper
      *
      * @param UriInterface $uri
      *
-     * @return StackUriComponents|null
+     * @return UriComponents|null
      */
     public static function decomposeUri(UriInterface $uri)
     {
-        $path = $uri->getPath();
-        if (preg_match('#^/(?<stack>[^/]+)/(?<hash>[0-9a-f]{6,40})(?<rest>.*)$#', $path, $matches)) {
-        } elseif (preg_match('#^/(?<stack>[^/]+)/(?<combinedOptions>.+)/(?<hash>[0-9a-f]{6,40})(?<rest>.*)$#', $path, $matches)) {
-        }
-        if (0 === count($matches)) {
+        if (!preg_match('#^/(?<stack>.+)/(?<hash>[0-9a-f]{6,40})/{0,1}(?<filename>[A-Za-z\-\0-\9]*)\.(?<format>.{3,4}$)$#', $uri->getPath(), $matches)) {
             return null;
         }
-        if (preg_match('#^/{0,1}(?<filename>[a-z\-\0-\9]*)\.(?<format>.{3,4}$)#', $matches['rest'], $matches2)) {
-            $matches = array_merge($matches, $matches2);
-        }
-        $stack = new StackUri($matches['stack']);
 
-        if (isset($matches['combinedOptions'])) {
-            $stack->addOverridingOptions($matches['combinedOptions']);
-        }
-
-        $matches['stack'] = $stack;
-        $components = new StackUriComponents($stack, $matches['hash'], $matches['format']);
-        if (!empty($matches['filename'])) {
-            $components->setFilename($matches['filename']);
-        }
-
-        return $components;
+        return UriComponents::createFromArray($matches);
     }
 
     /**

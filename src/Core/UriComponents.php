@@ -2,7 +2,7 @@
 
 namespace Rokka\Client\Core;
 
-class StackUriComponents implements \ArrayAccess
+class UriComponents implements \ArrayAccess
 {
     /**
      * @var StackUri
@@ -28,9 +28,9 @@ class StackUriComponents implements \ArrayAccess
      * StackUriComponents constructor.
      *
      * @param StackUri|string $stack
-     * @param null            $hash
-     * @param null            $format
-     * @param null            $filename
+     * @param string|null     $hash
+     * @param string|null     $format
+     * @param string|null     $filename
      */
     public function __construct($stack, $hash = null, $format = null, $filename = null)
     {
