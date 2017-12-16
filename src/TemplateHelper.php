@@ -115,20 +115,22 @@ class TemplateHelper
         if (null === $seo) {
             return $this->generateRokkaUrlWithImage($hash, $stack, $format, $image, $seoLanguage);
         }
+
         return $this->generateRokkaUrl($hash, $stack, $format, $seo, $seoLanguage);
     }
 
     /**
      * Return the rokka URL for getting a resized image.
      *
-     * @param LocalImageAbstract|string|\SplFileInfo $image The image to be resized
-     * @param string|int $width The width of the image
-     * @param string|int|null $height The height of the image
-     * @param string $format The image format of the image (jpg, png, webp, ...)
-     * @param string|null $seo
-     * @param string $seoLanguage
+     * @param LocalImageAbstract|string|\SplFileInfo $image       The image to be resized
+     * @param string|int                             $width       The width of the image
+     * @param string|int|null                        $height      The height of the image
+     * @param string                                 $format      The image format of the image (jpg, png, webp, ...)
+     * @param string|null                            $seo
+     * @param string                                 $seoLanguage
      *
      * @return string
+     *
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function getResizeUrl($image, $width, $height = null, $format = 'jpg', $seo = null, $seoLanguage = 'de')
@@ -140,6 +142,7 @@ class TemplateHelper
             $heightString = '';
         }
         $stack = "dynamic/resize-width-$width$heightString--options-autoformat-true-jpg.transparency.autoformat-true";
+
         return $this->getStackUrl($imageObject, $stack, $format, $seo, $seoLanguage);
     }
 
@@ -147,14 +150,15 @@ class TemplateHelper
      * Return the rokka URL for getting a resized and cropped image.
      *
      *
-     * @param LocalImageAbstract|string|\SplFileInfo $image The image to be resized
-     * @param string|int $width The width of the image
-     * @param string|int $height The height of the image
-     * @param string $format The image format of the image (jpg, png, webp, ...)
-     * @param string|null $seo
-     * @param string $seoLanguage
+     * @param LocalImageAbstract|string|\SplFileInfo $image       The image to be resized
+     * @param string|int                             $width       The width of the image
+     * @param string|int                             $height      The height of the image
+     * @param string                                 $format      The image format of the image (jpg, png, webp, ...)
+     * @param string|null                            $seo
+     * @param string                                 $seoLanguage
      *
      * @return string
+     *
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function getResizeCropUrl($image, $width, $height, $format = 'jpg', $seo = null, $seoLanguage = '')
@@ -170,12 +174,13 @@ class TemplateHelper
      * Return the rokka URL for getting the image in it's original size.
      *
      *
-     * @param LocalImageAbstract|string|\SplFileInfo $image The image to be resized
-     * @param string $format The image format of the image (jpg, png, webp, ...)
-     * @param string|null $seo
-     * @param string $seoLanguage
+     * @param LocalImageAbstract|string|\SplFileInfo $image       The image to be resized
+     * @param string                                 $format      The image format of the image (jpg, png, webp, ...)
+     * @param string|null                            $seo
+     * @param string                                 $seoLanguage
      *
      * @return string
+     *
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function getOriginalSizeUrl($image, $format = 'jpg', $seo = null, $seoLanguage = '')
@@ -256,11 +261,11 @@ class TemplateHelper
      * Gets the rokka URL for an image hash and stack with optional seo filename in the URL.
      * Doesn't upload it, if we don't have a local hash for it. Use getImageUrl for that.
      *
-     * @param string      $hash        The rokka hash
-     * @param string|StackUri      $stack       The stack name or a StackUrl object
-     * @param string|null $format      The image format of the image (jpg, png, webp, ...)
-     * @param string|null $seo         If you want to use a seo string in the URL
-     * @param string|null $seoLanguage Optional language to be used for slugifying (eg. 'de' slugifies 'ö' to 'oe')
+     * @param string          $hash        The rokka hash
+     * @param string|StackUri $stack       The stack name or a StackUrl object
+     * @param string|null     $format      The image format of the image (jpg, png, webp, ...)
+     * @param string|null     $seo         If you want to use a seo string in the URL
+     * @param string|null     $seoLanguage Optional language to be used for slugifying (eg. 'de' slugifies 'ö' to 'oe')
      *
      * @return string
      */
