@@ -19,14 +19,17 @@ use Rokka\Client\Core\StackCollection;
 class Image extends Base
 {
     const SOURCEIMAGE_RESOURCE = 'sourceimages';
+
     const DYNAMIC_META_RESOURCE = 'meta/dynamic';
+
     const USER_META_RESOURCE = 'meta/user';
 
     const STACK_RESOURCE = 'stacks';
+
     const OPERATIONS_RESOURCE = 'operations';
 
     /**
-     * Default organisation.
+     * Default organization.
      *
      * @var string
      */

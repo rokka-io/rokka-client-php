@@ -13,6 +13,7 @@ use Rokka\Client\Core\User as UserModel;
 class User extends Base
 {
     const USER_RESOURCE = 'users';
+
     const ORGANIZATION_RESOURCE = 'organizations';
 
     /**

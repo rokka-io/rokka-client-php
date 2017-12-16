@@ -8,7 +8,9 @@ namespace Rokka\Client\Core;
 class Membership
 {
     const ROLE_ADMIN = 'admin';
+
     const ROLE_WRITE = 'write';
+
     const ROLE_READ = 'read';
 
     /**
