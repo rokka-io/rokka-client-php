@@ -7,6 +7,7 @@ use Psr\Http\Message\UriInterface;
 use Rokka\Client\Core\Stack;
 use Rokka\Client\Core\StackOperation;
 use Rokka\Client\Core\StackUri;
+use Rokka\Client\Core\StackUriComponents;
 
 class UriHelper
 {
@@ -67,18 +68,17 @@ class UriHelper
      *
      * @since 1.2.0
      *
-     * @param array        $components
-     * @param UriInterface $uri        If this is provided, it will change the path for that object
+     * @param array|StackUriComponents $components
+     * @param UriInterface             $uri        If this is provided, it will change the path for that object
      *
      * @return UriInterface
      */
-    public static function composeUri(array $components, UriInterface $uri = null)
+    public static function composeUri($components, UriInterface $uri = null)
     {
-        if ($components['stack'] instanceof  StackUri) {
-            $stack = $components['stack'];
-        } else {
-            $stack = new StackUri($components['stack']);
+        if (is_array($components)) {
+            $components = StackUriComponents::createFromArray($components);
         }
+        $stack = $components->getStack();
         $stackName = $stack->getName();
         $path = '/'.$stackName;
         $stackConfig = $stack->getConfigAsArray();
@@ -90,14 +90,14 @@ class UriHelper
                 $path .= '/'.$stackUrl;
             }
         }
-        if (isset($components['hash']) && !empty($components['hash'])) {
-            $path .= '/'.$components['hash'];
+        if (!empty($components->getHash())) {
+            $path .= '/'.$components->getHash();
 
-            if (isset($components['filename']) && !empty($components['filename'])) {
-                $path .= '/'.$components['filename'];
+            if (!empty($components->getFilename())) {
+                $path .= '/'.$components->getFilename();
             }
 
-            $path .= '.'.$components['format'];
+            $path .= '.'.$components->getFormat();
         }
 
         if (null !== $uri) {
@@ -114,7 +114,7 @@ class UriHelper
      *
      * @param UriInterface $uri
      *
-     * @return array
+     * @return StackUriComponents|null
      */
     public static function decomposeUri(UriInterface $uri)
     {
@@ -123,28 +123,24 @@ class UriHelper
         } elseif (preg_match('#^/(?<stack>[^/]+)/(?<combinedOptions>.+)/(?<hash>[0-9a-f]{6,40})(?<rest>.*)$#', $path, $matches)) {
         }
         if (0 === count($matches)) {
-            return [];
+            return null;
         }
         if (preg_match('#^/{0,1}(?<filename>[a-z\-\0-\9]*)\.(?<format>.{3,4}$)#', $matches['rest'], $matches2)) {
-            unset($matches['rest']);
             $matches = array_merge($matches, $matches2);
-            if (empty($matches['filename'])) {
-                $matches['filename'] = null;
-            }
         }
         $stack = new StackUri($matches['stack']);
+
         if (isset($matches['combinedOptions'])) {
             $stack->addOverridingOptions($matches['combinedOptions']);
-            unset($matches['combinedOptions']);
         }
-        foreach ($matches as $key => $value) {
-            if (is_int($key)) {
-                unset($matches[$key]);
-            }
-        }
+
         $matches['stack'] = $stack;
-        //FIXME: This should be an object maybe. UriComponents or such.
-        return $matches;
+        $components = new StackUriComponents($stack, $matches['hash'], $matches['format']);
+        if (!empty($matches['filename'])) {
+            $components->setFilename($matches['filename']);
+        }
+
+        return $components;
     }
 
     /**
