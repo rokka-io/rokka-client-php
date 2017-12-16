@@ -363,7 +363,7 @@ class TemplateHelper
      *
      * @return string
      */
-    protected function generateRokkaUrlWithImage(
+    private function generateRokkaUrlWithImage(
         $hash,
         $stack,
         $format = 'jpg',
@@ -380,7 +380,7 @@ class TemplateHelper
      *
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    protected function imageUpload(LocalImageAbstract $image)
+    private function imageUpload(LocalImageAbstract $image)
     {
         $imageClient = $this->getRokkaClient();
         $metadata = $this->callbacks->getMetadata($image);
@@ -413,7 +413,7 @@ class TemplateHelper
      *
      * @return string
      */
-    protected function getMimeType(LocalImageAbstract $image)
+    private function getMimeType(LocalImageAbstract $image)
     {
         if ($realpath = $image->getRealpath()) {
             $mimeType = finfo_file(finfo_open(FILEINFO_MIME_TYPE), $realpath);
@@ -430,7 +430,7 @@ class TemplateHelper
         return $mimeType;
     }
 
-    protected function isImage(LocalImageAbstract $image)
+    private function isImage(LocalImageAbstract $image)
     {
         $mimeType = $this->getMimeType($image);
         if ('image/' == substr($mimeType, 0, 6)) {
@@ -451,7 +451,7 @@ class TemplateHelper
      *
      * @return bool
      */
-    protected function isSvg(LocalImageAbstract $image)
+    private function isSvg(LocalImageAbstract $image)
     {
         $dom = new \DOMDocument();
         if (@$dom->loadXML($image->getContent())) {
