@@ -115,7 +115,7 @@ class UriHelper
      */
     public static function decomposeUri(UriInterface $uri)
     {
-        if (!preg_match('#^/(?<stack>.+)/(?<hash>[0-9a-f]{6,40})/{0,1}(?<filename>[A-Za-z\-\0-\9]*)\.(?<format>.{3,4}$)$#', $uri->getPath(), $matches)) {
+        if (!preg_match('#^/(?<stack>.+)/(?<hash>[0-9a-f]{6,40})(/(?<filename>[A-Za-z\-\0-\9]*)){0,1}\.(?<format>.{3,4}$)$#U', $uri->getPath(), $matches)) {
             return null;
         }
 
