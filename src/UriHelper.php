@@ -55,15 +55,17 @@ class UriHelper
     }
 
     /**
-     * Generate a rokka uri with the array format returned by decomposeUri().
+     * Generate a rokka uri with an array or an UriComponent returned by decomposeUri().
      *
-     * The array config looks like
+     * The array looks like
+     * ```
      * ['stack' => 'stackname', #or StackUrl object
      *  'hash' => 'hash',
      *  'filename' => 'filename-for-url'
      *  'format' => 'image format' # eg. jpg
      *  'stack' => StackUrl object with options and operations # same methods as a Stack objects
      * ]
+     * ```
      *
      * @since 1.2.0
      *
