@@ -25,6 +25,11 @@ class StackUri extends StackAbstract
         }
     }
 
+    public function __toString()
+    {
+      return $this->getStackUri();
+    }
+
     /**
      * Returns the stack url part as it should be with "addOptionsToUrl" calls.
      *

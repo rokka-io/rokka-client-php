@@ -146,7 +146,7 @@ class UriComponents implements \ArrayAccess
             throw new \RuntimeException("Property $offset can't be set.");
         }
         if ('stack' === $offset) {
-            $this->setStack($offset);
+            $this->setStack($value);
         } else {
             $this->$offset = $value;
         }

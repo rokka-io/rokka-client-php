@@ -225,7 +225,7 @@ class Stack extends StackAbstract
      *
      * @return string
      */
-    public function getDynamicUrl()
+    public function getDynamicUri()
     {
         $stack = new StackUri('dynamic', $this->getStackOperations(), $this->getStackOptions());
 
