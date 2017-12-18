@@ -17,6 +17,8 @@ class StackUri extends StackAbstract
         parent::__construct($name, $stackOperations, $stackOptions);
 
         if (false !== strpos($name, '/')) {
+            // Some part of a rokka URL can have // in it, but it means nothing, remove them here.
+            $name = preg_replace('#/{2,}#', '/', $name);
             list($name, $options) = explode('/', $name, 2);
             $this->addOverridingOptions($options);
             $this->setName($name);
