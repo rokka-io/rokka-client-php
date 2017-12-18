@@ -15,6 +15,9 @@ class UriHelperTest extends \PHPUnit_Framework_TestCase
     public function provideAddOptionsToUri()
     {
         return [
+            ['https://test.rokka.io/www_articlebig/e7b466/20161008-pa080060.jpg', 'options-dpr-2', 'https://test.rokka.io/www_articlebig/options-dpr-2/e7b466/20161008-pa080060.jpg'],
+            ['https://test.rokka.io/www_articlebig/e7b466/20161008.jpg', 'options-dpr-2', 'https://test.rokka.io/www_articlebig/options-dpr-2/e7b466/20161008.jpg'],
+
             ['https://test.rokka.io/stackname/b537639e539efcc3df4459ef87c5963aa5079ca6.jpg', 'options-dpr-2', 'https://test.rokka.io/stackname/options-dpr-2/b537639e539efcc3df4459ef87c5963aa5079ca6.jpg'],
             ['https://test.rokka.io/stackname/b537639e539efcc3df4459ef87c5963aa5079ca6.jpg', ['options' => ['dpr' => 2]], 'https://test.rokka.io/stackname/options-dpr-2/b537639e539efcc3df4459ef87c5963aa5079ca6.jpg'],
             ['https://test.rokka.io/stackname/b53763.jpg', 'options-dpr-2', 'https://test.rokka.io/stackname/options-dpr-2/b53763.jpg'],
@@ -31,11 +34,11 @@ class UriHelperTest extends \PHPUnit_Framework_TestCase
             ['https://test.rokka.io/dynamic/resize-width-100//b53763.jpg', ['options' => ['dpr' => 2], 'operations' => [['name' => 'resize', 'options' => ['width' => 200]]]], 'https://test.rokka.io/dynamic/resize-width-200--options-dpr-2/b53763.jpg'],
             ['https://test.rokka.io/dynamic/resize-width-100--resize-width-200/b537639e539efcc3df4459ef87c5963aa5079ca6.jpg', 'options-dpr-2', 'https://test.rokka.io/dynamic/resize-width-100--resize-width-200--options-dpr-2/b537639e539efcc3df4459ef87c5963aa5079ca6.jpg'],
             ['https://test.rokka.io/dynamic/resize-width-100--options-autoformat-true-dpr-3/b537639e539efcc3df4459ef87c5963aa5079ca6.jpg', 'options-dpr-2', 'https://test.rokka.io/dynamic/resize-width-100--options-autoformat-true-dpr-2/b537639e539efcc3df4459ef87c5963aa5079ca6.jpg'],
-            ['https://test.rokka.io/dynamic/resize-width-100--options-autoformat-true-dpr-3/b537639e539efcc3df4459ef87c5963aa5079ca6/seo.jpg', 'options-dpr-2', 'https://test.rokka.io/dynamic/resize-width-100--options-autoformat-true-dpr-2/b537639e539efcc3df4459ef87c5963aa5079ca6/seo.jpg'],
-            ['https://test.rokka.io/dynamic/resize-width-100--options-autoformat-true-dpr-3/resize-height-200/b537639e539efcc3df4459ef87c5963aa5079ca6/seo.jpg', 'options-dpr-2', 'https://test.rokka.io/dynamic/resize-height-200-width-100--options-autoformat-true-dpr-2/b537639e539efcc3df4459ef87c5963aa5079ca6/seo.jpg'],
-            ['https://test.rokka.io/dynamic/resize-width-100--resize-width-300--options-autoformat-true-dpr-3/resize-height-200/b537639e539efcc3df4459ef87c5963aa5079ca6/seo.jpg', 'options-dpr-2', 'https://test.rokka.io/dynamic/resize-height-200-width-100--resize-height-200-width-300--options-autoformat-true-dpr-2/b537639e539efcc3df4459ef87c5963aa5079ca6/seo.jpg'],
+            ['https://test.rokka.io/dynamic/resize-width-100--options-autoformat-true-dpr-3/b537639e539efcc3df4459ef87c5963aa5079ca6/5e05e0.jpg', 'options-dpr-2', 'https://test.rokka.io/dynamic/resize-width-100--options-autoformat-true-dpr-2/b537639e539efcc3df4459ef87c5963aa5079ca6/5e05e0.jpg'],
+            ['https://test.rokka.io/dynamic/resize-width-100--options-autoformat-true-dpr-3/resize-height-200/b537639e539efcc3df4459ef87c5963aa5079ca6/5e05e0.jpg', 'options-dpr-2', 'https://test.rokka.io/dynamic/resize-height-200-width-100--options-autoformat-true-dpr-2/b537639e539efcc3df4459ef87c5963aa5079ca6/5e05e0.jpg'],
+            ['https://test.rokka.io/dynamic/resize-width-100--resize-width-300--options-autoformat-true-dpr-3/resize-height-200/b537639e539efcc3df4459ef87c5963aa5079ca6/5e05e0.jpg', 'options-dpr-2', 'https://test.rokka.io/dynamic/resize-height-200-width-100--resize-height-200-width-300--options-autoformat-true-dpr-2/b537639e539efcc3df4459ef87c5963aa5079ca6/5e05e0.jpg'],
             ['https://test.rokka.io/dynamic/resize-width-100--options-autoformat-true/b53763.jpg', 'options-dpr-2', 'https://test.rokka.io/dynamic/resize-width-100--options-autoformat-true-dpr-2/b53763.jpg'],
-            ['https://test.rokka.io/dynamic/resize-width-100--options-autoformat-true-dpr-3/b53763/seo.jpg', 'options-dpr-2', 'https://test.rokka.io/dynamic/resize-width-100--options-autoformat-true-dpr-2/b53763/seo.jpg'],
+            ['https://test.rokka.io/dynamic/resize-width-100--options-autoformat-true-dpr-3/b53763/5e05e0.jpg', 'options-dpr-2', 'https://test.rokka.io/dynamic/resize-width-100--options-autoformat-true-dpr-2/b53763/5e05e0.jpg'],
         ];
     }
 
