@@ -259,7 +259,9 @@ class TemplateHelper
 
     /**
      * Gets the rokka URL for an image hash and stack with optional seo filename in the URL.
-     * Doesn't upload it, if we don't have a local hash for it. Use getImageUrl for that.
+     * Doesn't upload it, if we don't have a local hash for it. Use getStackUrl for that.
+     *
+     * @see TemplateHelper::getStackUrl()
      *
      * @param string          $hash        The rokka hash
      * @param string|StackUri $stack       The stack name or a StackUrl object
@@ -352,8 +354,10 @@ class TemplateHelper
 
     /**
      * Gets the rokka URL for an image hash and stack and uses the $image info for an seo filename in the URL.
-     * Doesn't upload it, if we don't have a local hash for it. Use getImageUrl for that.
+     * Doesn't upload it, if we don't have a local hash for it. Use getStackUrl() for that.
      * If $image is set, uses the filename for seo-ing the URL.
+     *
+     * @see TemplateHelper::getStackUrl()
      *
      * @param string             $hash        The rokka hash
      * @param string             $stack       The stack name
