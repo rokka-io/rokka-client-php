@@ -115,7 +115,23 @@ class UriHelper
      */
     public static function decomposeUri(UriInterface $uri)
     {
-        if (!preg_match('#^/(?<stack>.+)/(?<hash>[0-9a-f]{6,40})(/(?<filename>[A-Za-z\-\0-\9]*)){0,1}\.(?<format>.{3,4}$)$#U', $uri->getPath(), $matches)) {
+        $stackPattern = '(?<stack>.*([^-]|--)|-*)';
+        $hashPattern  = '(?<hash>[0-9a-f]{6,40})';
+        $filenamePattern = '(?<filename>[A-Za-z\-\0-\9]+)';
+        $formatPattern = '(?<format>.{3,4})';
+        $pathPattern =  '(?<hash>-.+-)';
+
+
+
+        if (preg_match('#^/'. $stackPattern . '/' . $hashPattern . '/' . $filenamePattern . '\.' . $formatPattern . '$#', $uri->getPath(), $matches)) {
+            // hash with seo-filename
+        } else if (preg_match('#^/'. $stackPattern . '/' . $hashPattern . '.' . $formatPattern . '$#', $uri->getPath(), $matches)) {
+            // hash without seo-filename
+        } else if (preg_match('#^/'. $stackPattern . '/' . $pathPattern . '/' . $filenamePattern . '\.' . $formatPattern . '$#', $uri->getPath(), $matches)) {
+            // remote_path with seo-filename
+        } else if (preg_match('#^/'. $stackPattern . '/' . $pathPattern . '.' . $formatPattern . '$#', $uri->getPath(), $matches)) {
+            // remote_path without seo-filename
+        } else {
             return null;
         }
 

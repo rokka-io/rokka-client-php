@@ -5,6 +5,7 @@ namespace Rokka\Client\Tests;
 use GuzzleHttp\Psr7\Uri;
 use Rokka\Client\Core\Stack;
 use Rokka\Client\Core\StackOperation;
+use Rokka\Client\Core\StackUri;
 use Rokka\Client\UriHelper;
 
 class UriHelperTest extends \PHPUnit_Framework_TestCase
@@ -15,30 +16,26 @@ class UriHelperTest extends \PHPUnit_Framework_TestCase
     public function provideAddOptionsToUri()
     {
         return [
-            ['https://test.rokka.io/www_articlebig/e7b466/20161008-pa080060.jpg', 'options-dpr-2', 'https://test.rokka.io/www_articlebig/options-dpr-2/e7b466/20161008-pa080060.jpg'],
-            ['https://test.rokka.io/www_articlebig/e7b466/20161008.jpg', 'options-dpr-2', 'https://test.rokka.io/www_articlebig/options-dpr-2/e7b466/20161008.jpg'],
+            ['', 'options-dpr-2', 'options-dpr-2'],
+            ['', ['options' => ['dpr' => 2]], 'options-dpr-2'],
+            ['resize-width-100', ['options' => ['dpr' => 2]], 'resize-width-100--options-dpr-2'],
+            ['resize-width-100', ['options' => ['dpr' => 2], 'operations' => [new StackOperation('resize', ['width' => 200])]], 'resize-width-200--options-dpr-2'],
+            ['resize-width-100', ['options' => ['dpr' => 2], 'operations' => [['name' => 'resize', 'options' => ['width' => 200]]]], 'resize-width-200--options-dpr-2'],
 
-            ['https://test.rokka.io/stackname/b537639e539efcc3df4459ef87c5963aa5079ca6.jpg', 'options-dpr-2', 'https://test.rokka.io/stackname/options-dpr-2/b537639e539efcc3df4459ef87c5963aa5079ca6.jpg'],
-            ['https://test.rokka.io/stackname/b537639e539efcc3df4459ef87c5963aa5079ca6.jpg', ['options' => ['dpr' => 2]], 'https://test.rokka.io/stackname/options-dpr-2/b537639e539efcc3df4459ef87c5963aa5079ca6.jpg'],
-            ['https://test.rokka.io/stackname/b53763.jpg', 'options-dpr-2', 'https://test.rokka.io/stackname/options-dpr-2/b53763.jpg'],
-            ['https://test.rokka.io/stackname//b53763.jpg', 'options-dpr-2', 'https://test.rokka.io/stackname/options-dpr-2/b53763.jpg'],
-            ['https://test.rokka.io/stackname/resize-width-100/b537639e539efcc3df4459ef87c5963aa5079ca6.jpg', ['options' => ['dpr' => 2]], 'https://test.rokka.io/stackname/resize-width-100--options-dpr-2/b537639e539efcc3df4459ef87c5963aa5079ca6.jpg'],
-            ['https://test.rokka.io/stackname/resize-width-100/options-dpr-3/b537639e539efcc3df4459ef87c5963aa5079ca6.jpg', 'options-dpr-2', 'https://test.rokka.io/stackname/resize-width-100--options-dpr-2/b537639e539efcc3df4459ef87c5963aa5079ca6.jpg'],
-            ['https://test.rokka.io/stackname/resize-width-100/options-dpr-3/b537639e539efcc3df4459ef87c5963aa5079ca6.jpg', ['options' => ['dpr' => 2]], 'https://test.rokka.io/stackname/resize-width-100--options-dpr-2/b537639e539efcc3df4459ef87c5963aa5079ca6.jpg'],
-            ['https://test.rokka.io/stackname/resize-width-100/options-dpr-3/b537639e539efcc3df4459ef87c5963aa5079ca6.jpg', '', 'https://test.rokka.io/stackname/resize-width-100--options-dpr-3/b537639e539efcc3df4459ef87c5963aa5079ca6.jpg'],
-            ['https://test.rokka.io/stackname/resize-width-100//b537639e539efcc3df4459ef87c5963aa5079ca6.jpg', '', 'https://test.rokka.io/stackname/resize-width-100/b537639e539efcc3df4459ef87c5963aa5079ca6.jpg'],
-            ['https://test.rokka.io/stackname//resize-width-100/b537639e539efcc3df4459ef87c5963aa5079ca6.jpg', '', 'https://test.rokka.io/stackname/resize-width-100/b537639e539efcc3df4459ef87c5963aa5079ca6.jpg'],
-            ['https://test.rokka.io/dynamic/resize-width-100/b53763.jpg', 'options-dpr-2--resize-width-200', 'https://test.rokka.io/dynamic/resize-width-200--options-dpr-2/b53763.jpg'],
-            ['https://test.rokka.io/dynamic/resize-width-100/b53763.jpg', ['options' => ['dpr' => 2], 'operations' => [new StackOperation('resize', ['width' => 200])]], 'https://test.rokka.io/dynamic/resize-width-200--options-dpr-2/b53763.jpg'],
-            ['https://test.rokka.io/dynamic/resize-width-100/b53763.jpg', ['options' => ['dpr' => 2], 'operations' => [['name' => 'resize', 'options' => ['width' => 200]]]], 'https://test.rokka.io/dynamic/resize-width-200--options-dpr-2/b53763.jpg'],
-            ['https://test.rokka.io/dynamic/resize-width-100//b53763.jpg', ['options' => ['dpr' => 2], 'operations' => [['name' => 'resize', 'options' => ['width' => 200]]]], 'https://test.rokka.io/dynamic/resize-width-200--options-dpr-2/b53763.jpg'],
-            ['https://test.rokka.io/dynamic/resize-width-100--resize-width-200/b537639e539efcc3df4459ef87c5963aa5079ca6.jpg', 'options-dpr-2', 'https://test.rokka.io/dynamic/resize-width-100--resize-width-200--options-dpr-2/b537639e539efcc3df4459ef87c5963aa5079ca6.jpg'],
-            ['https://test.rokka.io/dynamic/resize-width-100--options-autoformat-true-dpr-3/b537639e539efcc3df4459ef87c5963aa5079ca6.jpg', 'options-dpr-2', 'https://test.rokka.io/dynamic/resize-width-100--options-autoformat-true-dpr-2/b537639e539efcc3df4459ef87c5963aa5079ca6.jpg'],
-            ['https://test.rokka.io/dynamic/resize-width-100--options-autoformat-true-dpr-3/b537639e539efcc3df4459ef87c5963aa5079ca6/5e05e0.jpg', 'options-dpr-2', 'https://test.rokka.io/dynamic/resize-width-100--options-autoformat-true-dpr-2/b537639e539efcc3df4459ef87c5963aa5079ca6/5e05e0.jpg'],
-            ['https://test.rokka.io/dynamic/resize-width-100--options-autoformat-true-dpr-3/resize-height-200/b537639e539efcc3df4459ef87c5963aa5079ca6/5e05e0.jpg', 'options-dpr-2', 'https://test.rokka.io/dynamic/resize-height-200-width-100--options-autoformat-true-dpr-2/b537639e539efcc3df4459ef87c5963aa5079ca6/5e05e0.jpg'],
-            ['https://test.rokka.io/dynamic/resize-width-100--resize-width-300--options-autoformat-true-dpr-3/resize-height-200/b537639e539efcc3df4459ef87c5963aa5079ca6/5e05e0.jpg', 'options-dpr-2', 'https://test.rokka.io/dynamic/resize-height-200-width-100--resize-height-200-width-300--options-autoformat-true-dpr-2/b537639e539efcc3df4459ef87c5963aa5079ca6/5e05e0.jpg'],
-            ['https://test.rokka.io/dynamic/resize-width-100--options-autoformat-true/b53763.jpg', 'options-dpr-2', 'https://test.rokka.io/dynamic/resize-width-100--options-autoformat-true-dpr-2/b53763.jpg'],
-            ['https://test.rokka.io/dynamic/resize-width-100--options-autoformat-true-dpr-3/b53763/5e05e0.jpg', 'options-dpr-2', 'https://test.rokka.io/dynamic/resize-width-100--options-autoformat-true-dpr-2/b53763/5e05e0.jpg'],
+            ['resize-width-100/options-dpr-3', 'options-dpr-2', 'resize-width-100--options-dpr-2'],
+            ['resize-width-100/options-dpr-3', ['options' => ['dpr' => 2]], 'resize-width-100--options-dpr-2'],
+
+            ['resize-width-100/options-dpr-3', '', 'resize-width-100--options-dpr-3'],
+
+            ['resize-width-100--resize-width-200', 'resize-width-300', 'resize-width-300--resize-width-300'],
+            ['resize-width-100/resize-width-200', 'resize-width-300', 'resize-width-300'],
+            ['resize-width-100', 'options-dpr-2--resize-width-200', 'resize-width-200--options-dpr-2'],
+            ['resize-width-100--resize-width-200', 'options-dpr-2', 'resize-width-100--resize-width-200--options-dpr-2'],
+            ['resize-width-100--options-autoformat-true-dpr-3', 'options-dpr-2', 'resize-width-100--options-autoformat-true-dpr-2'],
+            ['resize-width-100--resize-width-300--options-autoformat-true-dpr-3', 'resize-height-200', 'resize-height-200-width-100--resize-height-200-width-300--options-autoformat-true-dpr-3'],
+            ['resize-width-100--resize-width-300--options-autoformat-true-dpr-3', 'resize-height-200-width-200', 'resize-height-200-width-200--resize-height-200-width-200--options-autoformat-true-dpr-3'],
+            ['resize-width-100--options-autoformat-true', 'options-dpr-2', 'resize-width-100--options-autoformat-true-dpr-2'],
+            ['resize-width-100--options-autoformat-true-dpr-3', 'options-dpr-2', 'resize-width-100--options-autoformat-true-dpr-2'],
         ];
     }
 
@@ -63,50 +60,6 @@ class UriHelperTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @return array
-     */
-    public function provideDecomposeUri()
-    {
-        return [
-            ['https://test.rokka.io/stackname/b537639e539efcc3df4459ef87c5963aa5079ca6.jpg',
-                ['hash' => 'b537639e539efcc3df4459ef87c5963aa5079ca6', 'filename' => null, 'format' => 'jpg',
-                    'stackurl' => 'stackname', 'stackoptions' => [], ],
-            ],
-            ['https://test.rokka.io/stackname/resize-width-100/b537639e5.jpg',
-                ['hash' => 'b537639e5', 'filename' => null, 'format' => 'jpg',
-                    'stackurl' => 'stackname/resize-width-100', 'stackoptions' => [], ],
-            ],
-            ['https://test.rokka.io/stackname/resize-width-100--rotate-angle-20/b537639e5.jpg',
-                ['hash' => 'b537639e5', 'filename' => null, 'format' => 'jpg',
-                    'stackurl' => 'stackname/resize-width-100--rotate-angle-20', 'stackoptions' => [], ],
-            ],
-            ['https://test.rokka.io/dynamic/resize-height-200-width-100--options-jpg.quality-80/b53763/seo-test.webp',
-                ['hash' => 'b53763', 'filename' => 'seo-test', 'format' => 'webp',
-                    'stackurl' => 'dynamic/resize-height-200-width-100--options-jpg.quality-80', 'stackoptions' => ['jpg.quality' => '80'], ],
-            ],
-            ['https://test.rokka.io/dynamic/options-autoformat-true/b53763/seo-test.webp',
-                ['hash' => 'b53763', 'filename' => 'seo-test', 'format' => 'webp',
-                    'stackurl' => 'dynamic/options-autoformat-true', 'stackoptions' => ['autoformat' => 'true'], ],
-            ],
-            ['https://test.rokka.io/dynamic/options-autoformat-true/options-dpr-2/b53763/seo-test.webp',
-                ['hash' => 'b53763', 'filename' => 'seo-test', 'format' => 'webp',
-                    'stackurl' => 'dynamic/options-autoformat-true-dpr-2',  'stackoptions' => ['autoformat' => 'true', 'dpr' => '2'], ],
-                'https://test.rokka.io/dynamic/options-autoformat-true-dpr-2/b53763/seo-test.webp',
-            ],
-            ['https://test.rokka.io/dynamic/resize-width-100--options-autoformat-true/resize-width-200/b53763/seo-test.webp',
-                ['hash' => 'b53763', 'filename' => 'seo-test', 'format' => 'webp',
-                    'stackurl' => 'dynamic/resize-width-200--options-autoformat-true', 'stackoptions' => ['autoformat' => 'true'], ],
-                'https://test.rokka.io/dynamic/resize-width-200--options-autoformat-true/b53763/seo-test.webp',
-            ],
-            ['https://test.rokka.io/dynamic/resize-width-100--resize-width-300--options-autoformat-true/resize-width-200/b53763/seo-test.webp',
-                ['hash' => 'b53763', 'filename' => 'seo-test', 'format' => 'webp',
-                    'stackurl' => 'dynamic/resize-width-200--resize-width-200--options-autoformat-true', 'stackoptions' => ['autoformat' => 'true'], ],
-                'https://test.rokka.io/dynamic/resize-width-200--resize-width-200--options-autoformat-true/b53763/seo-test.webp',
-            ],
-        ];
-    }
-
-    /**
      * @dataProvider provideAddOptionsToUri
      *
      * @param string       $inputUrl
@@ -115,7 +68,7 @@ class UriHelperTest extends \PHPUnit_Framework_TestCase
      */
     public function testAddOptionsToUri($inputUrl, $options, $expected)
     {
-        $this->assertSame($expected, UriHelper::addOptionsToUriString($inputUrl, $options));
+        $this->assertSame('https://test.rokka.io/stackname/'. $expected . '/b53763.jpg', UriHelper::addOptionsToUriString('https://test.rokka.io/stackname/'.$inputUrl .'/b53763.jpg', $options));
     }
 
     public function testGetDynamicStackFromStackObject()
@@ -130,29 +83,6 @@ class UriHelperTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @dataProvider provideDecomposeUri
-     *
-     * @param string      $inputUrl
-     * @param array       $expected
-     * @param string|null $expectedComposeUrl
-     */
-    public function testDecomposeUri($inputUrl, $expected, $expectedComposeUrl = null)
-    {
-        $uri = new Uri($inputUrl);
-        $components = UriHelper::decomposeUri($uri);
-        $stack = $components->getStack();
-        $this->assertEquals($expected['stackoptions'], $stack->getStackOptions());
-        $this->assertEquals($expected['stackurl'], $stack->getStackUri());
-        $this->assertEquals($expected['hash'], $components->getHash());
-        $this->assertEquals($expected['filename'], $components->getFilename());
-        $this->assertEquals($expected['format'], $components->getFormat());
-        if (null === $expectedComposeUrl) {
-            $expectedComposeUrl = $inputUrl;
-        }
-        $this->assertSame((string) UriHelper::composeUri($components, $uri), $expectedComposeUrl);
-    }
-
-    /**
      * @dataProvider provideGetSrcSetUrl
      *
      * @param string      $size
@@ -163,5 +93,87 @@ class UriHelperTest extends \PHPUnit_Framework_TestCase
     {
         $inputUrl = 'https://test.rokka.io/stackname/b537639e539efcc3df4459ef87c5963aa5079ca6.jpg';
         $this->assertSame($expected, (string) UriHelper::getSrcSetUrlString($inputUrl, $size, $custom));
+    }
+
+    public function provideDecomposeUri()
+    {
+        return [
+            ['', ['optionsUrl' => '', 'optionsArray' => []]],
+            ['/', ['optionsUrl' => '', 'optionsArray' => []]],
+            ['options-jpg.quality-90/', ['optionsUrl' => 'options-jpg.quality-90', 'optionsArray' => ['jpg.quality' => '90']]],
+            ['options-jpg.quality-90/options-dpr-2/', ['optionsUrl' => 'options-dpr-2-jpg.quality-90', 'optionsArray' => ['jpg.quality' => '90', 'dpr' => '2']]],
+            ['options-jpg.quality-90/options-jpg.quality-40/', ['optionsUrl' => 'options-jpg.quality-40', 'optionsArray' => ['jpg.quality' => '40']]],
+            ['options-jpg.quality-90--options-jpg.quality-40/', ['optionsUrl' => 'options-jpg.quality-40', 'optionsArray' => ['jpg.quality' => '40']]],
+            ['resize-width-100//', ['optionsUrl' => 'resize-width-100', 'optionsArray' => []]],
+            ['//options-jpg.quality-90//', ['optionsUrl' => 'options-jpg.quality-90', 'optionsArray' => ['jpg.quality' => '90']]],
+            ['//options-jpg.quality-90/', ['optionsUrl' => 'options-jpg.quality-90', 'optionsArray' => ['jpg.quality' => '90']]],
+            ['--options/', ['optionsUrl' => '', 'optionsArray' => []]],
+            ['options--/', ['optionsUrl' => '', 'optionsArray' => []]],
+            ['--/', ['optionsUrl' => '', 'optionsArray' => []]],
+            ['resize-width-100--options-dpr-2/', ['optionsUrl' => 'resize-width-100--options-dpr-2', 'optionsArray' => ['dpr' => '2']]],
+            ['resize-width-100--blur--resize-width-200--options-dpr-2/', ['optionsUrl' => 'resize-width-100--blur--resize-width-200--options-dpr-2', 'optionsArray' => ['dpr' => '2']]],
+            ['resize-width-100--blur--resize-width-200--options-dpr-2/resize-width-300/', ['optionsUrl' => 'resize-width-300--blur--resize-width-300--options-dpr-2', 'optionsArray' => ['dpr' => 2]]],
+        ];
+
+    }
+
+    /**
+     * @dataProvider provideDecomposeUri
+     * @param $option
+     * @param $expectedOptions
+     */
+    public function testDecomposeUri($option, $expectedOptions)
+    {
+
+        $stacks = [
+            'noop',
+            'dynamic',
+            '5e05e0',
+        ];
+
+       $hashes = [
+            'b537639e539efcc3df4459ef87c5963aa5079ca6',
+            'b53763',
+            '-some/remot-e/path.jpeg-',
+            '-remote/image.jpg%3Fwidth=100-',
+            '-some/rem-ote/image-',
+        ];
+
+        foreach ($stacks as $stack) {
+            $this->twoRoutesTest($hashes, $stack, $option, $expectedOptions);
+        }
+    }
+    private function twoRoutesTest(array $hashes, $stack, $option, array $expectedOptions)
+    {
+        foreach ($hashes as $hash) {
+            $this->singleRouteTest($stack.'/'.$option.$hash.'.jpeg', $hash, $expectedOptions, '', $stack);
+            $this->singleRouteTest($stack.'/'.$option.$hash.'/5e05d0.jpeg', $hash, $expectedOptions, '5e05d0', $stack);
+        }
+
+        return $hash;
+    }
+
+    private function singleRouteTest($testUrl, $hash, array $expectedOptions, $filename, $stack)
+    {
+
+        $testUrl = 'https://test.rokka.io/'.$testUrl;
+        $testUri = new Uri($testUrl);
+        try {
+            $components = UriHelper::decomposeUri($testUri);
+        } catch (\InvalidArgumentException $e) {
+            $this->fail("Arguments were not valid for url " . $testUrl . "." . $e->getMessage());
+        }
+        /** @var StackUri $cStack */
+        $cStack = $components['stack'];
+        $expectedStackUri = trim($cStack->getName() . '/' . $expectedOptions['optionsUrl'], '/');
+        $this->assertEquals($expectedStackUri, $cStack->getStackUri(), 'getStackUri was not as expected for url ' . $testUrl);
+        $this->assertEquals($hash, $components['hash'], 'Hash was not expected for url ' . $testUrl);
+        $this->assertEquals($filename, (string) $components['filename'], 'Filename was not as expected for url ' . $testUrl);
+        $this->assertEquals('jpeg',  $components['format'], 'Format was not as expected for url ' . $testUrl);
+        $this->assertEquals($expectedOptions['optionsArray'], $cStack->getStackOptions(), 'Options were not as expected for url ' . $testUrl);
+        //test back with composeUri
+        if ($filename) { $filename = '/'. $filename; }
+        if ($expectedOptions['optionsUrl']) { $expectedOptions['optionsUrl'] =  $expectedOptions['optionsUrl'] . '/'; }
+        $this->assertEquals('https://test.rokka.io/'. $stack . '/' . $expectedOptions['optionsUrl'] . $hash . $filename . '.jpeg' ,(string) UriHelper::composeUri($components, $testUri));
     }
 }
