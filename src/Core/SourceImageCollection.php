@@ -5,7 +5,7 @@ namespace Rokka\Client\Core;
 /**
  * Represents a collection of source images.
  */
-class SourceImageCollection implements \Countable
+class SourceImageCollection implements \Countable, \Iterator
 {
     /**
      * Array of source images.
@@ -13,6 +13,11 @@ class SourceImageCollection implements \Countable
      * @var SourceImage[]
      */
     private $sourceImages = [];
+
+    /**
+     * @var int
+     */
+    private $current = 0;
 
     /**
      * The total amount of items from the collection, with pagination.
@@ -121,5 +126,30 @@ class SourceImageCollection implements \Countable
         $cursor = isset($data['cursor']) ? $data['cursor'] : null;
 
         return new self($sourceImages, $total, $links, $cursor);
+    }
+
+    public function current()
+    {
+        return $this->sourceImages[$this->current];
+    }
+
+    public function next()
+    {
+        ++$this->current;
+    }
+
+    public function key()
+    {
+        return $this->current;
+    }
+
+    public function valid()
+    {
+        return $this->current < count($this->sourceImages);
+    }
+
+    public function rewind()
+    {
+        $this->current = 0;
     }
 }
