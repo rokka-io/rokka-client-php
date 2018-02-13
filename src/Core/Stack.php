@@ -74,8 +74,10 @@ class Stack
         }
 
         $stack_operations = [];
-        foreach ($data['stack_operations'] as $operation) {
-            $stack_operations[] = StackOperation::createFromJsonResponse($operation, true);
+        if (isset($data['stack_operations']) && is_array($data['stack_operations'])) {
+            foreach ($data['stack_operations'] as $operation) {
+                $stack_operations[] = StackOperation::createFromJsonResponse($operation, true);
+            }
         }
 
         $stack = new self(
@@ -86,11 +88,11 @@ class Stack
             new \DateTime($data['created'])
         );
 
-        if (isset($data['stack_options'])) {
+        if (isset($data['stack_options']) && is_array($data['stack_options'])) {
             $stack->setStackOptions($data['stack_options']);
         }
 
-        if (isset($data['stack_expressions'])) {
+        if (isset($data['stack_expressions']) && is_array($data['stack_expressions'])) {
             $stack_expressions = [];
             foreach ($data['stack_expressions'] as $expression) {
                 $stack_expressions[] = StackExpression::createFromJsonResponse($expression, true);
