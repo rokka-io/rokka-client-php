@@ -12,7 +12,6 @@ This document mainly describes API changes important to users of this library.
 * Add `Stack::getDynamicUri()`
 * Add the `StackUri` and '`UriComponents` classes.
 * Add `UriHelper::composeUri`  and `UriHelper::decomposeUri` (tbd..)
-* Add `UriHelper::getSrcSetUrl` and `UriHelper::getSrcSetUrlString`
 
 ## 1.1.0 - 2017-11-13
 
