@@ -12,6 +12,7 @@ use Rokka\Client\Core\SourceImage;
 use Rokka\Client\Core\SourceImageCollection;
 use Rokka\Client\Core\Stack;
 use Rokka\Client\Core\StackCollection;
+use Rokka\Client\Core\StackUri;
 
 /**
  * Image client for the rokka.io service.
@@ -706,11 +707,11 @@ class Image extends Base
     /**
      * Returns url for accessing the image.
      *
-     * @param string $hash         Identifier Hash
-     * @param string $stack        Stack to apply
-     * @param string $format       Image format for output [jpg|png|gif]
-     * @param string $name         Optional image name for SEO purposes
-     * @param string $organization Optional organization name (if different from default in client)
+     * @param string          $hash         Identifier Hash
+     * @param string|StackUri $stack        Stack to apply (name or StackUri object)
+     * @param string          $format       Image format for output [jpg|png|gif]
+     * @param string          $name         Optional image name for SEO purposes
+     * @param string          $organization Optional organization name (if different from default in client)
      *
      * @return UriInterface
      */
@@ -723,21 +724,13 @@ class Image extends Base
         $parts = explode('.', $apiUri->getHost(), 2);
         $baseHost = array_pop($parts);
 
-        // Building path
-        $path = '/'.$stack.'/'.$hash;
-
-        if (null !== $name) {
-            $path .= '/'.$name;
-        }
-
-        $path .= '.'.$format;
-
+        $path = UriHelper::composeUri(['stack' => $stack, 'hash' => $hash, 'format' => $format, 'filename' => $name]);
         // Building the URI as "{scheme}://{organization}.{baseHost}[:{port}]/{stackName}/{hash}[/{name}].{format}"
         $parts = [
             'scheme' => $apiUri->getScheme(),
             'port' => $apiUri->getPort(),
             'host' => $this->getOrganization($organization).'.'.$baseHost,
-            'path' => $path,
+            'path' => $path->getPath(),
         ];
 
         return Uri::fromParts($parts);
