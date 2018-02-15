@@ -12,7 +12,7 @@ This document mainly describes API changes important to users of this library.
 * Add `Stack::getDynamicUriString()`
 * Add the `StackUri` and '`UriComponents` classes.
 * Add `UriHelper::composeUri(array|UriComponents $components): UriInterface` and `UriHelper::decomposeUri(UriInterface $uri): UriComponents` 
-* Add `UriHelper::getSrcSetUrl(string $size, UriInterface $uri, null|string $custom = null)` and `UriHelper::getSrcSetUrlString(string $size, string $uri, null|string $custom = null)`
+* Add `UriHelper::getSrcSetUrl(UriInterface $uri, string $size, null|string $custom = null)` and `UriHelper::getSrcSetUrlString(string $uri, string $size, null|string $custom = null)`
 
 ## 1.1.0 - 2017-11-13
 

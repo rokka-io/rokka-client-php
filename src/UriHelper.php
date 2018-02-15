@@ -137,15 +137,15 @@ class UriHelper
     }
 
     /**
-     * @param string      $size   The size of the image, eg '300w' or '2x'
-     * @param string      $url    The original rokka render URL to be adjusted
+     * @param string $url The original rokka render URL to be adjusted
+     * @param string $size The size of the image, eg '300w' or '2x'
      * @param null|string $custom Any rokka options you'd like to add, or are a dpi identifier like '2x'
      *
      * @return UriInterface
      */
-    public static function getSrcSetUrlString($size, $url, $custom = null)
+    public static function getSrcSetUrlString($url, $size, $custom = null)
     {
-        return self::getSrcSetUrl($size, new Uri($url), $custom);
+        return self::getSrcSetUrl(new Uri($url), $size, $custom);
     }
 
     /**
@@ -157,13 +157,13 @@ class UriHelper
      * This method will then generate the right rokka URLs to get what you want, see
      * `\Rokka\Client\Tests\UriHelperTest::provideGetSrcSetUrl` for some examples and the expected returns.
      *
-     * @param string       $size   The size of the image, eg '300w' or '2x'
-     * @param UriInterface $url    The original rokka render URL to be adjusted
-     * @param null|string  $custom Any rokka options you'd like to add, or are a dpi identifier like '2x'
+     * @param UriInterface $url The original rokka render URL to be adjusted
+     * @param string $size The size of the image, eg '300w' or '2x'
+     * @param null|string $custom Any rokka options you'd like to add, or are a dpi identifier like '2x'
      *
      * @return UriInterface
      */
-    public static function getSrcSetUrl($size, UriInterface $url, $custom = null)
+    public static function getSrcSetUrl(UriInterface $url, $size, $custom = null)
     {
         $identifier = substr($size, -1, 1);
         $size = substr($size, 0, -1);

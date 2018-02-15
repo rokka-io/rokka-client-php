@@ -140,7 +140,7 @@ class UriHelperTest extends \PHPUnit_Framework_TestCase
     public function testGetSrcSetUrl($size, $custom, $expected)
     {
         $inputUrl = 'https://test.rokka.io/stackname/b537639e539efcc3df4459ef87c5963aa5079ca6.jpg';
-        $this->assertSame($expected, (string) UriHelper::getSrcSetUrlString($size, $inputUrl, $custom));
+        $this->assertSame($expected, (string) UriHelper::getSrcSetUrlString($inputUrl, $size, $custom));
     }
 
     private function twoRoutesTest(array $hashes, $stack, $option, array $expectedOptions)
