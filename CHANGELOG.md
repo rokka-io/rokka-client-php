@@ -9,8 +9,10 @@ This document mainly describes API changes important to users of this library.
 ## 1.2.0 - unreleased
 
 * `OperationCollection`, `SourceImageCollection` and `StackCollection` implement now the `Iterator` interface.
-* Add static method `UriHelper::getDynamicStackFromStackConfig` 
-* Add decomposeUri and composeUri (tbd..)
+* Add `Stack::getDynamicUri()`
+* Add the `StackUri` and '`UriComponents` classes.
+* Add `UriHelper::composeUri`  and `UriHelper::decomposeUri` (tbd..)
+* Add `UriHelper::getSrcSetUrl` and `UriHelper::getSrcSetUrlString`
 
 ## 1.1.0 - 2017-11-13
 

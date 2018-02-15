@@ -4,6 +4,13 @@ namespace Rokka\Client\Core;
 
 use Rokka\Client\UriHelper;
 
+/**
+ * Class StackUri
+ *
+ * This class is useful for working on dynamic stack uris
+ *
+ * @since 1.2.0
+ */
 class StackUri extends StackAbstract
 {
     /**

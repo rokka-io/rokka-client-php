@@ -2,6 +2,13 @@
 
 namespace Rokka\Client\Core;
 
+/**
+ * Class UriComponents
+ *
+ * Abstracts the components away of a rokka uri (has, format, filename, stack, etc)
+ *
+ * @since 1.2.0
+ */
 class UriComponents implements \ArrayAccess
 {
     /**
@@ -27,6 +34,8 @@ class UriComponents implements \ArrayAccess
     /**
      * StackUriComponents constructor.
      *
+     * @since 1.2.0
+     *
      * @param StackUri|string $stack
      * @param string|null     $hash
      * @param string|null     $format
@@ -40,6 +49,11 @@ class UriComponents implements \ArrayAccess
         $this->filename = $filename;
     }
 
+    /**
+     * Creates a UriComponent object from an array with 'stack', 'hash', 'format', 'filename' and 'stack' as keys.
+     *
+     * @since 1.2.0
+     */
     public static function createFromArray($config)
     {
         if (!isset($config['stack'])) {
@@ -53,6 +67,8 @@ class UriComponents implements \ArrayAccess
     }
 
     /**
+     * @since 1.2.0
+     *
      * @return StackUri
      */
     public function getStack()
@@ -61,6 +77,7 @@ class UriComponents implements \ArrayAccess
     }
 
     /**
+     * @since 1.2.0
      * @param string|StackUri $stack
      *
      * @throws \RuntimeException
@@ -83,6 +100,7 @@ class UriComponents implements \ArrayAccess
     }
 
     /**
+     * @since 1.2.0
      * @return null|string
      */
     public function getHash()
@@ -91,6 +109,7 @@ class UriComponents implements \ArrayAccess
     }
 
     /**
+     * @since 1.2.0
      * @param null|string $hash
      */
     public function setHash($hash)
@@ -99,6 +118,7 @@ class UriComponents implements \ArrayAccess
     }
 
     /**
+     * @since 1.2.0
      * @return null|string
      */
     public function getFormat()
@@ -107,6 +127,7 @@ class UriComponents implements \ArrayAccess
     }
 
     /**
+     * @since 1.2.0
      * @param null|string $format
      */
     public function setFormat($format)
@@ -115,6 +136,7 @@ class UriComponents implements \ArrayAccess
     }
 
     /**
+     * @since 1.2.0
      * @return null|string
      */
     public function getFilename()
@@ -123,6 +145,7 @@ class UriComponents implements \ArrayAccess
     }
 
     /**
+     * @since 1.2.0
      * @param null|string $filename
      */
     public function setFilename($filename)

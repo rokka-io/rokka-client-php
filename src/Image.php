@@ -708,7 +708,7 @@ class Image extends Base
      * Returns url for accessing the image.
      *
      * @param string          $hash         Identifier Hash
-     * @param string|StackUri $stack        Stack to apply (name or StackUrl object)
+     * @param string|StackUri $stack        Stack to apply (name or StackUri object)
      * @param string          $format       Image format for output [jpg|png|gif]
      * @param string          $name         Optional image name for SEO purposes
      * @param string          $organization Optional organization name (if different from default in client)
