@@ -5,7 +5,7 @@ namespace Rokka\Client\Tests;
 use Rokka\Client\Core\StackUri;
 use Rokka\Client\Core\UriComponents;
 
-class UriComponentTest extends \PHPUnit_Framework_TestCase
+class UriComponentTest extends \PHPUnit\Framework\TestCase
 {
     public function provideCreateFromArray()
     {

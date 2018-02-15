@@ -5,7 +5,7 @@ namespace Rokka\Client\Tests;
 use Rokka\Client\Factory;
 use Rokka\Client\Image;
 
-class ImageTest extends \PHPUnit_Framework_TestCase
+class ImageTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @return array

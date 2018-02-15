@@ -5,7 +5,7 @@ namespace Core;
 use Rokka\Client\Core\StackOperation;
 use Rokka\Client\Core\StackUri;
 
-class StackUriTest extends \PHPUnit_Framework_TestCase
+class StackUriTest extends \PHPUnit\Framework\TestCase
 {
     public function provide__construct()
     {

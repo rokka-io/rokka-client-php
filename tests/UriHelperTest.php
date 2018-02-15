@@ -8,7 +8,7 @@ use Rokka\Client\Core\StackOperation;
 use Rokka\Client\Core\StackUri;
 use Rokka\Client\UriHelper;
 
-class UriHelperTest extends \PHPUnit_Framework_TestCase
+class UriHelperTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @return array

@@ -6,7 +6,7 @@ use Rokka\Client\Core\DynamicMetadata\DynamicMetadataInterface;
 use Rokka\Client\Core\DynamicMetadata\SubjectArea;
 use Rokka\Client\DynamicMetadataHelper;
 
-class DynamicMetadataHelperTest extends \PHPUnit_Framework_TestCase
+class DynamicMetadataHelperTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @return array
