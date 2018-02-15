@@ -128,6 +128,8 @@ class StackUri extends StackAbstract
     /**
      * @param array $options
      *
+     * @throws \InvalidArgumentException
+     *
      * @return array
      */
     private static function parseOptions(array $options)
