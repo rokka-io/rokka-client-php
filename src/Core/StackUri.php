@@ -6,10 +6,21 @@ use Psr\Http\Message\UriInterface;
 use Rokka\Client\UriHelper;
 
 /**
- * Class StackUri.
+ * This class is useful for working on stack URIs (dynamic or defined ones).
+ * You can use almost all the operations you can use on a common stack object here as well, but also retrieve
+ * such a stack as rokka render URL for later usage in templates or similar.
  *
- * This class is useful for working on dynamic stack uris
+ * Examples:
  *
+ * ```php
+ * $stackUri = new StackUri('someStackName');
+ * $stackUri->addOverridingOptions('options-dpr-2');
+ * echo $stackUri->getStackUriString();
+ * ```
+ *
+ * @see Stack::getDynamicUriString()
+ * @see UriHelper::addOptionsToUri()
+ * @see UriHelper::addOptionsToUriString()
  * @since 1.2.0
  */
 class StackUri extends StackAbstract
@@ -35,7 +46,7 @@ class StackUri extends StackAbstract
 
     public function __toString()
     {
-        return $this->getStackUri();
+        return $this->getStackUriString();
     }
 
     /**
@@ -83,9 +94,26 @@ class StackUri extends StackAbstract
     }
 
     /**
+     * For overwriting stack operation options or adding stack options.
+     *
+     * The format of the $options parameter is the same as you would use for overwriting ooptions via a render URL.
+     *
+     * Example: 'resize-width-200--options-dpr-2-autoformat-true'
+     *
+     * Using '/' instead of '--' is also valid, but if the object doesn't have operations defined already, the behaviour
+     * is different
+     * Examples:
+     *
+     * 'resize-width-200--crop-width-200-height-200' <- resizes and crops and image
+     * 'resize-width-200/crop-width-200-height-200' <- only resized the image, since the crop is an overwrite and the operation doesnt exist
+     *
+     * But if there's already stack operations for resize and crop defined in the object, both above examples do the
+     * same.
+     *
+     * @see https://rokka.io/documentation/references/render.html#overwriting-stack-operation-options
      * @since 1.2.0
      *
-     * @param string $options
+     * @param string $options The same format as overwriting stack operations options via url
      *
      * @return StackUri
      */

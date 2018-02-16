@@ -59,18 +59,17 @@ class UriHelper
      *
      * The array looks like
      * ```
-     * ['stack' => 'stackname', #or StackUrl object
+     * ['stack' => 'stackname', #or StackUri object
      *  'hash' => 'hash',
-     *  'filename' => 'filename-for-url'
-     *  'format' => 'image format' # eg. jpg
-     *  'stack' => StackUrl object with options and operations # same methods as a Stack objects
+     *  'filename' => 'filename-for-url',
+     *  'format' => 'image format', # eg. jpg
      * ]
      * ```
      *
      * @since 1.2.0
      *
      * @param array|UriComponents $components
-     * @param UriInterface        $uri        If this is provided, it will change the path for that object
+     * @param UriInterface        $uri        If this is provided, it will change the path for that object and return
      *
      * @return UriInterface
      */
@@ -121,24 +120,21 @@ class UriHelper
         $formatPattern = '(?<format>.{3,4})';
         $pathPattern = '(?<hash>-.+-)';
 
-        if (preg_match('#^/'.$stackPattern.'/'.$hashPattern.'/'.$filenamePattern.'\.'.$formatPattern.'$#', $uri->getPath(), $matches)) {
-            // hash with seo-filename
-        } elseif (preg_match('#^/'.$stackPattern.'/'.$hashPattern.'.'.$formatPattern.'$#', $uri->getPath(), $matches)) {
+        // hash with seo-filename
+        if (preg_match('#^/'.$stackPattern.'/'.$hashPattern.'/'.$filenamePattern.'\.'.$formatPattern.'$#', $uri->getPath(), $matches) ||
             // hash without seo-filename
-        } elseif (preg_match('#^/'.$stackPattern.'/'.$pathPattern.'/'.$filenamePattern.'\.'.$formatPattern.'$#', $uri->getPath(), $matches)) {
+            preg_match('#^/'.$stackPattern.'/'.$hashPattern.'.'.$formatPattern.'$#', $uri->getPath(), $matches) ||
             // remote_path with seo-filename
-        } elseif (preg_match('#^/'.$stackPattern.'/'.$pathPattern.'.'.$formatPattern.'$#', $uri->getPath(), $matches)) {
+            preg_match('#^/'.$stackPattern.'/'.$pathPattern.'/'.$filenamePattern.'\.'.$formatPattern.'$#', $uri->getPath(), $matches) ||
             // remote_path without seo-filename
-        } else {
-            return null;
+            preg_match('#^/'.$stackPattern.'/'.$pathPattern.'.'.$formatPattern.'$#', $uri->getPath(), $matches)) {
+            return UriComponents::createFromArray($matches);
         }
-
-        return UriComponents::createFromArray($matches);
     }
 
     /**
-     * @param string $url The original rokka render URL to be adjusted
-     * @param string $size The size of the image, eg '300w' or '2x'
+     * @param string      $url    The original rokka render URL to be adjusted
+     * @param string      $size   The size of the image, eg '300w' or '2x'
      * @param null|string $custom Any rokka options you'd like to add, or are a dpi identifier like '2x'
      *
      * @return UriInterface
@@ -157,9 +153,9 @@ class UriHelper
      * This method will then generate the right rokka URLs to get what you want, see
      * `\Rokka\Client\Tests\UriHelperTest::provideGetSrcSetUrl` for some examples and the expected returns.
      *
-     * @param UriInterface $url The original rokka render URL to be adjusted
-     * @param string $size The size of the image, eg '300w' or '2x'
-     * @param null|string $custom Any rokka options you'd like to add, or are a dpi identifier like '2x'
+     * @param UriInterface $url    The original rokka render URL to be adjusted
+     * @param string       $size   The size of the image, eg '300w' or '2x'
+     * @param null|string  $custom Any rokka options you'd like to add, or are a dpi identifier like '2x'
      *
      * @return UriInterface
      */

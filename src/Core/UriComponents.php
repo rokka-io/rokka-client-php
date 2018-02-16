@@ -5,7 +5,7 @@ namespace Rokka\Client\Core;
 /**
  * Class UriComponents.
  *
- * Abstracts the components away of a rokka uri (has, format, filename, stack, etc)
+ * Abstracts the components away of a rokka uri (hash, format, filename, stack, etc)
  *
  * @since 1.2.0
  */
