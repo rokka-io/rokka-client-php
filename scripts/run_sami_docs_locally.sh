@@ -21,7 +21,9 @@ finish () {
 }
 trap finish EXIT SIGHUP SIGINT SIGTERM
 git checkout -b _current HEAD
+set +e
 git commit -am "temp"
+set -e
 export _SAMI_BRANCH=_current
 php /tmp/sami.phar update ./scripts/sami-config.php
 
