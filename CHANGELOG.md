@@ -6,14 +6,15 @@ This project tries to follow [Semantic Versioning](http://semver.org/) since the
 
 This document mainly describes API changes important to users of this library.
 
-## 1.2.0 - unreleased
+## 1.2.0 - 2018-02-19
 
-* `OperationCollection`, `SourceImageCollection` and `StackCollection` implement now the `Iterator` interface.
+* Remove 3rd parameter $apiSecret from `\Rokka\Client\Factory::getImageClient()`. 3rd parameter is now the optional $baseUrl. Backwards compatibility is kept, but you're advised to adjust your clients.
 * Add `Stack::getDynamicUriString()`
 * Add the `StackUri` and '`UriComponents` classes.
 * Add `UriHelper::composeUri(array|UriComponents $components): UriInterface` and `UriHelper::decomposeUri(UriInterface $uri): UriComponents` 
 * Add `UriHelper::getSrcSetUrl(UriInterface $uri, string $size, null|string $custom = null)` and `UriHelper::getSrcSetUrlString(string $uri, string $size, null|string $custom = null)`
-* Remove 3rd parameter $apiSecret from `\Rokka\Client\Factory::getImageClient()`. 3rd parameter is now the optional $baseUrl. Backwards compatibility is kept, but you're advised to adjust your clients.
+* Implement `Iterator` interface for `OperationCollection`, `SourceImageCollection` and `StackCollection`.
+* Rokka PHP Client API docs are automatically generated and published at https://rokka.io/client-php-api/master/
 
 ## 1.1.0 - 2017-11-13
 
