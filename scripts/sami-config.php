@@ -16,7 +16,7 @@ $versions = GitVersionCollection::create($dir);
 if (!empty(getenv('_SAMI_BRANCH'))) {
     $versions->add(getenv('_SAMI_BRANCH'));
 } else {
-    $versions->addFromTags('1.1.*')
+    $versions->addFromTags('1.*.*')
         ->add('master', 'master branch');
 }
 if (!empty(getenv('_SAMI_TEMPLATE_DIR'))) {
