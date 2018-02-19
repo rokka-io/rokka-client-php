@@ -14,10 +14,9 @@ class ImageTest extends \PHPUnit\Framework\TestCase
     {
         $organization = 'testorg';
         $apiKey = 'apiKey';
-        $apiSecret = 'apiSecret';
 
-        $clientStandard = Factory::getImageClient($organization, $apiKey, $apiSecret);
-        $clientNewBaseUrl = Factory::getImageClient($organization, $apiKey, $apiSecret, 'http://api.rokka.local:8888');
+        $clientStandard = Factory::getImageClient($organization, $apiKey);
+        $clientNewBaseUrl = Factory::getImageClient($organization, $apiKey, 'http://api.rokka.local:8888');
 
         return [
             // Standard Rokka.io BaseUri

@@ -18,7 +18,7 @@ Require the library using composer:
 
 The `Rokka\Client\Factory` is the entry point for creating the API client.
 
-You will need to register for a Rokka account and use the api key and secret you receive.
+You will need to register for a Rokka account and use the api key you receive.
 
 ### User Client
 
@@ -28,10 +28,9 @@ The user client is used for user and organization management.
 use Rokka\Client\Factory;
 
 $apiKey = 'myKey';
-$apiSecret = 'mySecret';
 
 $userClient = Factory::getUserClient();
-$userClient->setCredentials($apiKey, $apiSecret);
+$userClient->setCredentials($apiKey);
 ```
 
 There is an optional parameter to specify the base URL of the Rokka API. This usually does not need to be adjusted.
@@ -45,9 +44,8 @@ use Rokka\Client\Factory;
 
 $organization = 'testorganization';
 $apiKey = 'myKey';
-$apiSecret = 'mySecret';
 
-$imageClient = Factory::getImageClient($organization, $apiKey, $apiSecret);
+$imageClient = Factory::getImageClient($organization, $apiKey);
 ```
 
 There is an optional fourth parameter to specify the base URL of the Rokka API. This usually does not need to be adjusted.

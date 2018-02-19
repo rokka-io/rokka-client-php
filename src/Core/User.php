@@ -29,26 +29,17 @@ class User
     public $apiKey;
 
     /**
-     * Secret.
-     *
-     * @var string
-     */
-    public $apiSecret;
-
-    /**
      * Constructor.
      *
-     * @param string $id        Id
-     * @param string $email     Email
-     * @param string $apiKey    API key
-     * @param string $apiSecret API secret
+     * @param string $id     Id
+     * @param string $email  Email
+     * @param string $apiKey API key
      */
-    public function __construct($id, $email, $apiKey, $apiSecret)
+    public function __construct($id, $email, $apiKey)
     {
         $this->id = $id;
         $this->email = $email;
         $this->apiKey = $apiKey;
-        $this->apiSecret = $apiSecret;
     }
 
     /**
@@ -62,7 +53,7 @@ class User
     {
         $data = json_decode($jsonString, true);
 
-        return new self($data['id'], $data['email'], $data['api_key'], $data['api_secret']);
+        return new self($data['id'], $data['email'], $data['api_key']);
     }
 
     /**
@@ -93,15 +84,5 @@ class User
     public function getApiKey()
     {
         return $this->apiKey;
-    }
-
-    /**
-     * Get Api Secret.
-     *
-     * @return string
-     */
-    public function getApiSecret()
-    {
-        return $this->apiSecret;
     }
 }

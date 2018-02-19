@@ -23,16 +23,23 @@ class Factory
      *
      * @param string $organization Organization name
      * @param string $apiKey       API key
-     * @param string $apiSecret    API secret
      * @param string $baseUrl      Optional base url
      *
      * @return Image
      */
-    public static function getImageClient($organization, $apiKey, $apiSecret, $baseUrl = BaseClient::DEFAULT_API_BASE_URL)
+    public static function getImageClient($organization, $apiKey, $baseUrl = BaseClient::DEFAULT_API_BASE_URL)
     {
+        if (func_num_args() > 3) {
+            $baseUrl = func_get_arg(3);
+        } elseif (3 === func_num_args()) {
+            //if $baseUrl doesn't start with http, it may be a secret from the old signature, remove that, it's not used anymore
+            if ('http' !== substr($baseUrl, 0, 4)) {
+                $baseUrl = BaseClient::DEFAULT_API_BASE_URL;
+            }
+        }
         $client = self::getGuzzleClient($baseUrl);
 
-        return new ImageClient($client, $organization, $apiKey, $apiSecret);
+        return new ImageClient($client, $organization, $apiKey);
     }
 
     /**
