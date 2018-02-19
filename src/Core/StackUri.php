@@ -12,7 +12,7 @@ use Rokka\Client\UriHelper;
  *
  * Examples:
  *
- * ```php
+ * ```language-php
  * $stackUri = new StackUri('someStackName');
  * $stackUri->addOverridingOptions('options-dpr-2');
  * echo $stackUri->getStackUriString();
