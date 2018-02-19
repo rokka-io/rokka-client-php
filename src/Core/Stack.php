@@ -5,7 +5,7 @@ namespace Rokka\Client\Core;
 /**
  * Represents a collection of stack operations for an organization.
  */
-class Stack
+class Stack extends StackAbstract
 {
     /**
      * @var string|null Organization name
@@ -13,24 +13,9 @@ class Stack
     public $organization;
 
     /**
-     * @var string|null Name of the stack
-     */
-    public $name;
-
-    /**
      * @var \DateTime|null When this stack was first created
      */
-    public $created;
-
-    /**
-     * @var StackOperation[] Collection of stack operations that this stack has
-     */
-    public $stackOperations;
-
-    /**
-     * @var array Array of stack options that this stack has
-     */
-    public $stackOptions;
+    private $created;
 
     /**
      * @var StackExpression[]
@@ -52,10 +37,8 @@ class Stack
      */
     public function __construct($organization = null, $name = null, array $stackOperations = [], array $stackOptions = [], \DateTime $created = null)
     {
+        parent::__construct($name, $stackOperations, $stackOptions);
         $this->organization = $organization;
-        $this->name = $name;
-        $this->stackOperations = $stackOperations;
-        $this->stackOptions = $stackOptions;
         $this->created = $created;
     }
 
@@ -120,11 +103,11 @@ class Stack
      * @param array       $config
      * @param string|null $organization
      *
-     * @return Stack
+     * @return self
      */
     public static function createFromConfig(string $stackName, array $config, string $organization = null)
     {
-        $stack = new self($organization, $stackName);
+        $stack = new static($organization, $stackName);
 
         if (isset($config['operations'])) {
             $stack->setStackOperations($config['operations']);
@@ -166,30 +149,6 @@ class Stack
     }
 
     /**
-     * Get name of stack for url.
-     *
-     * @return null|string
-     */
-    public function getName()
-    {
-        return $this->name;
-    }
-
-    /**
-     * @since 1.1.0
-     *
-     * @param string $name
-     *
-     * @return self
-     */
-    public function setName($name)
-    {
-        $this->name = $name;
-
-        return $this;
-    }
-
-    /**
      * Get date of creation for this stack.
      *
      * @return null|\DateTime
@@ -197,86 +156,6 @@ class Stack
     public function getCreated()
     {
         return $this->created;
-    }
-
-    /**
-     * @return StackOperation[]
-     */
-    public function getStackOperations()
-    {
-        return $this->stackOperations;
-    }
-
-    /**
-     * @since 1.1.0
-     *
-     * @param StackOperation[] $operations
-     *
-     * @return self
-     */
-    public function setStackOperations(array $operations)
-    {
-        $this->stackOperations = [];
-        foreach ($operations as $operation) {
-            $this->addStackOperation($operation);
-        }
-
-        return $this;
-    }
-
-    /**
-     * Adds a StackOperation to the list of existing Stack Operations.
-     *
-     * @since 1.1.0
-     *
-     * @param StackOperation $stackOperation
-     *
-     * @return self
-     */
-    public function addStackOperation(StackOperation $stackOperation)
-    {
-        $this->stackOperations[] = $stackOperation;
-
-        return $this;
-    }
-
-    /**
-     * @return array
-     */
-    public function getStackOptions()
-    {
-        return $this->stackOptions;
-    }
-
-    /**
-     * @since 1.1.0
-     *
-     * @param array $options
-     *
-     * @return self
-     */
-    public function setStackOptions(array $options)
-    {
-        $this->stackOptions = $options;
-
-        return $this;
-    }
-
-    /**
-     * Sets a single Stack option to the list of existing Stack options.
-     *
-     * @since 1.1.0
-     *
-     * @param string $key
-     * @param mixed  $value
-     *
-     * @return self
-     */
-    public function addStackOption($key, $value)
-    {
-        $this->stackOptions[$key] = $value;
-
-        return $this;
     }
 
     /**
@@ -324,8 +203,9 @@ class Stack
 
     /**
      * Gets stack operations / options / expressions as one array.
+     * The values of the keys are objects for operations and expressions.
      *
-     * Useful for using this to sent as json to the Rokka API
+     * Useful for using this to sent a stack as json to the Rokka API
      *
      * @since 1.1.0
      *
@@ -337,6 +217,20 @@ class Stack
             'operations' => $this->getStackOperations(),
             'options' => $this->getStackOptions(),
             'expressions' => $this->getStackExpressions(),
-            ];
+        ];
+    }
+
+    /**
+     * Returns the stack url part as a dynamic stack for previewing.
+     *
+     * @since 1.2.0
+     *
+     * @return string
+     */
+    public function getDynamicUriString()
+    {
+        $stack = new StackUri('dynamic', $this->getStackOperations(), $this->getStackOptions());
+
+        return $stack->getStackUriString();
     }
 }

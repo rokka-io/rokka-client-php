@@ -6,7 +6,7 @@ use Rokka\Client\Core\Stack;
 use Rokka\Client\Core\StackExpression;
 use Rokka\Client\Core\StackOperation;
 
-class StackTest extends \PHPUnit_Framework_TestCase
+class StackTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @return array

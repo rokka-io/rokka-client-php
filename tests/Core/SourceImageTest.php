@@ -3,7 +3,7 @@
 use Rokka\Client\Core\DynamicMetadata\SubjectArea;
 use Rokka\Client\Core\SourceImage;
 
-class SourceImageTest extends \PHPUnit_Framework_TestCase
+class SourceImageTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @return array
