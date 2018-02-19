@@ -38,7 +38,6 @@ abstract class Base
      */
     private $credentials = [
         'key' => '',
-        'secret' => '',
     ];
 
     /**
@@ -54,12 +53,11 @@ abstract class Base
     /**
      * Set the credentials.
      *
-     * @param string $key    API key
-     * @param string $secret API secret
+     * @param string $key API key
      */
-    public function setCredentials($key, $secret)
+    public function setCredentials($key)
     {
-        $this->credentials = ['key' => $key, 'secret' => $secret];
+        $this->credentials = ['key' => $key];
     }
 
     /**

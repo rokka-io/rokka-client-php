@@ -20,7 +20,7 @@ use Rokka\Client\Core\StackUri;
  * All code examples assume you already have a Rokka Image Client in `$client` with:
  *
  * ```language-php
- * $client = \Rokka\Client\Factory::getImageClient('testorganization', 'apiKey', 'apiSecret');
+ * $client = \Rokka\Client\Factory::getImageClient('testorganization', 'apiKey');
  * ```
  */
 class Image extends Base
@@ -48,14 +48,13 @@ class Image extends Base
      * @param ClientInterface $client              Client instance
      * @param string          $defaultOrganization Default organization
      * @param string          $apiKey              API key
-     * @param string          $apiSecret           API secret
      */
-    public function __construct(ClientInterface $client, $defaultOrganization, $apiKey, $apiSecret)
+    public function __construct(ClientInterface $client, $defaultOrganization, $apiKey)
     {
         parent::__construct($client);
 
         $this->defaultOrganization = $defaultOrganization;
-        $this->setCredentials($apiKey, $apiSecret);
+        $this->setCredentials($apiKey);
     }
 
     /**
@@ -409,7 +408,7 @@ class Image extends Base
      *
      * ```php
      * use Rokka\Client\Core\Stack;
-     * $client = \Rokka\Client\Factory::getImageClient('testorganization', 'apiKey', 'apiSecret');
+     * $client = \Rokka\Client\Factory::getImageClient('testorganization', 'apiKey');
      * $stacks = $client->listStacks();
      * foreach ($stacks as $stack) {
      * echo 'Stack ' . $stack->getName() . PHP_EOL;
