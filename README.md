@@ -54,6 +54,10 @@ There is an optional fourth parameter to specify the base URL of the Rokka API. 
 
 See the [official documentation](https://rokka.io/documentation) on how to use the Rokka API.
 
+## API Docs
+
+See als the [API Docs](https://rokka.io/client-php-api/master/) for further information.
+
 ## Running tests
 
 Run `vendor/bin/phpunit` in the project root.
