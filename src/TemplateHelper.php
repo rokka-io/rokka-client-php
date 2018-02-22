@@ -194,8 +194,12 @@ class TemplateHelper
     }
 
     /**
-     * @param string $url
-     * @param array  $sizes
+     * Returns a src and srcset attibrute (as one string) with the correct rokka render urls
+     * for responsive images.
+     * To be used directly in your HTML templates
+     *
+     * @param string $url The render URL of the "non-retina" image
+     * @param array  $sizes For which sizes srcset links should be generated, works with 'x' or 'w' style
      *
      * @return string
      */
@@ -226,8 +230,12 @@ class TemplateHelper
     }
 
     /**
-     * @param string $url
-     * @param array  $sizes
+     * Returns a background-image:url defintions (as one string) with the correct rokka render urls
+     * for responsive images.
+     * To be used directly in your CSS templates or HTML tags
+     *
+     * @param string $url The render URL of the "non-retina" image
+     * @param array  $sizes For which sizes srcset links should be generated, works with 'x' or 'w' style
      *
      * @return string
      */
