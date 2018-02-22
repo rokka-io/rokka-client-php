@@ -9,27 +9,23 @@ class FileInfo extends LocalImageAbstract
      */
     private $image;
 
+    /**
+     * @var null|string
+     */
     private $content = null;
 
+    /**
+     * @var null|string
+     */
     private $filename = null;
 
-    /**
-     * FileInfo constructor.
-     *
-     * @param \SplFileInfo $image
-     * @param string|null  $identifier
-     * @param mixed        $context
-     */
     public function __construct(\SplFileInfo $image, $identifier = null, $context = null)
     {
-        $this->identifier = $identifier;
+        parent::__construct($identifier);
         $this->image = $image;
         $this->context = $context;
     }
 
-    /**
-     * @return string|null
-     */
     public function getFilename()
     {
         if (null !== $this->filename) {
@@ -56,9 +52,6 @@ class FileInfo extends LocalImageAbstract
         return $this->identifier;
     }
 
-    /**
-     * @return string|bool
-     */
     public function getRealpath()
     {
         return $this->image->getRealPath();

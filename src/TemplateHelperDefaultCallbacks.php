@@ -12,13 +12,13 @@ class TemplateHelperDefaultCallbacks extends TemplateHelperCallbacksAbstract
     public static $hashesFolder = '/tmp/';
 
     /**
-     * @param LocalImageAbstract $file
+     * @param LocalImageAbstract $image
      *
      * @return null|string
      */
-    public function getHash(LocalImageAbstract $file)
+    public function getHash(LocalImageAbstract $image)
     {
-        $hashFile = $this->getHashFileName($file);
+        $hashFile = $this->getHashFileName($image);
         if (file_exists($hashFile)) {
             $data = json_decode(file_get_contents($hashFile), true);
 
@@ -29,14 +29,14 @@ class TemplateHelperDefaultCallbacks extends TemplateHelperCallbacksAbstract
     }
 
     /**
-     * @param LocalImageAbstract $file
+     * @param LocalImageAbstract $image
      * @param SourceImage        $sourceImage
      *
      * @return string
      */
-    public function saveHash(LocalImageAbstract $file, SourceImage $sourceImage)
+    public function saveHash(LocalImageAbstract $image, SourceImage $sourceImage)
     {
-        file_put_contents($this->getHashFileName($file), json_encode(['hash' => $sourceImage->shortHash]));
+        file_put_contents($this->getHashFileName($image), json_encode(['hash' => $sourceImage->shortHash]));
 
         return $sourceImage->shortHash;
     }
@@ -52,7 +52,6 @@ class TemplateHelperDefaultCallbacks extends TemplateHelperCallbacksAbstract
         if (false !== $path) {
             return $path.self::$fileExtension;
         }
-
-        return self::$hashesFolder.'/'.$image->getIdentifier().self::$fileExtension;
+        return self::$hashesFolder.'/'.str_replace("/","__",$image->getIdentifier()).self::$fileExtension;
     }
 }

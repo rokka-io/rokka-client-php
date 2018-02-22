@@ -13,23 +13,23 @@ abstract class TemplateHelperCallbacksAbstract
      * Look up if the hash is stored in the right place (DB or similar) and return it.
      * If not stored, return null, so that the picture will be uploaded.
      *
-     * @param LocalImageAbstract $file
+     * @param LocalImageAbstract $image
      *
      * @return null|string
      */
-    abstract public function getHash(LocalImageAbstract $file);
+    abstract public function getHash(LocalImageAbstract $image);
 
     /**
      * Callback when an image was saved/uploaded on the rokka server.
      *
      * Should return the hash or short hash
      *
-     * @param LocalImageAbstract $file          The "local" image
+     * @param LocalImageAbstract $image         The "local" image
      * @param SourceImage        $sourceImage   The SourceImage on the rokka server with all needed meta info
      *
      * @return string hash or shorthash
      */
-    abstract public function saveHash(LocalImageAbstract $file, SourceImage $sourceImage);
+    abstract public function saveHash(LocalImageAbstract $image, SourceImage $sourceImage);
 
     /**
      * Return an array of metadata to be sent to the rokka server.
