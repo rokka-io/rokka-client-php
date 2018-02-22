@@ -4,9 +4,10 @@ namespace Rokka\Client\LocalImage;
 
 class StringContent extends LocalImageAbstract
 {
+    /**
+     * @var null|string
+     */
     private $content = null;
-
-    private $filename = null;
 
     /**
      * StringContent constructor.
@@ -17,7 +18,7 @@ class StringContent extends LocalImageAbstract
      */
     public function __construct($image, $identifier = null, $context = null)
     {
-        $this->identifier = $identifier;
+        parent::__construct($identifier);
         $this->content = $image;
         $this->context = $context;
     }
@@ -33,11 +34,6 @@ class StringContent extends LocalImageAbstract
         $this->identifier = md5($this->getContent());
 
         return $this->identifier;
-    }
-
-    public function getFilename()
-    {
-        return null;
     }
 
     /**
