@@ -7,6 +7,7 @@ use Rokka\Client\Core\SourceImage;
 use Rokka\Client\Core\StackUri;
 use Rokka\Client\LocalImage\FileInfo;
 use Rokka\Client\LocalImage\LocalImageAbstract;
+use Rokka\Client\LocalImage\RokkaHash;
 
 /**
  * Class TemplateHelper.
@@ -336,6 +337,9 @@ class TemplateHelper
         if ($file instanceof \SplFileInfo) {
             return new FileInfo($file, $identifier, $context);
         } elseif (is_string($file)) {
+            if (preg_match('/^[0-9a-f]{6,40}$/', $file)) {
+                return new RokkaHash($file);
+            }
             return new FileInfo(new \SplFileInfo($file), $identifier, $context);
         }
         // FIXME: return what, if nothing matches? Exception maybe
