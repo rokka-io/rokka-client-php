@@ -368,7 +368,7 @@ class TemplateHelper
             ',' => '-',
             '@' => '-',
         ];
-        $slug = \URLify::filter($text, 60, $language);
+        $slug = \URLify::filter($text, 60, $language, true, false);
         $slug = str_replace(['_'], '-', $slug);
         $slug = preg_replace('/[^0-9a-z-]/', '', $slug);
 
