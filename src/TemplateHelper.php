@@ -199,7 +199,7 @@ class TemplateHelper
      *
      * @return string
      */
-    public function getSrcAttributes($url, $sizes = ['2x'])
+    public static function getSrcAttributes($url, $sizes = ['2x'])
     {
         $attrs = 'src="'.$url.'"';
         $srcSets = [];
@@ -231,7 +231,7 @@ class TemplateHelper
      *
      * @return string
      */
-    public function getBackgroundImageStyle($url, array $sizes = ['2x'])
+    public static function getBackgroundImageStyle($url, array $sizes = ['2x'])
     {
         $style = "background-image:url('$url');";
 
