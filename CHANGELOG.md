@@ -9,6 +9,7 @@ This document mainly describes API changes important to users of this library.
 ## 1.3.0 - unreleased
 
 * Added `\Rokka\Client\Image::restoreSourceImage($hash, $organization)` for restoring deleted images.
+* Added `\Rokka\Client\Image::copySourceImage($hash, $destination, $overwrite, $organization)` for copying an image to another organization.
 
 ## 1.2.0 - 2018-02-19
 
