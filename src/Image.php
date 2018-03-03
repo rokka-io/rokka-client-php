@@ -133,6 +133,32 @@ class Image extends Base
     }
 
     /**
+     * Restore a source image.
+     *
+     * @param string $hash         Hash of the image
+     * @param string $organization Optional organization name
+     *
+     * @throws GuzzleException If the request fails for a different reason than image not found
+     *
+     * @return bool True if successful, false if image not found
+     *
+     * @throws \Exception
+     */
+    public function restoreSourceImage($hash, $organization = '')
+    {
+        try {
+            $response = $this->call('POST', implode('/', [self::SOURCEIMAGE_RESOURCE, $this->getOrganization($organization), $hash, 'restore']));
+        } catch (GuzzleException $e) {
+            if (404 == $e->getCode()) {
+                return false;
+            }
+
+            throw $e;
+        }
+
+        return '200' == $response->getStatusCode();
+    }
+    /**
      * Delete source images by binaryhash.
      *
      * Since the same binaryhash can have different images in rokka, this may delete more than one picture.

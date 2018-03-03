@@ -6,6 +6,10 @@ This project tries to follow [Semantic Versioning](http://semver.org/) since the
 
 This document mainly describes API changes important to users of this library.
 
+## 1.3.0 - unreleased
+
+* Added `\Rokka\Client\Image::restoreSourceImage($hash, $organization)` for restoring deleted images.
+
 ## 1.2.0 - 2018-02-19
 
 * Remove 3rd parameter $apiSecret from `\Rokka\Client\Factory::getImageClient()`. 3rd parameter is now the optional $baseUrl. Backwards compatibility is kept, but you're advised to adjust your clients.
