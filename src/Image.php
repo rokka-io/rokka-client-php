@@ -135,7 +135,7 @@ class Image extends Base
     /**
      * Restore a source image.
      *
-     * @param string $hash Hash of the image
+     * @param string $hash         Hash of the image
      * @param string $organization Optional organization name
      *
      * @throws GuzzleException If the request fails for a different reason than image not found
@@ -150,20 +150,20 @@ class Image extends Base
             if (404 == $e->getCode()) {
                 return false;
             }
+
             throw $e;
         }
 
         return '200' == $response->getStatusCode();
     }
 
-
     /**
-     * Copy a source image to another org
+     * Copy a source image to another org.
      *
-     * @param string $hash Hash of the image
+     * @param string $hash           Hash of the image
      * @param string $destinationOrg The destination organization
-     * @param bool $overwrite If an existing image should be overwritten
-     * @param string $organization Optional organization name
+     * @param bool   $overwrite      If an existing image should be overwritten
+     * @param string $organization   Optional organization name
      *
      * @throws GuzzleException If the request fails for a different reason than image not found
      *
@@ -173,7 +173,7 @@ class Image extends Base
     {
         try {
             $headers = ['Destination' => $destinationOrg];
-            if ($overwrite === false) {
+            if (false === $overwrite) {
                 $headers['Overwrite'] = 'F';
             }
             $response = $this->call('COPY',
@@ -184,9 +184,11 @@ class Image extends Base
             if (404 == $e->getCode()) {
                 return false;
             }
+
             throw $e;
         }
         $statusCode = $response->getStatusCode();
+
         return  $statusCode >= 200 && $statusCode < 300;
     }
 
