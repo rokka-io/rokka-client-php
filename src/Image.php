@@ -160,16 +160,18 @@ class Image extends Base
     /**
      * Copy a source image to another org.
      *
+     * Needs read permissions on the source organization and write permissions on the write organization.
+     *
      * @param string $hash           Hash of the image
      * @param string $destinationOrg The destination organization
      * @param bool   $overwrite      If an existing image should be overwritten
-     * @param string $organization   Optional organization name
+     * @param string $sourceOrg      Optional source organization name
      *
      * @throws GuzzleException If the request fails for a different reason than image not found
      *
      * @return bool True if successful, false if source image not found
      */
-    public function copySourceImage($hash, $destinationOrg, $overwrite = true, $organization = '')
+    public function copySourceImage($hash, $destinationOrg, $overwrite = true, $sourceOrg = '')
     {
         try {
             $headers = ['Destination' => $destinationOrg];
@@ -177,7 +179,7 @@ class Image extends Base
                 $headers['Overwrite'] = 'F';
             }
             $response = $this->call('COPY',
-                implode('/', [self::SOURCEIMAGE_RESOURCE, $this->getOrganization($organization), $hash]),
+                implode('/', [self::SOURCEIMAGE_RESOURCE, $this->getOrganization($sourceOrg), $hash]),
                 ['headers' => $headers]
             );
         } catch (GuzzleException $e) {
