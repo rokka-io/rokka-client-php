@@ -18,9 +18,9 @@ use Rokka\Client\UriHelper;
  * echo $stackUri->getStackUriString();
  * ```
  *
- * @see Stack::getDynamicUriString()
- * @see UriHelper::addOptionsToUri()
- * @see UriHelper::addOptionsToUriString()
+ * @see \Rokka\Client\Core\Stack::getDynamicUriString()
+ * @see \Rokka\Client\UriHelper::addOptionsToUri()
+ * @see \Rokka\Client\UriHelper::addOptionsToUriString()
  * @since 1.2.0
  */
 class StackUri extends StackAbstract
