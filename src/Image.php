@@ -133,6 +133,68 @@ class Image extends Base
     }
 
     /**
+     * Restore a source image.
+     *
+     * @param string $hash         Hash of the image
+     * @param string $organization Optional organization name
+     *
+     * @throws GuzzleException If the request fails for a different reason than image not found
+     *
+     * @return bool True if successful, false if image not found
+     */
+    public function restoreSourceImage($hash, $organization = '')
+    {
+        try {
+            $response = $this->call('POST', implode('/', [self::SOURCEIMAGE_RESOURCE, $this->getOrganization($organization), $hash, 'restore']));
+        } catch (GuzzleException $e) {
+            if (404 == $e->getCode()) {
+                return false;
+            }
+
+            throw $e;
+        }
+
+        return '200' == $response->getStatusCode();
+    }
+
+    /**
+     * Copy a source image to another org.
+     *
+     * Needs read permissions on the source organization and write permissions on the write organization.
+     *
+     * @param string $hash           Hash of the image
+     * @param string $destinationOrg The destination organization
+     * @param bool   $overwrite      If an existing image should be overwritten
+     * @param string $sourceOrg      Optional source organization name
+     *
+     * @throws GuzzleException If the request fails for a different reason than image not found
+     *
+     * @return bool True if successful, false if source image not found
+     */
+    public function copySourceImage($hash, $destinationOrg, $overwrite = true, $sourceOrg = '')
+    {
+        try {
+            $headers = ['Destination' => $destinationOrg];
+            if (false === $overwrite) {
+                $headers['Overwrite'] = 'F';
+            }
+            $response = $this->call('COPY',
+                implode('/', [self::SOURCEIMAGE_RESOURCE, $this->getOrganization($sourceOrg), $hash]),
+                ['headers' => $headers]
+            );
+        } catch (GuzzleException $e) {
+            if (404 == $e->getCode()) {
+                return false;
+            }
+
+            throw $e;
+        }
+        $statusCode = $response->getStatusCode();
+
+        return  $statusCode >= 200 && $statusCode < 300;
+    }
+
+    /**
      * Delete source images by binaryhash.
      *
      * Since the same binaryhash can have different images in rokka, this may delete more than one picture.
