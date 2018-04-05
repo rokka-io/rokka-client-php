@@ -5,6 +5,11 @@ namespace Rokka\Client;
 use Rokka\Client\Core\SourceImage;
 use Rokka\Client\LocalImage\LocalImageAbstract;
 
+/**
+ * FIXME: Add some short description.
+ *
+ * @since 1.3.0
+ */
 class TemplateHelperDefaultCallbacks extends TemplateHelperCallbacksAbstract
 {
     public static $fileExtension = '.rokka.txt';
@@ -52,6 +57,7 @@ class TemplateHelperDefaultCallbacks extends TemplateHelperCallbacksAbstract
         if (false !== $path) {
             return $path.self::$fileExtension;
         }
-        return self::$hashesFolder.'/'.str_replace("/","__",$image->getIdentifier()).self::$fileExtension;
+
+        return self::$hashesFolder.'/'.str_replace('/', '__', $image->getIdentifier()).self::$fileExtension;
     }
 }
