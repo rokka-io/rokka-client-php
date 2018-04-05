@@ -2,6 +2,11 @@
 
 namespace Rokka\Client\LocalImage;
 
+/**
+ * FIXME: Add some short description.
+ *
+ * @since 1.3.0
+ */
 class StringContent extends LocalImageAbstract
 {
     /**

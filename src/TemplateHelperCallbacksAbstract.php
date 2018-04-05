@@ -5,13 +5,20 @@ namespace Rokka\Client;
 use Rokka\Client\Core\SourceImage;
 use Rokka\Client\LocalImage\LocalImageAbstract;
 
+/**
+ * FIXME: Add some short description.
+ *
+ * @since 1.3.0
+ */
 abstract class TemplateHelperCallbacksAbstract
 {
     /**
-     * Callback when a "local" image needs its hash
+     * Callback when a "local" image needs its hash.
      *
      * Look up if the hash is stored in the right place (DB or similar) and return it.
      * If not stored, return null, so that the picture will be uploaded.
+     *
+     * @since 1.3.0
      *
      * @param LocalImageAbstract $image
      *
@@ -24,8 +31,10 @@ abstract class TemplateHelperCallbacksAbstract
      *
      * Should return the hash or short hash
      *
-     * @param LocalImageAbstract $image         The "local" image
-     * @param SourceImage        $sourceImage   The SourceImage on the rokka server with all needed meta info
+     * @since 1.3.0
+     *
+     * @param LocalImageAbstract $image       The "local" image
+     * @param SourceImage        $sourceImage The SourceImage on the rokka server with all needed meta info
      *
      * @return string hash or shorthash
      */
@@ -33,6 +42,8 @@ abstract class TemplateHelperCallbacksAbstract
 
     /**
      * Return an array of metadata to be sent to the rokka server.
+     *
+     * @since 1.3.0
      *
      * If you want to send special metadata to the rokka server for later searching, you can return them here.
      * Will be called, before an image is uploaded to rokka.

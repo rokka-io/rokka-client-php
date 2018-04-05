@@ -10,7 +10,9 @@ use Rokka\Client\LocalImage\LocalImageAbstract;
 use Rokka\Client\LocalImage\RokkaHash;
 
 /**
- * Class TemplateHelper.
+ * FIXME: Add description.
+ *
+ * @since 1.3.0
  */
 class TemplateHelper
 {
@@ -30,6 +32,20 @@ class TemplateHelper
      */
     private $rokkaApiHost;
 
+    /**
+     * @var \Rokka\Client\Image
+     */
+    private $imageClient;
+
+    /**
+     * @since 1.3.0
+     *
+     * @param string                               $organization      Organization name
+     * @param string                               $apiKey            API key
+     * @param TemplateHelperCallbacksAbstract|null $callbacks         Optional callbacks for read and write of hashes
+     * @param string|null                          $publicRokkaDomain Optional public rokka URL, if different from the standard one (org.render.rokka.io)
+     * @param string|null                          $rokkaApiHost      Optional base url
+     */
     public function __construct(
         $organization,
         $apiKey,
@@ -39,7 +55,12 @@ class TemplateHelper
     ) {
         $this->rokkaApiKey = $apiKey;
         $this->rokkaOrg = $organization;
+
+        if (null === $rokkaApiHost) {
+            $rokkaApiHost = BaseClient::DEFAULT_API_BASE_URL;
+        }
         $this->rokkaApiHost = $rokkaApiHost;
+
         if ($publicRokkaDomain) {
             $scheme = parse_url($publicRokkaDomain, PHP_URL_SCHEME);
             if (is_null($scheme)) {
@@ -59,6 +80,8 @@ class TemplateHelper
     /**
      * Returns the hash of an image.
      * If we don't have an image stored locally, it uploads it to rokka.
+     *
+     * @since 1.3.0
      *
      * @param LocalImageAbstract $image
      *
@@ -87,6 +110,8 @@ class TemplateHelper
     /**
      * Gets the rokka URL for an image
      * Uploads it, if we don't have a hash locally.
+     *
+     * @since 1.3.0
      *
      * @param LocalImageAbstract|string|\SplFileInfo $image       The image
      * @param string                                 $stack       The stack name
@@ -123,6 +148,8 @@ class TemplateHelper
     /**
      * Return the rokka URL for getting a resized image.
      *
+     * @since 1.3.0
+     *
      * @param LocalImageAbstract|string|\SplFileInfo $image       The image to be resized
      * @param string|int                             $width       The width of the image
      * @param string|int|null                        $height      The height of the image
@@ -150,6 +177,7 @@ class TemplateHelper
     /**
      * Return the rokka URL for getting a resized and cropped image.
      *
+     * @since 1.3.0
      *
      * @param LocalImageAbstract|string|\SplFileInfo $image       The image to be resized
      * @param string|int                             $width       The width of the image
@@ -174,6 +202,7 @@ class TemplateHelper
     /**
      * Return the rokka URL for getting the image in it's original size.
      *
+     * @since 1.3.0
      *
      * @param LocalImageAbstract|string|\SplFileInfo $image       The image to be resized
      * @param string                                 $format      The image format of the image (jpg, png, webp, ...)
@@ -196,9 +225,11 @@ class TemplateHelper
     /**
      * Returns a src and srcset attibrute (as one string) with the correct rokka render urls
      * for responsive images.
-     * To be used directly in your HTML templates
+     * To be used directly in your HTML templates.
      *
-     * @param string $url The render URL of the "non-retina" image
+     * @since 1.3.0
+     *
+     * @param string $url   The render URL of the "non-retina" image
      * @param array  $sizes For which sizes srcset links should be generated, works with 'x' or 'w' style
      *
      * @return string
@@ -232,9 +263,11 @@ class TemplateHelper
     /**
      * Returns a background-image:url defintions (as one string) with the correct rokka render urls
      * for responsive images.
-     * To be used directly in your CSS templates or HTML tags
+     * To be used directly in your CSS templates or HTML tags.
      *
-     * @param string $url The render URL of the "non-retina" image
+     * @since 1.3.0
+     *
+     * @param string $url   The render URL of the "non-retina" image
      * @param array  $sizes For which sizes srcset links should be generated, works with 'x' or 'w' style
      *
      * @return string
@@ -264,6 +297,8 @@ class TemplateHelper
     /**
      * Returns the filename of the image without extension.
      *
+     * @since 1.3.0
+     *
      * @param LocalImageAbstract|null $image
      *
      * @return string
@@ -281,6 +316,7 @@ class TemplateHelper
      * Gets the rokka URL for an image hash and stack with optional seo filename in the URL.
      * Doesn't upload it, if we don't have a local hash for it. Use getStackUrl for that.
      *
+     * @since 1.3.0
      * @see TemplateHelper::getStackUrl()
      *
      * @param string          $hash        The rokka hash
@@ -314,16 +350,26 @@ class TemplateHelper
     }
 
     /**
+     * Gets the rokka image client used by this class.
+     *
+     * @since 1.3.0
+     *
      * @return \Rokka\Client\Image
      */
     public function getRokkaClient()
     {
-        $imageClient = Factory::getImageClient($this->rokkaOrg, $this->rokkaApiKey, '', $this->rokkaApiHost);
+        if (null === $this->imageClient) {
+            $this->imageClient = Factory::getImageClient($this->rokkaOrg, $this->rokkaApiKey, '', $this->rokkaApiHost);
+        }
 
-        return $imageClient;
+        return $this->imageClient;
     }
 
     /**
+     * FIXME: Add description.
+     *
+     * @since 1.3.0
+     *
      * @param LocalImageAbstract|string|\SplFileInfo $file
      * @param string|null                            $identifier
      * @param mixed                                  $context
@@ -348,6 +394,7 @@ class TemplateHelper
             if (preg_match('/^[0-9a-f]{6,40}$/', $file)) {
                 return new RokkaHash($file);
             }
+
             return new FileInfo(new \SplFileInfo($file), $identifier, $context);
         }
         // FIXME: return what, if nothing matches? Exception maybe
@@ -355,6 +402,8 @@ class TemplateHelper
 
     /**
      * Create a URL-safe text from $text.
+     *
+     * @since 1.3.0
      *
      * @param string $text     Text to slugify
      * @param string $language Optional language to be used for slugifying (eg. 'de' slugifies 'ö' to 'oe')
