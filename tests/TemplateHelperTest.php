@@ -179,9 +179,9 @@ class TemplateHelperTest extends \PHPUnit\Framework\TestCase
     /**
      * @dataProvider provideSlugify
      *
-     * @param $inputUrl
-     * @param $options
-     * @param $expected
+     * @param string $input
+     * @param string $lang
+     * @param string $expected
      */
     public function testSlugify($input, $lang, $expected)
     {
