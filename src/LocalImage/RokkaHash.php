@@ -3,6 +3,7 @@
 namespace Rokka\Client\LocalImage;
 
 use Rokka\Client\Image;
+use Rokka\Client\TemplateHelper;
 
 /**
  * FIXME: Add some short description.
@@ -17,24 +18,22 @@ class RokkaHash extends LocalImageAbstract
     private $content = null;
 
     /**
-     * @var Image|null
+     * @var TemplateHelper|null
      */
-    private $imageClient;
+    private $templateHelper;
 
     /**
-     * RokkaHash constructor.
-     *
-     * @param string      $hash
-     * @param string|null $identifier
-     * @param mixed|null  $context
-     * @param Image|null  $imageClient
+     * @param string               $hash
+     * @param string|null          $identifier
+     * @param mixed|null           $context
+     * @param TemplateHelper|null  $templateHelper
      */
-    public function __construct($hash, $identifier = null, $context = null, $imageClient = null)
+    public function __construct($hash, $identifier = null, $context = null, $templateHelper = null)
     {
         parent::__construct($identifier);
         $this->rokkaHash = $hash;
         $this->context = $context;
-        $this->imageClient = $imageClient;
+        $this->templateHelper = $templateHelper;
     }
 
     public function getIdentifier()
@@ -58,13 +57,13 @@ class RokkaHash extends LocalImageAbstract
      */
     public function getContent()
     {
-        if (null === $this->imageClient) {
-            throw new \RuntimeException('Rokka Image Client is not set for downloading images');
+        if (null === $this->templateHelper) {
+            throw new \RuntimeException('Rokka TemplateHelper is not set in RokkaHash. Needed for downloading images.');
         }
         if (null === $this->content) {
             $rokkaHash = $this->getRokkaHash();
             if (null !== $rokkaHash) {
-                $this->content = $this->imageClient->getSourceImageContents($rokkaHash);
+                $this->content = $this->templateHelper->getRokkaClient()->getSourceImageContents($rokkaHash);
             }
         }
 
