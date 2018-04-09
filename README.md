@@ -61,3 +61,12 @@ See als the [API Docs](https://rokka.io/client-php-api/master/) for further info
 ## Running tests
 
 Run `vendor/bin/phpunit` in the project root.
+
+## Running PHP-CS-Fixer
+
+```
+curl http://cs.sensiolabs.org/download/php-cs-fixer-v2.phar > /tmp/php-cs-fixer.phar
+php /tmp/php-cs-fixer.phar  fix -v --diff --using-cache=yes src/
+```
+
+```

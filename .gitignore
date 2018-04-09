@@ -10,3 +10,4 @@
 # PHP Storm
 /.idea
 /sami-output
+/.php_cs.cache
