@@ -21,9 +21,9 @@ class User extends Base
      *
      * @param string $email Email
      *
-     * @return UserModel
-     *
      * @throws GuzzleException
+     *
+     * @return UserModel
      */
     public function createUser($email)
     {
@@ -45,9 +45,9 @@ class User extends Base
      * @param string $billingMail Billing mail
      * @param string $displayName Optional display name
      *
-     * @return Organization
-     *
      * @throws GuzzleException
+     *
+     * @return Organization
      */
     public function createOrganization($name, $billingMail, $displayName = '')
     {
@@ -73,9 +73,9 @@ class User extends Base
      *
      * @param string $name Organization name
      *
-     * @return Organization
-     *
      * @throws GuzzleException
+     *
+     * @return Organization
      */
     public function getOrganization($name)
     {
@@ -95,9 +95,9 @@ class User extends Base
      * @param string $email        Email
      * @param string $role         Role to add
      *
-     * @return Membership
-     *
      * @throws GuzzleException
+     *
+     * @return Membership
      */
     public function createMembership($organization, $email, $role = Membership::ROLE_READ)
     {
@@ -118,9 +118,9 @@ class User extends Base
      * @param string $organization Organization
      * @param string $email        Email
      *
-     * @return Membership
-     *
      * @throws GuzzleException
+     *
+     * @return Membership
      */
     public function getMembership($organization, $email)
     {

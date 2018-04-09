@@ -20,16 +20,16 @@ abstract class Base
     const API_VERSION_HEADER = 'Api-Version';
 
     /**
-     * @var int
-     */
-    private $apiVersion = self::DEFAULT_API_VERSION;
-
-    /**
      * Client to access Rokka.
      *
      * @var ClientInterface
      */
     protected $client;
+
+    /**
+     * @var int
+     */
+    private $apiVersion = self::DEFAULT_API_VERSION;
 
     /**
      * Rokka credentials.
@@ -68,9 +68,9 @@ abstract class Base
      * @param array  $options          Request options
      * @param bool   $needsCredentials True if credentials are needed
      *
-     * @return ResponseInterface
-     *
      * @throws GuzzleException
+     *
+     * @return ResponseInterface
      */
     protected function call($method, $path, array $options = [], $needsCredentials = true)
     {

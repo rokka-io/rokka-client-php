@@ -65,9 +65,9 @@ class Image extends Base
      * @param string     $organization Optional organization
      * @param array|null $options      Options for creating the image (like meta_user and meta_dynamic)
      *
-     * @return SourceImageCollection If no image contents are provided to be uploaded
-     *
      * @throws GuzzleException
+     *
+     * @return SourceImageCollection If no image contents are provided to be uploaded
      */
     public function uploadSourceImage($contents, $fileName, $organization = '', $options = null)
     {
@@ -112,10 +112,9 @@ class Image extends Base
      * @param string $organization Optional organization name
      *
      * @throws GuzzleException If the request fails for a different reason than image not found
+     * @throws \Exception
      *
      * @return bool True if successful, false if image not found
-     *
-     * @throws \Exception
      */
     public function deleteSourceImage($hash, $organization = '')
     {
@@ -203,10 +202,9 @@ class Image extends Base
      * @param string $organization Optional organization name
      *
      * @throws GuzzleException If the request fails for a different reason than image not found
+     * @throws \Exception
      *
      * @return bool True if successful, false if image not found
-     *
-     * @throws \Exception
      */
     public function deleteSourceImagesWithBinaryHash($binaryHash, $organization = '')
     {
@@ -234,9 +232,9 @@ class Image extends Base
      * @param int|string|null $offset       Optional offset, either integer or the "Cursor" value
      * @param string          $organization Optional organization name
      *
-     * @return SourceImageCollection
-     *
      * @throws GuzzleException
+     *
+     * @return SourceImageCollection
      */
     public function searchSourceImages($search = [], $sorts = [], $limit = null, $offset = null, $organization = '')
     {
@@ -282,9 +280,9 @@ class Image extends Base
      * @param null|int|string $offset       Optional offset, either integer or the "Cursor" value
      * @param string          $organization Optional organization name
      *
-     * @return SourceImageCollection
-     *
      * @throws GuzzleException
+     *
+     * @return SourceImageCollection
      */
     public function listSourceImages($limit = null, $offset = null, $organization = '')
     {
@@ -297,9 +295,9 @@ class Image extends Base
      * @param string $hash         Hash of the image
      * @param string $organization Optional organization name
      *
-     * @return SourceImage
-     *
      * @throws GuzzleException
+     *
+     * @return SourceImage
      */
     public function getSourceImage($hash, $organization = '')
     {
@@ -323,9 +321,9 @@ class Image extends Base
      * @param string $binaryHash   Hash of the image
      * @param string $organization Optional organization name
      *
-     * @return SourceImageCollection
-     *
      * @throws GuzzleException
+     *
+     * @return SourceImageCollection
      */
     public function getSourceImagesWithBinaryHash($binaryHash, $organization = '')
     {
@@ -346,9 +344,9 @@ class Image extends Base
      * @param string $hash         Hash of the image
      * @param string $organization Optional organization name
      *
-     * @return string
-     *
      * @throws GuzzleException
+     *
+     * @return string
      */
     public function getSourceImageContents($hash, $organization = '')
     {
@@ -368,9 +366,9 @@ class Image extends Base
     /**
      * List operations.
      *
-     * @return OperationCollection
-     *
      * @throws GuzzleException
+     *
+     * @return OperationCollection
      */
     public function listOperations()
     {
@@ -394,9 +392,9 @@ class Image extends Base
      * @param array  $stackOptions    Stack options
      * @param bool   $overwrite       If an existing stack should be overwritten
      *
-     * @return Stack
-     *
      * @throws GuzzleException
+     *
+     * @return Stack
      */
     public function createStack(
         $stackName,
@@ -435,10 +433,10 @@ class Image extends Base
      * @param Stack $stack         the Stack object to be saved
      * @param array $requestConfig options for the request
      *
-     * @return Stack
-     *
      * @throws \LogicException when stack name is not set
      * @throws GuzzleException
+     *
+     * @return Stack
      */
     public function saveStack(Stack $stack, array $requestConfig = [])
     {
@@ -481,9 +479,9 @@ class Image extends Base
      * @param null|int $offset       Optional offset
      * @param string   $organization Optional organization name
      *
-     * @return StackCollection
-     *
      * @throws GuzzleException
+     *
+     * @return StackCollection
      */
     public function listStacks($limit = null, $offset = null, $organization = '')
     {
@@ -507,9 +505,9 @@ class Image extends Base
      * @param string $stackName    Stack name
      * @param string $organization Optional organization name
      *
-     * @return Stack
-     *
      * @throws GuzzleException
+     *
+     * @return Stack
      */
     public function getStack($stackName, $organization = '')
     {
@@ -527,9 +525,9 @@ class Image extends Base
      * @param string $stackName    Delete the stack
      * @param string $organization Optional organization name
      *
-     * @return bool True if successful
-     *
      * @throws GuzzleException
+     *
+     * @return bool True if successful
      */
     public function deleteStack($stackName, $organization = '')
     {
@@ -554,9 +552,9 @@ class Image extends Base
      * @param string                   $organization    Optional organization name
      * @param array                    $options         Optional options
      *
-     * @return string|false
-     *
      * @throws GuzzleException
+     *
+     * @return string|false
      */
     public function setDynamicMetadata(DynamicMetadataInterface $dynamicMetadata, $hash, $organization = '', $options = [])
     {
@@ -598,9 +596,9 @@ class Image extends Base
      * @param string $organization        Optional organization name
      * @param array  $options             Optional options
      *
-     * @return string|false
-     *
      * @throws GuzzleException
+     *
+     * @return string|false
      */
     public function deleteDynamicMetadata($dynamicMetadataName, $hash, $organization = '', $options = [])
     {
@@ -724,47 +722,6 @@ class Image extends Base
         return $this->doUserMetadataRequest($data, $hash, 'PATCH', $organization);
     }
 
-    private function doUserMetadataRequest($fields, $hash, $method, $organization = '')
-    {
-        $path = implode('/', [
-            self::SOURCEIMAGE_RESOURCE,
-            $this->getOrganization($organization),
-            $hash,
-            self::USER_META_RESOURCE,
-        ]);
-        $data = [];
-        if ($fields) {
-            $fields = $this->applyValueTransformationsToUserMeta($fields);
-            $data = ['json' => $fields];
-        }
-        $response = $this->call($method, $path, $data);
-
-        return true;
-    }
-
-    /**
-     * Helper function to extract from a Location header the image hash, only the first Location is used.
-     *
-     * @param array $headers The collection of Location headers
-     *
-     * @return string|false
-     */
-    protected function extractHashFromLocationHeader(array $headers)
-    {
-        $location = reset($headers);
-
-        // Check if we got a Location header, otherwise something went wrong here.
-        if (empty($location)) {
-            return false;
-        }
-
-        $uri = new Uri($location);
-        $parts = explode('/', $uri->getPath());
-
-        // Returning just the HASH part for "api.rokka.io/organization/sourceimages/{HASH}"
-        return array_pop($parts);
-    }
-
     /**
      * Returns url for accessing the image.
      *
@@ -798,6 +755,47 @@ class Image extends Base
     }
 
     /**
+     * Helper function to extract from a Location header the image hash, only the first Location is used.
+     *
+     * @param array $headers The collection of Location headers
+     *
+     * @return string|false
+     */
+    protected function extractHashFromLocationHeader(array $headers)
+    {
+        $location = reset($headers);
+
+        // Check if we got a Location header, otherwise something went wrong here.
+        if (empty($location)) {
+            return false;
+        }
+
+        $uri = new Uri($location);
+        $parts = explode('/', $uri->getPath());
+
+        // Returning just the HASH part for "api.rokka.io/organization/sourceimages/{HASH}"
+        return array_pop($parts);
+    }
+
+    private function doUserMetadataRequest($fields, $hash, $method, $organization = '')
+    {
+        $path = implode('/', [
+            self::SOURCEIMAGE_RESOURCE,
+            $this->getOrganization($organization),
+            $hash,
+            self::USER_META_RESOURCE,
+        ]);
+        $data = [];
+        if ($fields) {
+            $fields = $this->applyValueTransformationsToUserMeta($fields);
+            $data = ['json' => $fields];
+        }
+        $response = $this->call($method, $path, $data);
+
+        return true;
+    }
+
+    /**
      * Return the organization or the default if empty.
      *
      * @param string|null $organization Organization
@@ -806,7 +804,7 @@ class Image extends Base
      */
     private function getOrganization($organization = null)
     {
-        return (empty($organization) || is_null($organization)) ? $this->defaultOrganization : $organization;
+        return (empty($organization) || null === $organization) ? $this->defaultOrganization : $organization;
     }
 
     private function applyValueTransformationsToUserMeta(array $fields)

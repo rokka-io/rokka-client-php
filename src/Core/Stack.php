@@ -13,14 +13,14 @@ class Stack extends StackAbstract
     public $organization;
 
     /**
-     * @var \DateTime|null When this stack was first created
-     */
-    private $created;
-
-    /**
      * @var StackExpression[]
      */
     protected $stackExpressions = [];
+
+    /**
+     * @var \DateTime|null When this stack was first created
+     */
+    private $created;
 
     /**
      * Constructor.

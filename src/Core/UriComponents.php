@@ -53,6 +53,8 @@ class UriComponents implements \ArrayAccess
      * Creates a UriComponent object from an array with 'stack', 'hash', 'format', 'filename' and 'stack' as keys.
      *
      * @since 1.2.0
+     *
+     * @param mixed $config
      */
     public static function createFromArray($config)
     {
