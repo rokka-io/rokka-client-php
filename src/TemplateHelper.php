@@ -429,6 +429,7 @@ class TemplateHelper
 
             return new FileInfo(new \SplFileInfo($input), $identifier, $context);
         }
+
         throw new \RuntimeException('getImageObject: Input could not be converted to a LocalImageAbstract object');
     }
 
