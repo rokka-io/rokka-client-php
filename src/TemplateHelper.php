@@ -10,7 +10,9 @@ use Rokka\Client\LocalImage\LocalImageAbstract;
 use Rokka\Client\LocalImage\RokkaHash;
 
 /**
- * FIXME: Add description.
+ * This class provides lots of helper functionality usually used in templates.
+ *
+ * It can also manage looking up hashes and uploading images to rokka, see the docs for details.
  *
  * @since 1.3.0
  */
@@ -366,38 +368,44 @@ class TemplateHelper
     }
 
     /**
-     * FIXME: Add description.
+     * Returns a LocalImage object depending on the input
+     *
+     * If input is
+     * - LocalImageAbstract: returns that, sets $identidier and $context, if set
+     * - SplFileInfo: returns \Rokka\Client\LocalImage\FileInfo
+     * - string with hash pattern (/^[0-9a-f]{6,40}$/): returns \Rokka\Client\LocalImage\RokkaHash
+     * - other strings: returns \Rokka\Client\LocalImage\FileInfo with $input as the path to the image
      *
      * @since 1.3.0
      *
-     * @param LocalImageAbstract|string|\SplFileInfo $file
+     * @param LocalImageAbstract|string|\SplFileInfo $input
      * @param string|null                            $identifier
      * @param mixed                                  $context
      *
      * @return LocalImageAbstract
      */
-    private function getImageObject($file, $identifier = null, $context = null)
+    private function getImageObject($input, $identifier = null, $context = null)
     {
-        if ($file instanceof LocalImageAbstract) {
+        if ($input instanceof LocalImageAbstract) {
             if (null !== $identifier) {
-                $file->setIdentifier($identifier);
+                $input->setIdentifier($identifier);
             }
             if (null !== $context) {
-                $file->setContext($context);
+                $input->setContext($context);
             }
 
-            return $file;
+            return $input;
         }
-        if ($file instanceof \SplFileInfo) {
-            return new FileInfo($file, $identifier, $context);
-        } elseif (is_string($file)) {
-            if (preg_match('/^[0-9a-f]{6,40}$/', $file)) {
-                return new RokkaHash($file, $identifier, $context, $this);
+        if ($input instanceof \SplFileInfo) {
+            return new FileInfo($input, $identifier, $context);
+        } elseif (is_string($input)) {
+            if (preg_match('/^[0-9a-f]{6,40}$/', $input)) {
+                return new RokkaHash($input, $identifier, $context, $this);
             }
 
-            return new FileInfo(new \SplFileInfo($file), $identifier, $context);
+            return new FileInfo(new \SplFileInfo($input), $identifier, $context);
         }
-        // FIXME: return what, if nothing matches? Exception maybe
+        throw new \RuntimeException('getImageObject: Input could not be converted to a LocalImageAbstract object');
     }
 
     /**

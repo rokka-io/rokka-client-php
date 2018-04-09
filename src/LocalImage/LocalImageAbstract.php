@@ -3,8 +3,15 @@
 namespace Rokka\Client\LocalImage;
 
 /**
- * FIXME: Add some short description.
+ * The abstract class for representing local images.
  *
+ * Inherit from this, if your local images are not stored on the local file system or have other special needs.
+ *
+ * See some implementation of the abstract class for examples.
+ *
+ * @see \Rokka\Client\LocalImage\FileInfo
+ * @see \Rokka\Client\LocalImage\RokkaHash
+ * @see \Rokka\Client\LocalImage\StringContent
  * @since 1.3.0
  */
 abstract class LocalImageAbstract

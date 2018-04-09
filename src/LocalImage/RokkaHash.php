@@ -6,7 +6,17 @@ use Rokka\Client\Image;
 use Rokka\Client\TemplateHelper;
 
 /**
- * FIXME: Add some short description.
+ * Creates a LocalImage object with an existing rokka hash as input.
+ *
+ * Example:
+ *
+ * ```language-php
+ * $image = new RokkaHash($hash, $identifier, $context);
+ * ```
+ *
+ * If you want to get the source image content by getContent(), you need to inject a TemplateHelper object
+ * into the constructor
+ *
  *
  * @since 1.3.0
  */
@@ -51,9 +61,9 @@ class RokkaHash extends LocalImageAbstract
      *
      * @since 1.3.0
      *
-     * @return null|string
-     *
      * @throws \GuzzleHttp\Exception\GuzzleException
+     *
+     * @return null|string
      */
     public function getContent()
     {

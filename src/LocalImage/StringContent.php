@@ -3,8 +3,17 @@
 namespace Rokka\Client\LocalImage;
 
 /**
- * FIXME: Add some short description.
+ * Creates a LocalImage object with the content of an image as input.
  *
+ * For images on a accessible file system, better use \Rokka\Client\LocalImage\FileInfo
+ *
+ * Example:
+ *
+ * ```language-php
+ * $image = new StringContent($content, $identifier, $context);
+ * ```
+ *
+ * @see \Rokka\Client\LocalImage\FileInfo
  * @since 1.3.0
  */
 class StringContent extends LocalImageAbstract
@@ -14,13 +23,6 @@ class StringContent extends LocalImageAbstract
      */
     private $content = null;
 
-    /**
-     * StringContent constructor.
-     *
-     * @param string      $image
-     * @param string|null $identifier
-     * @param mixed       $context
-     */
     public function __construct($image, $identifier = null, $context = null)
     {
         parent::__construct($identifier);
@@ -28,9 +30,6 @@ class StringContent extends LocalImageAbstract
         $this->context = $context;
     }
 
-    /**
-     * @return string
-     */
     public function getIdentifier()
     {
         if (null !== $this->identifier) {
@@ -41,9 +40,6 @@ class StringContent extends LocalImageAbstract
         return $this->identifier;
     }
 
-    /**
-     * @return string|null
-     */
     public function getContent()
     {
         return $this->content;
