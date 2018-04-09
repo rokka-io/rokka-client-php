@@ -392,7 +392,7 @@ class TemplateHelper
             return new FileInfo($file, $identifier, $context);
         } elseif (is_string($file)) {
             if (preg_match('/^[0-9a-f]{6,40}$/', $file)) {
-                return new RokkaHash($file, $identifier, $context, $this->getRokkaClient());
+                return new RokkaHash($file, $identifier, $context, $this);
             }
 
             return new FileInfo(new \SplFileInfo($file), $identifier, $context);
