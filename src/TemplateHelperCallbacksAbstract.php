@@ -6,7 +6,10 @@ use Rokka\Client\Core\SourceImage;
 use Rokka\Client\LocalImage\LocalImageAbstract;
 
 /**
- * FIXME: Add some short description.
+ * Used for looking up and saving hashes related to a local image.
+ *
+ * Inject an inherited object of this into new TemplateHelper(), by default
+ * \Rokka\Client\TemplateHelperDefaultCallbacks is used.
  *
  * @since 1.3.0
  */
@@ -27,9 +30,9 @@ abstract class TemplateHelperCallbacksAbstract
     abstract public function getHash(LocalImageAbstract $image);
 
     /**
-     * Callback when an image was saved/uploaded on the rokka server.
-     *
-     * Should return the hash or short hash
+     * This method is called, when an image was saved/uploaded to the rokka server.
+     * This is the place, where you would store the hash in the right place (DB or similar).
+     * Has to return the hash or short hash.
      *
      * @since 1.3.0
      *

@@ -3,8 +3,25 @@
 namespace Rokka\Client\LocalImage;
 
 /**
- * FIXME: Add some short description.
+ * Creates a LocalImage object with a \SplFileInfo object as input.
  *
+ * Ideally used for images on a file system, but can be used for anything SplFileInfo supports (php streams and such)
+ *
+ * Example:
+ *
+ * With a path to a file:
+ *
+ * ```language-php
+ * $image = new FileInfo(new \SplFileInfo($filepath), $identifier, $context);
+ * ```
+ *
+ * With the image in a variable, please use the \Rokka\Client\LocalImage\StringContent class
+ *
+ * ```language-php
+ * $image = new StringContent($content, $identifier, $context);
+ * ```
+ *
+ * @see \Rokka\Client\LocalImage\StringContent
  * @since 1.3.0
  */
 class FileInfo extends LocalImageAbstract

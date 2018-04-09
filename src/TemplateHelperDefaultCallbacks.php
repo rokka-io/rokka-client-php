@@ -6,7 +6,11 @@ use Rokka\Client\Core\SourceImage;
 use Rokka\Client\LocalImage\LocalImageAbstract;
 
 /**
- * FIXME: Add some short description.
+ * The default implementation for \Rokka\Client\TemplateHelperCallbacksAbstract.
+ *
+ * It stores the hash to an image on the filesystem as json. Either next to the image, if it's on the filesystem,
+ * otherwise in the sys_get_temp_dir().
+ *
  *
  * @since 1.3.0
  */
@@ -14,13 +18,6 @@ class TemplateHelperDefaultCallbacks extends TemplateHelperCallbacksAbstract
 {
     public static $fileExtension = '.rokka.txt';
 
-    public static $hashesFolder = '/tmp/';
-
-    /**
-     * @param LocalImageAbstract $image
-     *
-     * @return null|string
-     */
     public function getHash(LocalImageAbstract $image)
     {
         $hashFile = $this->getHashFileName($image);
@@ -33,12 +30,6 @@ class TemplateHelperDefaultCallbacks extends TemplateHelperCallbacksAbstract
         return null;
     }
 
-    /**
-     * @param LocalImageAbstract $image
-     * @param SourceImage        $sourceImage
-     *
-     * @return string
-     */
     public function saveHash(LocalImageAbstract $image, SourceImage $sourceImage)
     {
         file_put_contents($this->getHashFileName($image), json_encode(['hash' => $sourceImage->shortHash]));
@@ -58,6 +49,6 @@ class TemplateHelperDefaultCallbacks extends TemplateHelperCallbacksAbstract
             return $path.self::$fileExtension;
         }
 
-        return self::$hashesFolder.'/'.str_replace('/', '__', $image->getIdentifier()).self::$fileExtension;
+        return sys_get_temp_dir().'/'.str_replace('/', '__', $image->getIdentifier()).self::$fileExtension;
     }
 }
