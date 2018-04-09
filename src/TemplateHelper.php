@@ -65,7 +65,7 @@ class TemplateHelper
 
         if ($publicRokkaDomain) {
             $scheme = parse_url($publicRokkaDomain, PHP_URL_SCHEME);
-            if (is_null($scheme)) {
+            if (null === $scheme) {
                 $this->rokkaDomain = 'https://'.$publicRokkaDomain;
             } else {
                 $this->rokkaDomain = $publicRokkaDomain;
@@ -87,9 +87,9 @@ class TemplateHelper
      *
      * @param LocalImageAbstract $image
      *
-     * @return string|null
-     *
      * @throws \GuzzleHttp\Exception\GuzzleException
+     *
+     * @return string|null
      */
     public function getHashMaybeUpload(LocalImageAbstract $image)
     {
@@ -101,7 +101,7 @@ class TemplateHelper
                 return null;
             }
             $sourceImage = $this->imageUpload($image);
-            if (!is_null($sourceImage)) {
+            if (null !== $sourceImage) {
                 $hash = $this->callbacks->saveHash($image, $sourceImage);
             }
         }
@@ -121,9 +121,9 @@ class TemplateHelper
      * @param string|null                            $seo         if you want a different seo string than the default
      * @param string|null                            $seoLanguage Optional language to be used for slugifying (eg. 'de' slugifies 'ö' to 'oe')
      *
-     * @return string
-     *
      * @throws \GuzzleHttp\Exception\GuzzleException
+     *
+     * @return string
      */
     public function getStackUrl(
       $image,
@@ -159,9 +159,9 @@ class TemplateHelper
      * @param string|null                            $seo
      * @param string                                 $seoLanguage
      *
-     * @return string
-     *
      * @throws \GuzzleHttp\Exception\GuzzleException
+     *
+     * @return string
      */
     public function getResizeUrl($image, $width, $height = null, $format = 'jpg', $seo = null, $seoLanguage = 'de')
     {
@@ -188,9 +188,9 @@ class TemplateHelper
      * @param string|null                            $seo
      * @param string                                 $seoLanguage
      *
-     * @return string
-     *
      * @throws \GuzzleHttp\Exception\GuzzleException
+     *
+     * @return string
      */
     public function getResizeCropUrl($image, $width, $height, $format = 'jpg', $seo = null, $seoLanguage = '')
     {
@@ -211,9 +211,9 @@ class TemplateHelper
      * @param string|null                            $seo
      * @param string                                 $seoLanguage
      *
-     * @return string
-     *
      * @throws \GuzzleHttp\Exception\GuzzleException
+     *
+     * @return string
      */
     public function getOriginalSizeUrl($image, $format = 'jpg', $seo = null, $seoLanguage = '')
     {
@@ -368,7 +368,31 @@ class TemplateHelper
     }
 
     /**
-     * Returns a LocalImage object depending on the input
+     * Create a URL-safe text from $text.
+     *
+     * @since 1.3.0
+     *
+     * @param string $text     Text to slugify
+     * @param string $language Optional language to be used for slugifying (eg. 'de' slugifies 'ö' to 'oe')
+     *
+     * @return string A string that should work in urls. Empty string is only allowed if $emptyText is ''
+     */
+    public static function slugify($text, $language = 'de')
+    {
+        \URLify::$maps['specials'] = [
+            '.' => '-',
+            ',' => '-',
+            '@' => '-',
+        ];
+        $slug = \URLify::filter($text, 60, $language, true, false);
+        $slug = str_replace(['_'], '-', $slug);
+        $slug = preg_replace('/[^0-9a-z-]/', '', $slug);
+
+        return $slug;
+    }
+
+    /**
+     * Returns a LocalImage object depending on the input.
      *
      * If input is
      * - LocalImageAbstract: returns that, sets $identidier and $context, if set
@@ -409,30 +433,6 @@ class TemplateHelper
     }
 
     /**
-     * Create a URL-safe text from $text.
-     *
-     * @since 1.3.0
-     *
-     * @param string $text     Text to slugify
-     * @param string $language Optional language to be used for slugifying (eg. 'de' slugifies 'ö' to 'oe')
-     *
-     * @return string A string that should work in urls. Empty string is only allowed if $emptyText is ''
-     */
-    public static function slugify($text, $language = 'de')
-    {
-        \URLify::$maps['specials'] = [
-            '.' => '-',
-            ',' => '-',
-            '@' => '-',
-        ];
-        $slug = \URLify::filter($text, 60, $language, true, false);
-        $slug = str_replace(['_'], '-', $slug);
-        $slug = preg_replace('/[^0-9a-z-]/', '', $slug);
-
-        return $slug;
-    }
-
-    /**
      * Gets the rokka URL for an image hash and stack and uses the $image info for an seo filename in the URL.
      * Doesn't upload it, if we don't have a local hash for it. Use getStackUrl() for that.
      * If $image is set, uses the filename for seo-ing the URL.
@@ -460,9 +460,9 @@ class TemplateHelper
     /**
      * @param LocalImageAbstract $image
      *
-     * @return null|SourceImage
-     *
      * @throws \GuzzleHttp\Exception\GuzzleException
+     *
+     * @return null|SourceImage
      */
     private function imageUpload(LocalImageAbstract $image)
     {
