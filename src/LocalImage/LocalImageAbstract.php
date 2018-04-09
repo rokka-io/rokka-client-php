@@ -36,10 +36,12 @@ abstract class LocalImageAbstract
      * @since 1.3.0
      *
      * @param string|null $identifier A unique custom identifier for this image
+     * @param mixed|null  $context    Can be anything and accessed in callbacks and such
      */
-    public function __construct($identifier = null)
+    public function __construct($identifier = null, $context = null)
     {
         $this->identifier = $identifier;
+        $this->context = $context;
     }
 
     /**
