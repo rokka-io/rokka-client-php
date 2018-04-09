@@ -133,7 +133,7 @@ class TemplateHelper
         if (null == $image) {
             return '';
         }
-        $image = self::getImageObject($image);
+        $image = $this->getImageObject($image);
 
         if (!$hash = self::getHashMaybeUpload($image)) {
             return '';
@@ -163,7 +163,7 @@ class TemplateHelper
      */
     public function getResizeUrl($image, $width, $height = null, $format = 'jpg', $seo = null, $seoLanguage = 'de')
     {
-        $imageObject = self::getImageObject($image);
+        $imageObject = $this->getImageObject($image);
         if (null !== $height) {
             $heightString = "-height-$height";
         } else {
@@ -192,7 +192,7 @@ class TemplateHelper
      */
     public function getResizeCropUrl($image, $width, $height, $format = 'jpg', $seo = null, $seoLanguage = '')
     {
-        $imageObject = self::getImageObject($image);
+        $imageObject = $this->getImageObject($image);
 
         $stack = "dynamic/resize-width-$width-height-$height-mode-fill--crop-width-$width-height-$height--options-autoformat-true-jpg.transparency.autoformat-true";
 
@@ -215,7 +215,7 @@ class TemplateHelper
      */
     public function getOriginalSizeUrl($image, $format = 'jpg', $seo = null, $seoLanguage = '')
     {
-        $imageObject = self::getImageObject($image);
+        $imageObject = $this->getImageObject($image);
 
         $stack = 'dynamic/noop--options-autoformat-true-jpg.transparency.autoformat-true';
 
@@ -376,7 +376,7 @@ class TemplateHelper
      *
      * @return LocalImageAbstract
      */
-    public static function getImageObject($file, $identifier = null, $context = null)
+    private function getImageObject($file, $identifier = null, $context = null)
     {
         if ($file instanceof LocalImageAbstract) {
             if (null !== $identifier) {
@@ -392,7 +392,7 @@ class TemplateHelper
             return new FileInfo($file, $identifier, $context);
         } elseif (is_string($file)) {
             if (preg_match('/^[0-9a-f]{6,40}$/', $file)) {
-                return new RokkaHash($file);
+                return new RokkaHash($file, $identifier, $context, $this->getRokkaClient());
             }
 
             return new FileInfo(new \SplFileInfo($file), $identifier, $context);
