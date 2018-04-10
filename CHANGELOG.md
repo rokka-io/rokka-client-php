@@ -11,7 +11,7 @@ This document mainly describes API changes important to users of this library.
 * Added `\Rokka\Client\Image::restoreSourceImage($hash, $organization)` for restoring deleted images.
 * Added `\Rokka\Client\Image::copySourceImage($hash, $destination, $overwrite, $organization)` for copying an image to another organization.
 * Added [`\Rokka\Client\TemplateHelper`](https://rokka.io/client-php-api/master/Rokka/Client/TemplateHelper.html) class with many methods for making life easier with template and integration into frameworks and CMS. 
-
+* Added `\Rokka\Client\Core\DynamicMetadata\MultiAreas` and `\Rokka\Client\Core\DynamicMetadata\CropArea`. See [documentation about dynamic metadata](https://rokka.io/documentation/references/dynamic-metadata.html) for details.
 
 ## 1.2.0 - 2018-02-19
 
