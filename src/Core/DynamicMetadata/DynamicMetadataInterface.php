@@ -21,4 +21,11 @@ interface DynamicMetadataInterface
      * @return DynamicMetadataInterface
      */
     public static function createFromJsonResponse($data, $isArray = false);
+
+    /**
+     * Get the data, which should be json-fied later.
+     *
+     * @return mixed
+     */
+    public function getForJson();
 }
