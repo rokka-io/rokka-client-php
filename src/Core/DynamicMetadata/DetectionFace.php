@@ -64,4 +64,9 @@ class DetectionFace implements DynamicMetadataInterface
     {
         return 'detection_face';
     }
+
+    public function getForJson()
+    {
+        return $this;
+    }
 }

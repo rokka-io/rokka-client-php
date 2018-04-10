@@ -566,7 +566,7 @@ class Image extends Base
             $dynamicMetadata::getName(),
         ]);
         $callOptions = [];
-        $callOptions['json'] = $dynamicMetadata;
+        $callOptions['json'] = $dynamicMetadata->getForJson();
         if (isset($options['deletePrevious']) && $options['deletePrevious']) {
             $callOptions['query'] = ['deletePrevious' => 'true'];
         }

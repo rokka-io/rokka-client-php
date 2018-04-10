@@ -39,14 +39,14 @@ class SubjectArea implements DynamicMetadataInterface
     public function __construct($x, $y, $width = 1, $height = 1)
     {
         if ($x < 0 || $y < 0) {
-            throw new \InvalidArgumentException('Invalid SubjectArea position, "x" and "y" values must be positive integers');
+            throw new \InvalidArgumentException('Invalid position, "x" and "y" values must be positive integers');
         }
 
         $this->x = $x;
         $this->y = $y;
 
         if ($width < 1 || $height < 1) {
-            throw new \InvalidArgumentException('Invalid SubjectArea dimensions, "width" and "height" values must be greater than zero');
+            throw new \InvalidArgumentException('Invalid dimensions, "width" and "height" values must be greater than zero');
         }
         $this->width = $width;
         $this->height = $height;
@@ -83,5 +83,10 @@ class SubjectArea implements DynamicMetadataInterface
     public static function getName()
     {
         return 'subject_area';
+    }
+
+    public function getForJson()
+    {
+        return $this;
     }
 }
