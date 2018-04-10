@@ -1,0 +1,551 @@
+<?php
+
+namespace Rokka\Client;
+
+use Rokka\Client\Base as BaseClient;
+use Rokka\Client\Core\SourceImage;
+use Rokka\Client\Core\StackUri;
+use Rokka\Client\LocalImage\FileInfo;
+use Rokka\Client\LocalImage\LocalImageAbstract;
+use Rokka\Client\LocalImage\RokkaHash;
+
+/**
+ * This class provides lots of helper functionality usually used in templates.
+ *
+ * It can also manage looking up hashes and uploading images to rokka, see the docs for details.
+ *
+ * @since 1.3.0
+ */
+class TemplateHelper
+{
+    private $rokkaApiKey = null;
+
+    private $rokkaOrg = null;
+
+    private $rokkaDomain = null;
+
+    /**
+     * @var TemplateHelperCallbacksAbstract
+     */
+    private $callbacks = null;
+
+    /**
+     * @var string
+     */
+    private $rokkaApiHost;
+
+    /**
+     * @var \Rokka\Client\Image
+     */
+    private $imageClient;
+
+    /**
+     * @since 1.3.0
+     *
+     * @param string                               $organization      Organization name
+     * @param string                               $apiKey            API key
+     * @param TemplateHelperCallbacksAbstract|null $callbacks         Optional callbacks for read and write of hashes
+     * @param string|null                          $publicRokkaDomain Optional public rokka URL, if different from the standard one (org.render.rokka.io)
+     * @param string|null                          $rokkaApiHost      Optional base url
+     */
+    public function __construct(
+        $organization,
+        $apiKey,
+        TemplateHelperCallbacksAbstract $callbacks = null,
+        $publicRokkaDomain = null,
+        $rokkaApiHost = BaseClient::DEFAULT_API_BASE_URL
+    ) {
+        $this->rokkaApiKey = $apiKey;
+        $this->rokkaOrg = $organization;
+
+        if (null === $rokkaApiHost) {
+            $rokkaApiHost = BaseClient::DEFAULT_API_BASE_URL;
+        }
+        $this->rokkaApiHost = $rokkaApiHost;
+
+        if ($publicRokkaDomain) {
+            $scheme = parse_url($publicRokkaDomain, PHP_URL_SCHEME);
+            if (null === $scheme) {
+                $this->rokkaDomain = 'https://'.$publicRokkaDomain;
+            } else {
+                $this->rokkaDomain = $publicRokkaDomain;
+            }
+        } else {
+            $this->rokkaDomain = 'https://'.$organization.'.rokka.io';
+        }
+        if (null === $callbacks) {
+            $callbacks = new TemplateHelperDefaultCallbacks();
+        }
+        $this->callbacks = $callbacks;
+    }
+
+    /**
+     * Returns the hash of an image.
+     * If we don't have an image stored locally, it uploads it to rokka.
+     *
+     * @since 1.3.0
+     *
+     * @param LocalImageAbstract $image
+     *
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     *
+     * @return string|null
+     */
+    public function getHashMaybeUpload(LocalImageAbstract $image)
+    {
+        if ($hash = $image->getRokkaHash()) {
+            return $hash;
+        }
+        if (!$hash = $this->callbacks->getHash($image)) {
+            if (!$this->isImage($image)) {
+                return null;
+            }
+            $sourceImage = $this->imageUpload($image);
+            if (null !== $sourceImage) {
+                $hash = $this->callbacks->saveHash($image, $sourceImage);
+            }
+        }
+
+        return $hash;
+    }
+
+    /**
+     * Gets the rokka URL for an image
+     * Uploads it, if we don't have a hash locally.
+     *
+     * @since 1.3.0
+     *
+     * @param LocalImageAbstract|string|\SplFileInfo $image       The image
+     * @param string                                 $stack       The stack name
+     * @param string|null                            $format      The image format of the image (jpg, png, webp, ...)
+     * @param string|null                            $seo         if you want a different seo string than the default
+     * @param string|null                            $seoLanguage Optional language to be used for slugifying (eg. 'de' slugifies 'ö' to 'oe')
+     *
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     *
+     * @return string
+     */
+    public function getStackUrl(
+      $image,
+      $stack,
+      $format = 'jpg',
+      $seo = null,
+      $seoLanguage = 'de'
+    ) {
+        if (null == $image) {
+            return '';
+        }
+        $image = $this->getImageObject($image);
+
+        if (!$hash = self::getHashMaybeUpload($image)) {
+            return '';
+        }
+        if (null === $seo) {
+            return $this->generateRokkaUrlWithImage($hash, $stack, $format, $image, $seoLanguage);
+        }
+
+        return $this->generateRokkaUrl($hash, $stack, $format, $seo, $seoLanguage);
+    }
+
+    /**
+     * Return the rokka URL for getting a resized image.
+     *
+     * @since 1.3.0
+     *
+     * @param LocalImageAbstract|string|\SplFileInfo $image       The image to be resized
+     * @param string|int                             $width       The width of the image
+     * @param string|int|null                        $height      The height of the image
+     * @param string                                 $format      The image format of the image (jpg, png, webp, ...)
+     * @param string|null                            $seo
+     * @param string                                 $seoLanguage
+     *
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     *
+     * @return string
+     */
+    public function getResizeUrl($image, $width, $height = null, $format = 'jpg', $seo = null, $seoLanguage = 'de')
+    {
+        $imageObject = $this->getImageObject($image);
+        if (null !== $height) {
+            $heightString = "-height-$height";
+        } else {
+            $heightString = '';
+        }
+        $stack = "dynamic/resize-width-$width$heightString--options-autoformat-true-jpg.transparency.autoformat-true";
+
+        return $this->getStackUrl($imageObject, $stack, $format, $seo, $seoLanguage);
+    }
+
+    /**
+     * Return the rokka URL for getting a resized and cropped image.
+     *
+     * @since 1.3.0
+     *
+     * @param LocalImageAbstract|string|\SplFileInfo $image       The image to be resized
+     * @param string|int                             $width       The width of the image
+     * @param string|int                             $height      The height of the image
+     * @param string                                 $format      The image format of the image (jpg, png, webp, ...)
+     * @param string|null                            $seo
+     * @param string                                 $seoLanguage
+     *
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     *
+     * @return string
+     */
+    public function getResizeCropUrl($image, $width, $height, $format = 'jpg', $seo = null, $seoLanguage = '')
+    {
+        $imageObject = $this->getImageObject($image);
+
+        $stack = "dynamic/resize-width-$width-height-$height-mode-fill--crop-width-$width-height-$height--options-autoformat-true-jpg.transparency.autoformat-true";
+
+        return $this->getStackUrl($imageObject, $stack, $format, $seo, $seoLanguage);
+    }
+
+    /**
+     * Return the rokka URL for getting the image in it's original size.
+     *
+     * @since 1.3.0
+     *
+     * @param LocalImageAbstract|string|\SplFileInfo $image       The image to be resized
+     * @param string                                 $format      The image format of the image (jpg, png, webp, ...)
+     * @param string|null                            $seo
+     * @param string                                 $seoLanguage
+     *
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     *
+     * @return string
+     */
+    public function getOriginalSizeUrl($image, $format = 'jpg', $seo = null, $seoLanguage = '')
+    {
+        $imageObject = $this->getImageObject($image);
+
+        $stack = 'dynamic/noop--options-autoformat-true-jpg.transparency.autoformat-true';
+
+        return $this->getStackUrl($imageObject, $stack, $format, $seo, $seoLanguage);
+    }
+
+    /**
+     * Returns a src and srcset attibrute (as one string) with the correct rokka render urls
+     * for responsive images.
+     * To be used directly in your HTML templates.
+     *
+     * @since 1.3.0
+     *
+     * @param string $url   The render URL of the "non-retina" image
+     * @param array  $sizes For which sizes srcset links should be generated, works with 'x' or 'w' style
+     *
+     * @return string
+     */
+    public static function getSrcAttributes($url, $sizes = ['2x'])
+    {
+        $attrs = 'src="'.$url.'"';
+        $srcSets = [];
+        foreach ($sizes as $size => $custom) {
+            if (is_int($size)) {
+                if (is_int($custom)) {
+                    $size = $custom.'x';
+                } else {
+                    $size = $custom;
+                }
+
+                $custom = null;
+            }
+            $urlx2 = UriHelper::getSrcSetUrlString($url, $size, $custom);
+            if ($urlx2 != $url) {
+                $srcSets[] = "${urlx2} ${size}";
+            }
+        }
+        if (count($srcSets) > 0) {
+            $attrs .= ' srcset="'.implode(', ', ($srcSets)).'"';
+        }
+
+        return $attrs;
+    }
+
+    /**
+     * Returns a background-image:url defintions (as one string) with the correct rokka render urls
+     * for responsive images.
+     * To be used directly in your CSS templates or HTML tags.
+     *
+     * @since 1.3.0
+     *
+     * @param string $url   The render URL of the "non-retina" image
+     * @param array  $sizes For which sizes srcset links should be generated, works with 'x' or 'w' style
+     *
+     * @return string
+     */
+    public static function getBackgroundImageStyle($url, array $sizes = ['2x'])
+    {
+        $style = "background-image:url('$url');";
+
+        $srcSets = [];
+        foreach ($sizes as $size => $custom) {
+            if (is_int($size)) {
+                $size = $custom;
+                $custom = null;
+            }
+            $urlx2 = UriHelper::getSrcSetUrlString($url, $size, $custom);
+            if ($urlx2 != $url) {
+                $srcSets[] = "url('${urlx2}') ${size}";
+            }
+        }
+        if (count($srcSets) > 0) {
+            $style .= " background-image: -webkit-image-set(url('$url') 1x, ".implode(', ', $srcSets).');';
+        }
+
+        return $style;
+    }
+
+    /**
+     * Returns the filename of the image without extension.
+     *
+     * @since 1.3.0
+     *
+     * @param LocalImageAbstract|null $image
+     *
+     * @return string
+     */
+    public function getImagename(LocalImageAbstract $image = null)
+    {
+        if (null === $image) {
+            return '';
+        }
+
+        return (string) pathinfo($image->getFilename(), PATHINFO_FILENAME);
+    }
+
+    /**
+     * Gets the rokka URL for an image hash and stack with optional seo filename in the URL.
+     * Doesn't upload it, if we don't have a local hash for it. Use getStackUrl for that.
+     *
+     * @since 1.3.0
+     * @see TemplateHelper::getStackUrl()
+     *
+     * @param string          $hash        The rokka hash
+     * @param string|StackUri $stack       The stack name or a StackUrl object
+     * @param string|null     $format      The image format of the image (jpg, png, webp, ...)
+     * @param string|null     $seo         If you want to use a seo string in the URL
+     * @param string|null     $seoLanguage Optional language to be used for slugifying (eg. 'de' slugifies 'ö' to 'oe')
+     *
+     * @return string
+     */
+    public function generateRokkaUrl(
+      $hash,
+      $stack,
+      $format = 'jpg',
+      $seo = null,
+      $seoLanguage = 'de'
+    ) {
+        if (null === $format) {
+            $format = 'jpg';
+        }
+        $slug = null;
+        if (!empty($seo) && null !== $seo) {
+            if (null === $seoLanguage) {
+                $seoLanguage = 'de';
+            }
+            $slug = self::slugify($seo, $seoLanguage);
+        }
+        $path = UriHelper::composeUri(['stack' => $stack, 'hash' => $hash, 'format' => $format, 'filename' => $slug]);
+
+        return $this->rokkaDomain.$path->getPath();
+    }
+
+    /**
+     * Gets the rokka image client used by this class.
+     *
+     * @since 1.3.0
+     *
+     * @return \Rokka\Client\Image
+     */
+    public function getRokkaClient()
+    {
+        if (null === $this->imageClient) {
+            $this->imageClient = Factory::getImageClient($this->rokkaOrg, $this->rokkaApiKey, '', $this->rokkaApiHost);
+        }
+
+        return $this->imageClient;
+    }
+
+    /**
+     * Create a URL-safe text from $text.
+     *
+     * @since 1.3.0
+     *
+     * @param string $text     Text to slugify
+     * @param string $language Optional language to be used for slugifying (eg. 'de' slugifies 'ö' to 'oe')
+     *
+     * @return string A string that should work in urls. Empty string is only allowed if $emptyText is ''
+     */
+    public static function slugify($text, $language = 'de')
+    {
+        \URLify::$maps['specials'] = [
+            '.' => '-',
+            ',' => '-',
+            '@' => '-',
+        ];
+        $slug = \URLify::filter($text, 60, $language, true, false);
+        $slug = str_replace(['_'], '-', $slug);
+        $slug = preg_replace('/[^0-9a-z-]/', '', $slug);
+
+        return $slug;
+    }
+
+    /**
+     * Returns a LocalImage object depending on the input.
+     *
+     * If input is
+     * - LocalImageAbstract: returns that, sets $identidier and $context, if set
+     * - SplFileInfo: returns \Rokka\Client\LocalImage\FileInfo
+     * - string with hash pattern (/^[0-9a-f]{6,40}$/): returns \Rokka\Client\LocalImage\RokkaHash
+     * - other strings: returns \Rokka\Client\LocalImage\FileInfo with $input as the path to the image
+     *
+     * @since 1.3.0
+     *
+     * @param LocalImageAbstract|string|\SplFileInfo $input
+     * @param string|null                            $identifier
+     * @param mixed                                  $context
+     *
+     * @return LocalImageAbstract
+     */
+    private function getImageObject($input, $identifier = null, $context = null)
+    {
+        if ($input instanceof LocalImageAbstract) {
+            if (null !== $identifier) {
+                $input->setIdentifier($identifier);
+            }
+            if (null !== $context) {
+                $input->setContext($context);
+            }
+
+            return $input;
+        }
+        if ($input instanceof \SplFileInfo) {
+            return new FileInfo($input, $identifier, $context);
+        } elseif (is_string($input)) {
+            if (preg_match('/^[0-9a-f]{6,40}$/', $input)) {
+                return new RokkaHash($input, $identifier, $context, $this);
+            }
+
+            return new FileInfo(new \SplFileInfo($input), $identifier, $context);
+        }
+
+        throw new \RuntimeException('getImageObject: Input could not be converted to a LocalImageAbstract object');
+    }
+
+    /**
+     * Gets the rokka URL for an image hash and stack and uses the $image info for an seo filename in the URL.
+     * Doesn't upload it, if we don't have a local hash for it. Use getStackUrl() for that.
+     * If $image is set, uses the filename for seo-ing the URL.
+     *
+     * @see TemplateHelper::getStackUrl()
+     *
+     * @param string             $hash        The rokka hash
+     * @param string             $stack       The stack name
+     * @param string|null        $format      The image format of the image (jpg, png, webp, ...)
+     * @param LocalImageAbstract $image       The image
+     * @param string|null        $seoLanguage Optional language to be used for slugifying (eg. 'de' slugifies 'ö' to 'oe')
+     *
+     * @return string
+     */
+    private function generateRokkaUrlWithImage(
+        $hash,
+        $stack,
+        $format = 'jpg',
+        LocalImageAbstract $image = null,
+        $seoLanguage = 'de'
+    ) {
+        return $this->generateRokkaUrl($hash, $stack, $format, $this->getImagename($image), $seoLanguage);
+    }
+
+    /**
+     * @param LocalImageAbstract $image
+     *
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     *
+     * @return null|SourceImage
+     */
+    private function imageUpload(LocalImageAbstract $image)
+    {
+        $imageClient = $this->getRokkaClient();
+        $metadata = $this->callbacks->getMetadata($image);
+        if (0 === count($metadata)) {
+            $metadata = null;
+        }
+        $content = $image->getContent();
+        if (null !== $content) {
+            $filename = $image->getFilename();
+            if (null === $filename) {
+                $filename = 'unknown';
+            }
+            $answer = $imageClient->uploadSourceImage(
+                $content,
+                $filename,
+                '',
+                $metadata
+            );
+            $sourceImages = $answer->getSourceImages();
+            if (count($sourceImages) > 0) {
+                return $sourceImages[0];
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * @param LocalImageAbstract $image
+     *
+     * @return string
+     */
+    private function getMimeType(LocalImageAbstract $image)
+    {
+        if ($realpath = $image->getRealpath()) {
+            $mimeType = finfo_file(finfo_open(FILEINFO_MIME_TYPE), $realpath);
+        } else {
+            $mimeType = finfo_buffer(finfo_open(FILEINFO_MIME_TYPE), $image->getContent());
+        }
+
+        if ('text/html' == $mimeType || 'text/plain' == $mimeType) {
+            if ($this->isSvg($image)) {
+                $mimeType = 'image/svg+xml';
+            }
+        }
+
+        return $mimeType;
+    }
+
+    private function isImage(LocalImageAbstract $image)
+    {
+        $mimeType = $this->getMimeType($image);
+        if ('image/' == substr($mimeType, 0, 6)) {
+            return true;
+        }
+
+        if ('application/pdf' == $mimeType) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Checks, if a file is svg (needed when xml declaration is missing).
+     *
+     * @param LocalImageAbstract $image
+     *
+     * @return bool
+     */
+    private function isSvg(LocalImageAbstract $image)
+    {
+        $dom = new \DOMDocument();
+        if (@$dom->loadXML($image->getContent())) {
+            $root = $dom->childNodes->item(0);
+            if ('svg' == $root->localName && 'http://www.w3.org/2000/svg' == $root->namespaceURI) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+}

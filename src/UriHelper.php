@@ -17,6 +17,8 @@ class UriHelper
      * Useful eg. if you just want to add "options-dpr-2" to an existing URL.
      * Returns the original URL, if it can't parse it as valid Rokka URL.
      *
+     * @see UriHelper::addOptionsToUri
+     *
      * @param string       $url     The rokka image render URL
      * @param array|string $options The options you want to add as string
      *
@@ -32,6 +34,30 @@ class UriHelper
      *
      * Useful eg. if you just want to add "options-dpr-2" to an existing URL
      * Returns the original URL, if it can't parse it as valid Rokka URL.
+     *
+     * Example with string as input
+     *
+     * ```language-php
+     * UriHelper::addOptionsToUri($uri, 'options-dpr-2--resize-upscale-false');
+     * ```
+     *
+     * Example with array
+     *
+     * ```language-php
+     * UriHelper::addOptionsToUri($uri,
+     *   [
+     *    'options' => ['dpr' => 2],
+     *    'operations' =>
+     *      [
+     *        [
+     *          'name' => 'resize',
+     *          'options' => ['upscale' => 'false']
+     *        ],
+     *      ],
+     *   ]);
+     *
+     * ```
+     *
      *
      * @param UriInterface $uri     The rokka image render URL
      * @param array|string $options The options you want to add as string
@@ -204,6 +230,7 @@ class UriHelper
     private static function getUriStringFromStackConfig(array $config)
     {
         $newOptions = [];
+
         if (isset($config['operations'])) {
             foreach ($config['operations'] as $values) {
                 if ($values instanceof StackOperation) {
@@ -213,7 +240,6 @@ class UriHelper
                 }
             }
         }
-
         $newStackOptions = null;
         if (isset($config['options'])) {
             $newStackOptions = self::getStringForOptions('options', $config['options']);
