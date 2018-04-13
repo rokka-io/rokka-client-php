@@ -5,8 +5,8 @@ namespace Rokka\Client;
 use Rokka\Client\Base as BaseClient;
 use Rokka\Client\Core\SourceImage;
 use Rokka\Client\Core\StackUri;
-use Rokka\Client\LocalImage\FileInfo;
 use Rokka\Client\LocalImage\AbstractLocalImage;
+use Rokka\Client\LocalImage\FileInfo;
 use Rokka\Client\LocalImage\RokkaHash;
 use Rokka\Client\TemplateHelper\AbstractCallbacks;
 use Rokka\Client\TemplateHelper\DefaultCallbacks;
@@ -44,11 +44,11 @@ class TemplateHelper
     /**
      * @since 1.3.0
      *
-     * @param string                               $organization      Organization name
-     * @param string                               $apiKey            API key
+     * @param string                 $organization      Organization name
+     * @param string                 $apiKey            API key
      * @param AbstractCallbacks|null $callbacks         Optional callbacks for read and write of hashes
-     * @param string|null                          $publicRokkaDomain Optional public rokka URL, if different from the standard one (org.render.rokka.io)
-     * @param string|null                          $rokkaApiHost      Optional base url
+     * @param string|null            $publicRokkaDomain Optional public rokka URL, if different from the standard one (org.render.rokka.io)
+     * @param string|null            $rokkaApiHost      Optional base url
      */
     public function __construct(
         $organization,
