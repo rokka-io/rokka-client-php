@@ -16,7 +16,7 @@ namespace Rokka\Client\LocalImage;
  * @see \Rokka\Client\LocalImage\FileInfo
  * @since 1.3.0
  */
-class StringContent extends LocalImageAbstract
+class StringContent extends AbstractLocalImage
 {
     /**
      * @var null|string

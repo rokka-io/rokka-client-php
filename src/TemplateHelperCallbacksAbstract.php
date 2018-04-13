@@ -3,7 +3,7 @@
 namespace Rokka\Client;
 
 use Rokka\Client\Core\SourceImage;
-use Rokka\Client\LocalImage\LocalImageAbstract;
+use Rokka\Client\LocalImage\AbstractLocalImage;
 
 /**
  * Used for looking up and saving hashes related to a local image.
@@ -23,11 +23,11 @@ abstract class TemplateHelperCallbacksAbstract
      *
      * @since 1.3.0
      *
-     * @param LocalImageAbstract $image
+     * @param AbstractLocalImage $image
      *
      * @return null|string
      */
-    abstract public function getHash(LocalImageAbstract $image);
+    abstract public function getHash(AbstractLocalImage $image);
 
     /**
      * This method is called, when an image was saved/uploaded to the rokka server.
@@ -36,12 +36,12 @@ abstract class TemplateHelperCallbacksAbstract
      *
      * @since 1.3.0
      *
-     * @param LocalImageAbstract $image       The "local" image
+     * @param AbstractLocalImage $image       The "local" image
      * @param SourceImage        $sourceImage The SourceImage on the rokka server with all needed meta info
      *
      * @return string hash or shorthash
      */
-    abstract public function saveHash(LocalImageAbstract $image, SourceImage $sourceImage);
+    abstract public function saveHash(AbstractLocalImage $image, SourceImage $sourceImage);
 
     /**
      * Return an array of metadata to be sent to the rokka server.
@@ -51,11 +51,11 @@ abstract class TemplateHelperCallbacksAbstract
      * If you want to send special metadata to the rokka server for later searching, you can return them here.
      * Will be called, before an image is uploaded to rokka.
      *
-     * @param LocalImageAbstract $file
+     * @param AbstractLocalImage $file
      *
      * @return array
      */
-    public function getMetadata(LocalImageAbstract $file)
+    public function getMetadata(AbstractLocalImage $file)
     {
         return [];
     }

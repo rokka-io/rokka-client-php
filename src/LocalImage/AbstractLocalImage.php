@@ -14,7 +14,7 @@ namespace Rokka\Client\LocalImage;
  * @see \Rokka\Client\LocalImage\StringContent
  * @since 1.3.0
  */
-abstract class LocalImageAbstract
+abstract class AbstractLocalImage
 {
     /**
      * Can be anything and accessed in callbacks and such.

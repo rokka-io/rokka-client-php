@@ -6,7 +6,7 @@ use Rokka\Client\Base as BaseClient;
 use Rokka\Client\Core\SourceImage;
 use Rokka\Client\Core\StackUri;
 use Rokka\Client\LocalImage\FileInfo;
-use Rokka\Client\LocalImage\LocalImageAbstract;
+use Rokka\Client\LocalImage\AbstractLocalImage;
 use Rokka\Client\LocalImage\RokkaHash;
 
 /**
@@ -85,13 +85,13 @@ class TemplateHelper
      *
      * @since 1.3.0
      *
-     * @param LocalImageAbstract $image
+     * @param AbstractLocalImage $image
      *
      * @throws \GuzzleHttp\Exception\GuzzleException
      *
      * @return string|null
      */
-    public function getHashMaybeUpload(LocalImageAbstract $image)
+    public function getHashMaybeUpload(AbstractLocalImage $image)
     {
         if ($hash = $image->getRokkaHash()) {
             return $hash;
@@ -115,7 +115,7 @@ class TemplateHelper
      *
      * @since 1.3.0
      *
-     * @param LocalImageAbstract|string|\SplFileInfo $image       The image
+     * @param AbstractLocalImage|string|\SplFileInfo $image       The image
      * @param string                                 $stack       The stack name
      * @param string|null                            $format      The image format of the image (jpg, png, webp, ...)
      * @param string|null                            $seo         if you want a different seo string than the default
@@ -152,7 +152,7 @@ class TemplateHelper
      *
      * @since 1.3.0
      *
-     * @param LocalImageAbstract|string|\SplFileInfo $image       The image to be resized
+     * @param AbstractLocalImage|string|\SplFileInfo $image       The image to be resized
      * @param string|int                             $width       The width of the image
      * @param string|int|null                        $height      The height of the image
      * @param string                                 $format      The image format of the image (jpg, png, webp, ...)
@@ -181,7 +181,7 @@ class TemplateHelper
      *
      * @since 1.3.0
      *
-     * @param LocalImageAbstract|string|\SplFileInfo $image       The image to be resized
+     * @param AbstractLocalImage|string|\SplFileInfo $image       The image to be resized
      * @param string|int                             $width       The width of the image
      * @param string|int                             $height      The height of the image
      * @param string                                 $format      The image format of the image (jpg, png, webp, ...)
@@ -206,7 +206,7 @@ class TemplateHelper
      *
      * @since 1.3.0
      *
-     * @param LocalImageAbstract|string|\SplFileInfo $image       The image to be resized
+     * @param AbstractLocalImage|string|\SplFileInfo $image       The image to be resized
      * @param string                                 $format      The image format of the image (jpg, png, webp, ...)
      * @param string|null                            $seo
      * @param string                                 $seoLanguage
@@ -301,11 +301,11 @@ class TemplateHelper
      *
      * @since 1.3.0
      *
-     * @param LocalImageAbstract|null $image
+     * @param AbstractLocalImage|null $image
      *
      * @return string
      */
-    public function getImagename(LocalImageAbstract $image = null)
+    public function getImagename(AbstractLocalImage $image = null)
     {
         if (null === $image) {
             return '';
@@ -402,15 +402,15 @@ class TemplateHelper
      *
      * @since 1.3.0
      *
-     * @param LocalImageAbstract|string|\SplFileInfo $input
+     * @param AbstractLocalImage|string|\SplFileInfo $input
      * @param string|null                            $identifier
      * @param mixed                                  $context
      *
-     * @return LocalImageAbstract
+     * @return AbstractLocalImage
      */
     private function getImageObject($input, $identifier = null, $context = null)
     {
-        if ($input instanceof LocalImageAbstract) {
+        if ($input instanceof AbstractLocalImage) {
             if (null !== $identifier) {
                 $input->setIdentifier($identifier);
             }
@@ -443,7 +443,7 @@ class TemplateHelper
      * @param string             $hash        The rokka hash
      * @param string             $stack       The stack name
      * @param string|null        $format      The image format of the image (jpg, png, webp, ...)
-     * @param LocalImageAbstract $image       The image
+     * @param AbstractLocalImage $image       The image
      * @param string|null        $seoLanguage Optional language to be used for slugifying (eg. 'de' slugifies 'ö' to 'oe')
      *
      * @return string
@@ -452,20 +452,20 @@ class TemplateHelper
         $hash,
         $stack,
         $format = 'jpg',
-        LocalImageAbstract $image = null,
+        AbstractLocalImage $image = null,
         $seoLanguage = 'de'
     ) {
         return $this->generateRokkaUrl($hash, $stack, $format, $this->getImagename($image), $seoLanguage);
     }
 
     /**
-     * @param LocalImageAbstract $image
+     * @param AbstractLocalImage $image
      *
      * @throws \GuzzleHttp\Exception\GuzzleException
      *
      * @return null|SourceImage
      */
-    private function imageUpload(LocalImageAbstract $image)
+    private function imageUpload(AbstractLocalImage $image)
     {
         $imageClient = $this->getRokkaClient();
         $metadata = $this->callbacks->getMetadata($image);
@@ -494,11 +494,11 @@ class TemplateHelper
     }
 
     /**
-     * @param LocalImageAbstract $image
+     * @param AbstractLocalImage $image
      *
      * @return string
      */
-    private function getMimeType(LocalImageAbstract $image)
+    private function getMimeType(AbstractLocalImage $image)
     {
         if ($realpath = $image->getRealpath()) {
             $mimeType = finfo_file(finfo_open(FILEINFO_MIME_TYPE), $realpath);
@@ -515,7 +515,7 @@ class TemplateHelper
         return $mimeType;
     }
 
-    private function isImage(LocalImageAbstract $image)
+    private function isImage(AbstractLocalImage $image)
     {
         $mimeType = $this->getMimeType($image);
         if ('image/' == substr($mimeType, 0, 6)) {
@@ -532,11 +532,11 @@ class TemplateHelper
     /**
      * Checks, if a file is svg (needed when xml declaration is missing).
      *
-     * @param LocalImageAbstract $image
+     * @param AbstractLocalImage $image
      *
      * @return bool
      */
-    private function isSvg(LocalImageAbstract $image)
+    private function isSvg(AbstractLocalImage $image)
     {
         $dom = new \DOMDocument();
         if (@$dom->loadXML($image->getContent())) {

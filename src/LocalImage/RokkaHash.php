@@ -20,7 +20,7 @@ use Rokka\Client\TemplateHelper;
  *
  * @since 1.3.0
  */
-class RokkaHash extends LocalImageAbstract
+class RokkaHash extends AbstractLocalImage
 {
     /**
      * @var null|string
