@@ -1,6 +1,6 @@
 <?php
 
-namespace Rokka\Client;
+namespace Rokka\Client\TemplateHelper;
 
 use Rokka\Client\Core\SourceImage;
 use Rokka\Client\LocalImage\AbstractLocalImage;
@@ -9,11 +9,11 @@ use Rokka\Client\LocalImage\AbstractLocalImage;
  * Used for looking up and saving hashes related to a local image.
  *
  * Inject an inherited object of this into new TemplateHelper(), by default
- * \Rokka\Client\TemplateHelperDefaultCallbacks is used.
+ * \Rokka\Client\TemplateHelper\DefaultCallbacks is used.
  *
  * @since 1.3.0
  */
-abstract class TemplateHelperCallbacksAbstract
+abstract class AbstractCallbacks
 {
     /**
      * Callback when a "local" image needs its hash.

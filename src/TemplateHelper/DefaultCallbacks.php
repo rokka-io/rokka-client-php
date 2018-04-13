@@ -1,12 +1,12 @@
 <?php
 
-namespace Rokka\Client;
+namespace Rokka\Client\TemplateHelper;
 
 use Rokka\Client\Core\SourceImage;
 use Rokka\Client\LocalImage\AbstractLocalImage;
 
 /**
- * The default implementation for \Rokka\Client\TemplateHelperCallbacksAbstract.
+ * The default implementation for \Rokka\Client\TemplateHelper\AbstractCallbacks.
  *
  * It stores the hash to an image on the filesystem as json. Either next to the image, if it's on the filesystem,
  * otherwise in the sys_get_temp_dir().
@@ -14,7 +14,7 @@ use Rokka\Client\LocalImage\AbstractLocalImage;
  *
  * @since 1.3.0
  */
-class TemplateHelperDefaultCallbacks extends TemplateHelperCallbacksAbstract
+class DefaultCallbacks extends AbstractCallbacks
 {
     public static $fileExtension = '.rokka.txt';
 

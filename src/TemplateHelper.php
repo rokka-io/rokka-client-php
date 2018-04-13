@@ -8,6 +8,8 @@ use Rokka\Client\Core\StackUri;
 use Rokka\Client\LocalImage\FileInfo;
 use Rokka\Client\LocalImage\AbstractLocalImage;
 use Rokka\Client\LocalImage\RokkaHash;
+use Rokka\Client\TemplateHelper\AbstractCallbacks;
+use Rokka\Client\TemplateHelper\DefaultCallbacks;
 
 /**
  * This class provides lots of helper functionality usually used in templates.
@@ -25,7 +27,7 @@ class TemplateHelper
     private $rokkaDomain = null;
 
     /**
-     * @var TemplateHelperCallbacksAbstract
+     * @var AbstractCallbacks
      */
     private $callbacks = null;
 
@@ -44,14 +46,14 @@ class TemplateHelper
      *
      * @param string                               $organization      Organization name
      * @param string                               $apiKey            API key
-     * @param TemplateHelperCallbacksAbstract|null $callbacks         Optional callbacks for read and write of hashes
+     * @param AbstractCallbacks|null $callbacks         Optional callbacks for read and write of hashes
      * @param string|null                          $publicRokkaDomain Optional public rokka URL, if different from the standard one (org.render.rokka.io)
      * @param string|null                          $rokkaApiHost      Optional base url
      */
     public function __construct(
         $organization,
         $apiKey,
-        TemplateHelperCallbacksAbstract $callbacks = null,
+        AbstractCallbacks $callbacks = null,
         $publicRokkaDomain = null,
         $rokkaApiHost = BaseClient::DEFAULT_API_BASE_URL
     ) {
@@ -74,7 +76,7 @@ class TemplateHelper
             $this->rokkaDomain = 'https://'.$organization.'.rokka.io';
         }
         if (null === $callbacks) {
-            $callbacks = new TemplateHelperDefaultCallbacks();
+            $callbacks = new DefaultCallbacks();
         }
         $this->callbacks = $callbacks;
     }

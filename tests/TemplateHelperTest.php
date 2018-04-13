@@ -8,7 +8,7 @@ use Rokka\Client\LocalImage\AbstractLocalImage;
 use Rokka\Client\LocalImage\RokkaHash;
 use Rokka\Client\LocalImage\StringContent;
 use Rokka\Client\TemplateHelper;
-use Rokka\Client\TemplateHelperCallbacksAbstract;
+use Rokka\Client\TemplateHelper\AbstractCallbacks;
 
 class TemplateHelperTest extends \PHPUnit\Framework\TestCase
 {
@@ -189,7 +189,7 @@ class TemplateHelperTest extends \PHPUnit\Framework\TestCase
     }
 }
 
-class TestCallbacks extends TemplateHelperCallbacksAbstract
+class TestCallbacks extends AbstractCallbacks
 {
     public function getHash(AbstractLocalImage $file)
     {
