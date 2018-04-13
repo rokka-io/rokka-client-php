@@ -20,7 +20,7 @@ class DefaultCallbacks extends AbstractCallbacks
 
     public function getHash(AbstractLocalImage $image)
     {
-        $hashFile = $this->getHashFileName($image);
+        $hashFile = $this->getHashFilePath($image);
         if (file_exists($hashFile)) {
             $data = json_decode(file_get_contents($hashFile), true);
 
@@ -32,7 +32,8 @@ class DefaultCallbacks extends AbstractCallbacks
 
     public function saveHash(AbstractLocalImage $image, SourceImage $sourceImage)
     {
-        file_put_contents($this->getHashFileName($image), json_encode(['hash' => $sourceImage->shortHash]));
+        //save the metadata file as json, so that in the future we may add more info, if needed
+        file_put_contents($this->getHashFilePath($image), json_encode(['hash' => $sourceImage->shortHash]));
 
         return $sourceImage->shortHash;
     }
@@ -42,13 +43,13 @@ class DefaultCallbacks extends AbstractCallbacks
      *
      * @return string
      */
-    private function getHashFileName(AbstractLocalImage $image)
+    private function getHashFilePath(AbstractLocalImage $image)
     {
         $path = $image->getRealpath();
         if (false !== $path) {
             return $path.self::$fileExtension;
         }
-
+        // put it in the system tmp dir, if file doesn't have a real path.
         return sys_get_temp_dir().'/'.str_replace('/', '__', $image->getIdentifier()).self::$fileExtension;
     }
 }

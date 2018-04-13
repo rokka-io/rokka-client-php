@@ -51,11 +51,11 @@ abstract class AbstractCallbacks
      * If you want to send special metadata to the rokka server for later searching, you can return them here.
      * Will be called, before an image is uploaded to rokka.
      *
-     * @param AbstractLocalImage $file
+     * @param AbstractLocalImage $image
      *
      * @return array
      */
-    public function getMetadata(AbstractLocalImage $file)
+    public function getMetadata(AbstractLocalImage $image)
     {
         return [];
     }
