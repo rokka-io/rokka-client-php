@@ -5,7 +5,7 @@ namespace Rokka\Client\Core;
 /**
  * Represents a collection of stack operations for an organization.
  */
-class Stack extends StackAbstract
+class Stack extends AbstractStack
 {
     /**
      * @var string|null Organization name
