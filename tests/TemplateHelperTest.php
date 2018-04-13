@@ -3,8 +3,8 @@
 namespace Rokka\Client\Tests;
 
 use Rokka\Client\Core\SourceImage;
-use Rokka\Client\LocalImage\FileInfo;
 use Rokka\Client\LocalImage\AbstractLocalImage;
+use Rokka\Client\LocalImage\FileInfo;
 use Rokka\Client\LocalImage\RokkaHash;
 use Rokka\Client\LocalImage\StringContent;
 use Rokka\Client\TemplateHelper;
