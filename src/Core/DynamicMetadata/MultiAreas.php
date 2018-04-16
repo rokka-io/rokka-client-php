@@ -40,11 +40,11 @@ class MultiAreas implements DynamicMetadataInterface
     /**
      * Gets an array of Areas with a specific name.
      *
-     * @param string $name
+     * @param string $name The area name to look up
      *
      * @return DynamicMetadataInterface[]|null
      */
-    public function getArea($name)
+    public function getAreasByName($name)
     {
         if (!isset($this->areas[$name])) {
             return null;
@@ -56,11 +56,11 @@ class MultiAreas implements DynamicMetadataInterface
     /**
      * Gets the first Area with a specific name (all others have no meaning currently).
      *
-     * @param string $name
+     * @param string $name The area name to look up
      *
      * @return DynamicMetadataInterface|null
      */
-    public function getFirstArea($name)
+    public function getFirstAreaByName($name)
     {
         if (!isset($this->areas[$name])) {
             return null;
