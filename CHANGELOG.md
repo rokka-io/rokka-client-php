@@ -8,11 +8,11 @@ This document mainly describes API changes important to users of this library.
 
 ## 1.3.0 - 2018-04-16
 
-* Added `\Rokka\Client\Image::restoreSourceImage($hash, $organization)` for restoring deleted images.
-* Added `\Rokka\Client\Image::copySourceImage($hash, $destination, $overwrite, $organization)` for copying an image to another organization.
+* Added `\Rokka\Client\Image::restoreSourceImage($hash, $organization)` for restoring deleted images. See [documentation about source images](https://rokka.io/documentation/references/source-images.html#restore-a-source-image) for details.
+* Added `\Rokka\Client\Image::copySourceImage($hash, $destination, $overwrite, $organization)` for copying an image to another organization. See [documentation about source images](https://rokka.io/documentation/references/source-images.html#copy-a-source-image-to-another-organization) for details.
 * Added [`\Rokka\Client\TemplateHelper`](https://rokka.io/client-php-api/master/Rokka/Client/TemplateHelper.html) class with many methods for making life easier with template and integration into frameworks and CMS. 
-* Renamed `\Rokka\Client\Core\StackAbstract` to `\Rokka\Client\Core\AbstractStack`. Deprecated `\Rokka\Client\Core\StackAbstract` (still here for BC reasons) 
 * Added `\Rokka\Client\Core\DynamicMetadata\MultiAreas` and `\Rokka\Client\Core\DynamicMetadata\CropArea`. See [documentation about dynamic metadata](https://rokka.io/documentation/references/dynamic-metadata.html) for details.
+* Renamed `\Rokka\Client\Core\StackAbstract` to `\Rokka\Client\Core\AbstractStack`. Deprecated `\Rokka\Client\Core\StackAbstract` (still here for BC reasons) 
 
 ## 1.2.0 - 2018-02-19
 
