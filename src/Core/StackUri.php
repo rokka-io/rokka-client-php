@@ -23,7 +23,7 @@ use Rokka\Client\UriHelper;
  * @see \Rokka\Client\UriHelper::addOptionsToUriString()
  * @since 1.2.0
  */
-class StackUri extends StackAbstract
+class StackUri extends AbstractStack
 {
     /**
      * @var string|null

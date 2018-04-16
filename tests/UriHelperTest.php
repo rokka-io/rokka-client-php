@@ -19,6 +19,11 @@ class UriHelperTest extends \PHPUnit\Framework\TestCase
             ['', 'options-dpr-2', 'options-dpr-2'],
             ['', ['options' => ['dpr' => 2]], 'options-dpr-2'],
             ['resize-width-100', ['options' => ['dpr' => 2]], 'resize-width-100--options-dpr-2'],
+
+            ['resize-width-100', ['operations' => [['name' => 'resize', 'options' => ['upscale' => 'false']]]], 'resize-upscale-false-width-100'],
+            ['resize-width-100', ['operations' => [['name' => 'resize', 'options' => ['upscale' => false]]]], 'resize-upscale-false-width-100'],
+            ['resize-width-100', 'resize-upscale-false', 'resize-upscale-false-width-100'],
+
             ['resize-width-100', ['options' => ['dpr' => 2], 'operations' => [new StackOperation('resize', ['width' => 200])]], 'resize-width-200--options-dpr-2'],
             ['resize-width-100', ['options' => ['dpr' => 2], 'operations' => [['name' => 'resize', 'options' => ['width' => 200]]]], 'resize-width-200--options-dpr-2'],
 
