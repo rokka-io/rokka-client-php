@@ -6,7 +6,7 @@ This project tries to follow [Semantic Versioning](http://semver.org/) since the
 
 This document mainly describes API changes important to users of this library.
 
-## 1.3.0 - unreleased
+## 1.3.0 - 2018-04-16
 
 * Added `\Rokka\Client\Image::restoreSourceImage($hash, $organization)` for restoring deleted images.
 * Added `\Rokka\Client\Image::copySourceImage($hash, $destination, $overwrite, $organization)` for copying an image to another organization.
