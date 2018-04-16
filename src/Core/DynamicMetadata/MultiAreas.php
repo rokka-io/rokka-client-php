@@ -98,14 +98,8 @@ class MultiAreas implements DynamicMetadataInterface
         return new self($areas);
     }
 
-    /**
-     * Get the data, which should be json-fied later.
-     *
-     * @return mixed
-     */
     public function getForJson()
     {
-        // var_dump($this->areas);
         $areas = [];
         foreach ($this->areas as $name => $area) {
             $areas[$name] = [];
