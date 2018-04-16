@@ -6,6 +6,10 @@ This project tries to follow [Semantic Versioning](http://semver.org/) since the
 
 This document mainly describes API changes important to users of this library.
 
+## 1.3.1 - 2018-04-16
+
+* Make `\Rokka\Client\TemplateHelper::getImageObject` public.
+
 ## 1.3.0 - 2018-04-16
 
 * Added `\Rokka\Client\Image::restoreSourceImage($hash, $organization)` for restoring deleted images. See [documentation about source images](https://rokka.io/documentation/references/source-images.html#restore-a-source-image) for details.

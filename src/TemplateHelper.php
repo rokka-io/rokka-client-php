@@ -402,7 +402,7 @@ class TemplateHelper
      * - string with hash pattern (/^[0-9a-f]{6,40}$/): returns \Rokka\Client\LocalImage\RokkaHash
      * - other strings: returns \Rokka\Client\LocalImage\FileInfo with $input as the path to the image
      *
-     * @since 1.3.0
+     * @since 1.3.1
      *
      * @param AbstractLocalImage|string|\SplFileInfo $input
      * @param string|null                            $identifier
@@ -410,7 +410,7 @@ class TemplateHelper
      *
      * @return AbstractLocalImage
      */
-    private function getImageObject($input, $identifier = null, $context = null)
+    public function getImageObject($input, $identifier = null, $context = null)
     {
         if ($input instanceof AbstractLocalImage) {
             if (null !== $identifier) {
