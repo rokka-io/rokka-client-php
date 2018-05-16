@@ -6,6 +6,10 @@ This project tries to follow [Semantic Versioning](http://semver.org/) since the
 
 This document mainly describes API changes important to users of this library.
 
+## 1.3.2 - 2018-06-16
+
+* Fix PHP 5.6 compatibility for `\Rokka\Client\Core\Stack::createFromConfig`
+
 ## 1.3.1 - 2018-04-16
 
 * Make `\Rokka\Client\TemplateHelper::getImageObject` public.
