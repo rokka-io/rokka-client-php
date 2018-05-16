@@ -105,7 +105,7 @@ class Stack extends AbstractStack
      *
      * @return self
      */
-    public static function createFromConfig(string $stackName, array $config, string $organization = null)
+    public static function createFromConfig($stackName, array $config, $organization = null)
     {
         $stack = new static($organization, $stackName);
 
