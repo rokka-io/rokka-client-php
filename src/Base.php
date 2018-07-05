@@ -4,6 +4,7 @@ namespace Rokka\Client;
 
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\GuzzleException;
+use GuzzleHttp\Promise\PromiseInterface;
 use Psr\Http\Message\ResponseInterface;
 
 /**
@@ -84,13 +85,28 @@ abstract class Base
      */
     protected function call($method, $path, array $options = [], $needsCredentials = true)
     {
+        return $this->callAsync($method, $path, $options, $needsCredentials)->wait();
+    }
+
+    /**
+     * Call the API rokka endpoint.
+     *
+     * @param string $method           HTTP method to use
+     * @param string $path             Path on the API
+     * @param array  $options          Request options
+     * @param bool   $needsCredentials True if credentials are needed
+     *
+     * @return PromiseInterface
+     */
+    protected function callAsync($method, $path, array $options = [], $needsCredentials = true)
+    {
         $options['headers'][self::API_VERSION_HEADER] = $this->apiVersion;
 
         if ($needsCredentials) {
             $options['headers'][self::API_KEY_HEADER] = $this->credentials['key'];
         }
 
-        return $this->client->request($method, $path, $options);
+        return $this->client->requestAsync($method, $path, $options);
     }
 
     /**

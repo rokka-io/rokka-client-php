@@ -4,6 +4,8 @@ namespace Rokka\Client;
 
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\GuzzleException;
+use GuzzleHttp\Promise\PromiseInterface;
+use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Psr7\Uri;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\UriInterface;
@@ -61,9 +63,22 @@ class Image extends Base
      * @throws GuzzleException
      * @throws \RuntimeException
      *
-     * @return SourceImageCollection If no image contents are provided to be uploaded
+     * @return SourceImageCollection
      */
     public function uploadSourceImage($contents, $fileName, $organization = '', $options = null)
+    {
+        return $this->uploadSourceImageAsync($contents, $fileName, $organization, $options)->wait();
+    }
+
+    /**
+     * @param string     $contents
+     * @param string     $fileName
+     * @param string     $organization
+     * @param array|null $options
+     *
+     * @return PromiseInterface
+     */
+    public function uploadSourceImageAsync($contents, $fileName, $organization = '', $options = null)
     {
         if (empty($contents)) {
             throw new \LogicException('You need to provide an image content to be uploaded');
@@ -78,7 +93,7 @@ class Image extends Base
     }
 
     /**
-     * Upload a source image.
+     * Upload a source image by url.
      *
      * @param string     $url          url to a remote image
      * @param string     $organization Optional organization
@@ -87,9 +102,23 @@ class Image extends Base
      * @throws GuzzleException
      * @throws \RuntimeException
      *
-     * @return SourceImageCollection If no image contents are provided to be uploaded
+     * @return SourceImageCollection
      */
     public function uploadSourceImageByUrl($url, $organization = '', $options = null)
+    {
+        return $this->uploadSourceImageByUrlAsync($url, $organization, $options)->wait();
+    }
+
+    /**
+     * Upload a source image by url.
+     *
+     * @param string     $url          url to a remote image
+     * @param string     $organization Optional organization
+     * @param array|null $options      Options for creating the image (like meta_user and meta_dynamic)
+     *
+     * @return PromiseInterface
+     */
+    public function uploadSourceImageByUrlAsync($url, $organization = '', $options = null)
     {
         if (empty($url)) {
             throw new \LogicException('You need to provide an url to an image');
@@ -912,10 +941,7 @@ class Image extends Base
      * @param array|null $options        Options for creating the image (like meta_user and meta_dynamic)
      * @param array      $requestOptions multipart options for the guzzle client
      *
-     * @throws GuzzleException
-     * @throws \RuntimeException
-     *
-     * @return SourceImageCollection
+     * @return PromiseInterface
      */
     private function uploadSourceImageInternal($organization, $options, $requestOptions)
     {
@@ -947,11 +973,16 @@ class Image extends Base
             ];
         }
 
-        $contents = $this
-            ->call('POST', self::SOURCEIMAGE_RESOURCE.'/'.$this->getOrganizationName($organization), ['multipart' => $requestOptions])
-            ->getBody()
-            ->getContents();
+        return $this
+            ->callAsync(
+                'POST',
+                self::SOURCEIMAGE_RESOURCE.'/'.$this->getOrganizationName($organization),
+                ['multipart' => $requestOptions]
+            )
+            ->then(function (Response $value) {
+                $contents = $value->getBody()->getContents();
 
-        return SourceImageCollection::createFromJsonResponse($contents);
+                return SourceImageCollection::createFromJsonResponse($contents);
+            });
     }
 }
