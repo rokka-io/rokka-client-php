@@ -82,7 +82,12 @@ class FileInfo extends AbstractLocalImage
     public function getContent()
     {
         if (null === $this->content) {
-            $this->content = file_get_contents($this->image->getPathname());
+            $content = file_get_contents($this->image->getPathname());
+            if (false === $content) {
+                $this->content = null;
+            } else {
+                $this->content = $content;
+            }
         }
 
         return $this->content;

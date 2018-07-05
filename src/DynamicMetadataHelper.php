@@ -10,7 +10,7 @@ class DynamicMetadataHelper
      * @param string $name     The Metadata name
      * @param array  $metadata The Metadata contents, as an array
      *
-     * @return DynamicMetadataInterface
+     * @return DynamicMetadataInterface|null
      */
     public static function buildDynamicMetadata($name, array $metadata)
     {
@@ -19,6 +19,8 @@ class DynamicMetadataHelper
             /* @var DynamicMetadataInterface $metaClass */
             return  $metaClass::createFromJsonResponse($metadata, true);
         }
+
+        return null;
     }
 
     /**

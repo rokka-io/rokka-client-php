@@ -22,7 +22,11 @@ class DefaultCallbacks extends AbstractCallbacks
     {
         $hashFile = $this->getHashFilePath($image);
         if (file_exists($hashFile)) {
-            $data = json_decode(file_get_contents($hashFile), true);
+            $content = file_get_contents($hashFile);
+            if (false === $content) {
+                return null;
+            }
+            $data = json_decode($content, true);
 
             return $data['hash'];
         }
@@ -50,6 +54,11 @@ class DefaultCallbacks extends AbstractCallbacks
             return $path.self::$fileExtension;
         }
         // put it in the system tmp dir, if file doesn't have a real path.
-        return sys_get_temp_dir().'/'.str_replace('/', '__', $image->getIdentifier()).self::$fileExtension;
+        $identifier = $image->getIdentifier();
+        if (null === $identifier) {
+            $identifier = 'unknown_identifier';
+        }
+
+        return sys_get_temp_dir().'/'.str_replace('/', '__', $identifier).self::$fileExtension;
     }
 }

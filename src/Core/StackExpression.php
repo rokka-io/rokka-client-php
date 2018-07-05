@@ -33,7 +33,7 @@ class StackExpression
      */
     public static function createFromJsonResponse($data, $isArray = false)
     {
-        if (!$isArray) {
+        if (!$isArray && !is_array($data)) {
             $data = json_decode($data, true);
         }
 
