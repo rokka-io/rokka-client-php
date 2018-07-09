@@ -17,7 +17,7 @@ class DynamicMetadataHelper
         $metaClass = self::getDynamicMetadataClassName($name);
         if (class_exists($metaClass)) {
             /* @var DynamicMetadataInterface $metaClass */
-            return  $metaClass::createFromJsonResponse($metadata, true);
+            return  $metaClass::createFromDecodedJsonResponse($metadata);
         }
 
         return null;

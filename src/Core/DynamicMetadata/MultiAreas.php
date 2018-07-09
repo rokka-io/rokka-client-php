@@ -73,25 +73,21 @@ class MultiAreas implements DynamicMetadataInterface
     }
 
     /**
-     * Create a DynamicMetadata from the JSON data.
+     * Create a DynamicMetadata from the decoded JSON data.
      *
-     * @param string|array $data    JSON data
-     * @param bool         $isArray If the data provided is already an array
+     * @param array $data Decoded JSON data
      *
      * @return DynamicMetadataInterface
      */
-    public static function createFromJsonResponse($data, $isArray = false)
+    public static function createFromDecodedJsonResponse($data)
     {
-        if (!$isArray && !is_array($data)) {
-            $data = json_decode($data, true);
-        }
         $areas = [];
         foreach ($data as $name => $area) {
             $areas[$name] = [];
             foreach ($area as $class => $data) {
                 $metaClass = DynamicMetadataHelper::getDynamicMetadataClassName($class);
                 /* @var DynamicMetadataInterface $metaClass */
-                $areas[$name][] = $metaClass::createFromJsonResponse($data, true);
+                $areas[$name][] = $metaClass::createFromDecodedJsonResponse($data);
             }
         }
 

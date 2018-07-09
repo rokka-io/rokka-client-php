@@ -57,7 +57,7 @@ class StackTest extends \PHPUnit\Framework\TestCase
         $stack->addStackOperation(new StackOperation('crop', ['width' => 300, 'height' => 300]));
         $stack->addStackExpression(new StackExpression('options.dpr > 2', ['jpg.quality' => 20, 'webp.quality' => 30]));
 
-        return ['base' => [$stack, $data, false]];
+        return ['base' => [$stack, $data]];
     }
 
     /**
@@ -65,11 +65,10 @@ class StackTest extends \PHPUnit\Framework\TestCase
      *
      * @param $expected
      * @param $data
-     * @param bool $isArray
      */
-    public function testCreateFromJson($expected, $data, $isArray = false)
+    public function testCreateFromJson($expected, $data)
     {
-        $sourceImage = Stack::createFromJsonResponse($data, $isArray);
+        $sourceImage = Stack::createFromJsonResponse($data);
         $this->assertEquals($expected, $sourceImage);
     }
 }

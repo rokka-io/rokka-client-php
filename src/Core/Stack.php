@@ -43,23 +43,18 @@ class Stack extends AbstractStack
     }
 
     /**
-     * Create a stack from the JSON data returned by the rokka.io API.
+     * Create a stack from a decoded JSON data returned by the rokka.io API.
      *
-     * @param string|array $data    JSON data
-     * @param bool         $isArray If the data provided is already an array
+     * @param array $data Decoded JSON data
      *
      * @return Stack
      */
-    public static function createFromJsonResponse($data, $isArray = false)
+    public static function createFromDecodedJsonResponse($data)
     {
-        if (!$isArray && !is_array($data)) {
-            $data = json_decode($data, true);
-        }
-
         $stack_operations = [];
         if (isset($data['stack_operations']) && is_array($data['stack_operations'])) {
             foreach ($data['stack_operations'] as $operation) {
-                $stack_operations[] = StackOperation::createFromJsonResponse($operation, true);
+                $stack_operations[] = StackOperation::createFromDecodedJsonResponse($operation);
             }
         }
 
@@ -78,13 +73,25 @@ class Stack extends AbstractStack
         if (isset($data['stack_expressions']) && is_array($data['stack_expressions'])) {
             $stack_expressions = [];
             foreach ($data['stack_expressions'] as $expression) {
-                $stack_expressions[] = StackExpression::createFromJsonResponse($expression, true);
+                $stack_expressions[] = StackExpression::createFromDecodedJsonResponse($expression);
             }
 
             $stack->setStackExpressions($stack_expressions);
         }
 
         return $stack;
+    }
+
+    /**
+     * Create a stack from the JSON data returned by the rokka.io API.
+     *
+     * @param string $data JSON data
+     *
+     * @return Stack
+     */
+    public static function createFromJsonResponse($data)
+    {
+        return self::createFromDecodedJsonResponse(json_decode($data, true));
     }
 
     /**

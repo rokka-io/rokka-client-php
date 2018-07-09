@@ -32,19 +32,14 @@ class DetectionFace implements DynamicMetadataInterface
     }
 
     /**
-     * Create a SubjectArea from the JSON data.
+     * Create a SubjectArea from the decoded JSON data.
      *
-     * @param string|array $data    JSON data
-     * @param bool         $isArray If the data provided is already an array
+     * @param array $data Decoded JSON data
      *
      * @return self
      */
-    public static function createFromJsonResponse($data, $isArray = false)
+    public static function createFromDecodedJsonResponse($data)
     {
-        if (!$isArray && !is_array($data)) {
-            $data = json_decode($data, true);
-        }
-
         // Make sure to build the SubjectArea with correct defaults in case of missing attributes.
         $data = array_merge(['x' => 0, 'y' => 0, 'width' => 1, 'height' => 1], $data);
 

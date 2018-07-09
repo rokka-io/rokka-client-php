@@ -74,7 +74,11 @@ class SourceImageTest extends \PHPUnit\Framework\TestCase
      */
     public function testCreateFromJson($expected, $data, $isArray = false)
     {
-        $sourceImage = SourceImage::createFromJsonResponse($data, $isArray);
+        if ($isArray) {
+            $sourceImage = SourceImage::createFromDecodedJsonResponse($data);
+        } else {
+            $sourceImage = SourceImage::createFromJsonResponse($data);
+        }
         $this->assertEquals($expected, $sourceImage);
     }
 }
