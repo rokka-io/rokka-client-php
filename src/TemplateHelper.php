@@ -312,8 +312,11 @@ class TemplateHelper
         if (null === $image) {
             return '';
         }
+        if (null === $image->getFilename()) {
+            return '';
+        }
 
-        return (string) pathinfo($image->getFilename(), PATHINFO_FILENAME);
+        return pathinfo($image->getFilename(), PATHINFO_FILENAME);
     }
 
     /**
@@ -502,10 +505,15 @@ class TemplateHelper
      */
     private function getMimeType(AbstractLocalImage $image)
     {
-        if ($realpath = $image->getRealpath()) {
+        $mimeType = 'application/not-supported';
+        $realpath = $image->getRealpath();
+        if (is_string($realpath)) {
             $mimeType = finfo_file(finfo_open(FILEINFO_MIME_TYPE), $realpath);
         } else {
-            $mimeType = finfo_buffer(finfo_open(FILEINFO_MIME_TYPE), $image->getContent());
+            $content = $image->getContent();
+            if (null !== $content) {
+                $mimeType = finfo_buffer(finfo_open(FILEINFO_MIME_TYPE), $content);
+            }
         }
 
         if ('text/html' == $mimeType || 'text/plain' == $mimeType) {
@@ -541,8 +549,15 @@ class TemplateHelper
     private function isSvg(AbstractLocalImage $image)
     {
         $dom = new \DOMDocument();
-        if (@$dom->loadXML($image->getContent())) {
+        $content = $image->getContent();
+        if (null === $content) {
+            return false;
+        }
+        if ($dom->loadXML($content)) {
             $root = $dom->childNodes->item(0);
+            if (null === $root) {
+                return false;
+            }
             if ('svg' == $root->localName && 'http://www.w3.org/2000/svg' == $root->namespaceURI) {
                 return true;
             }

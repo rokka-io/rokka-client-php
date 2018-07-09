@@ -16,7 +16,7 @@ install:
 
 script:
     - ./vendor/bin/phpunit --coverage-text
-    - if [[ ${TRAVIS_PHP_VERSION:0:3} == "7.1" ]]; then composer require phpstan/phpstan; ./vendor/bin/phpstan analyze -l 7 src/; fi
+    - if [[ ${TRAVIS_PHP_VERSION:0:3} == "7.1" ]]; then composer require phpstan/phpstan; ./vendor/bin/phpstan analyze -c phpstan.neon -l 7 src/; fi
     - if [[ ( ${TRAVIS_PHP_VERSION:0:3} == "7.1" ) && ( $TRAVIS_BRANCH == "master" ) ]]; then ./scripts/run_sami_docs_on_travis.sh; fi
 
 deploy:

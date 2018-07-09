@@ -13,14 +13,13 @@ interface DynamicMetadataInterface
     public static function getName();
 
     /**
-     * Create a DynamicMetadata from the JSON data.
+     * Create a DynamicMetadata from the decoded JSON data.
      *
-     * @param string|array $data    JSON data
-     * @param bool         $isArray If the data provided is already an array
+     * @param array $data Decoded JSON data
      *
      * @return DynamicMetadataInterface
      */
-    public static function createFromJsonResponse($data, $isArray = false);
+    public static function createFromDecodedJsonResponse($data);
 
     /**
      * Get the data, which should be json-fied later.

@@ -56,19 +56,16 @@ class StackCollection implements \Countable, \Iterator
     /**
      * Create a stack from the JSON data returned by the rokka.io API.
      *
-     * @param string|array $data    JSON data
-     * @param bool         $isArray If the data provided is already an array
+     * @param string $data JSON data
      *
      * @return StackCollection
      */
-    public static function createFromJsonResponse($data, $isArray = false)
+    public static function createFromJsonResponse($data)
     {
-        if (!$isArray) {
-            $data = json_decode($data, true);
-        }
+        $data = json_decode($data, true);
 
         $stacks = array_map(function ($stack) {
-            return Stack::createFromJsonResponse($stack, true);
+            return Stack::createFromDecodedJsonResponse($stack);
         }, $data['items']);
 
         return new self($stacks);

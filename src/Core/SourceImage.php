@@ -134,19 +134,14 @@ class SourceImage
     }
 
     /**
-     * Create a source image from the JSON data.
+     * Create a source image from the decoded  JSON data.
      *
-     * @param string|array $data    JSON data
-     * @param bool         $isArray If the data provided is already an array
+     * @param array $data Decoded JSON data
      *
      * @return SourceImage
      */
-    public static function createFromJsonResponse($data, $isArray = false)
+    public static function createFromDecodedJsonResponse($data)
     {
-        if (!$isArray) {
-            $data = json_decode($data, true);
-        }
-
         if (!isset($data['user_metadata'])) {
             $data['user_metadata'] = [];
         } else {
@@ -188,5 +183,17 @@ class SourceImage
             $data['link'],
             $data['short_hash']
         );
+    }
+
+    /**
+     * Create a source image from the JSON data.
+     *
+     * @param string $data JSON data
+     *
+     * @return SourceImage
+     */
+    public static function createFromJsonResponse($data)
+    {
+        return self::createFromDecodedJsonResponse(json_decode($data, true));
     }
 }

@@ -433,8 +433,8 @@ class Image extends Base
      * @param Stack $stack         the Stack object to be saved
      * @param array $requestConfig options for the request
      *
-     * @throws \LogicException when stack name is not set
      * @throws GuzzleException
+     * @throws \LogicException when stack name is not set
      *
      * @return Stack
      */
@@ -774,7 +774,12 @@ class Image extends Base
         $parts = explode('/', $uri->getPath());
 
         // Returning just the HASH part for "api.rokka.io/organization/sourceimages/{HASH}"
-        return array_pop($parts);
+        $return = array_pop($parts);
+        if (null === $return) {
+            return false;
+        }
+
+        return $return;
     }
 
     private function doUserMetadataRequest($fields, $hash, $method, $organization = '')
@@ -804,7 +809,7 @@ class Image extends Base
      */
     private function getOrganization($organization = null)
     {
-        return (empty($organization) || null === $organization) ? $this->defaultOrganization : $organization;
+        return (empty($organization)) ? $this->defaultOrganization : $organization;
     }
 
     private function applyValueTransformationsToUserMeta(array $fields)

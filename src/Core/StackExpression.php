@@ -24,19 +24,14 @@ class StackExpression
     }
 
     /**
-     * Create a stack from the JSON data returned by the rokka.io API.
+     * Create a stack from the decoded JSON data returned by the rokka.io API.
      *
-     * @param string|array $data    JSON data
-     * @param bool         $isArray If the data provided is already an array
+     * @param array $data Decoded JSON data
      *
      * @return StackExpression
      */
-    public static function createFromJsonResponse($data, $isArray = false)
+    public static function createFromDecodedJsonResponse($data)
     {
-        if (!$isArray) {
-            $data = json_decode($data, true);
-        }
-
         $expression = new self($data['expression']);
         $expression->overrides = $data['overrides'];
 

@@ -10,15 +10,17 @@ class DynamicMetadataHelper
      * @param string $name     The Metadata name
      * @param array  $metadata The Metadata contents, as an array
      *
-     * @return DynamicMetadataInterface
+     * @return DynamicMetadataInterface|null
      */
     public static function buildDynamicMetadata($name, array $metadata)
     {
         $metaClass = self::getDynamicMetadataClassName($name);
         if (class_exists($metaClass)) {
             /* @var DynamicMetadataInterface $metaClass */
-            return  $metaClass::createFromJsonResponse($metadata, true);
+            return  $metaClass::createFromDecodedJsonResponse($metadata);
         }
+
+        return null;
     }
 
     /**
