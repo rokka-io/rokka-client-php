@@ -6,6 +6,10 @@ This project tries to follow [Semantic Versioning](http://semver.org/) since the
 
 This document mainly describes API changes important to users of this library.
 
+## unreleased
+
+* Refactored `createFromJsonResponse($data, $isArray = false)` to `createFromJsonResponse($data)` and `createFromDecodedJsonResponse($data)`
+
 ## 1.3.2 - 2018-06-16
 
 * Fix PHP 5.6 compatibility for `\Rokka\Client\Core\Stack::createFromConfig`
