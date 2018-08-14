@@ -853,6 +853,13 @@ class Image extends Base
             }
         }
 
+        if (isset($options['optimize_source']) && true === $options['optimize_source']) {
+            $requestOptions[] = [
+                'name' => 'optimize_source',
+                'contents' => 'true',
+            ];
+        }
+
         $contents = $this
             ->call('POST', self::SOURCEIMAGE_RESOURCE.'/'.$this->getOrganization($organization), ['multipart' => $requestOptions])
             ->getBody()

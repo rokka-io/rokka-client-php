@@ -10,6 +10,7 @@ This document mainly describes API changes important to users of this library.
 
 * Refactored `createFromJsonResponse($data, $isArray = false)` to `createFromJsonResponse($data)` and `createFromDecodedJsonResponse($data)`
 * Added `\Rokka\Client\Image::uploadSourceImageByUrl($url, $organization = '', $options = null)` for using an URL instead of the image content for adding new images into rokka.
+* Added `optimize_source` 
 
 ## 1.3.2 - 2018-06-16
 
