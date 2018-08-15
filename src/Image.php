@@ -80,29 +80,31 @@ class Image extends Base
             'filename' => $fileName,
         ]];
 
-        if (isset($options['meta_user'])) {
-            $options['meta_user'] = $this->applyValueTransformationsToUserMeta($options['meta_user']);
-            $requestOptions[] = [
-                'name' => 'meta_user[0]',
-                'contents' => json_encode($options['meta_user']),
-                ];
+        return $this->uploadSourceImageInternal($organization, $options, $requestOptions);
+    }
+
+    /**
+     * Upload a source image.
+     *
+     * @param string     $url          url to a remote image
+     * @param string     $organization Optional organization
+     * @param array|null $options      Options for creating the image (like meta_user and meta_dynamic)
+     *
+     * @throws GuzzleException
+     *
+     * @return SourceImageCollection If no image contents are provided to be uploaded
+     */
+    public function uploadSourceImageByUrl($url, $organization = '', $options = null)
+    {
+        if (empty($url)) {
+            throw new \LogicException('You need to provide an url to an image');
         }
+        $requestOptions = [[
+            'name' => 'url[0]',
+            'contents' => $url,
+        ]];
 
-        if (isset($options['meta_dynamic'])) {
-            foreach ($options['meta_dynamic'] as $key => $value) {
-                $requestOptions[] = [
-                    'name' => 'meta_dynamic[0]['.$key.']',
-                    'contents' => json_encode($value),
-                ];
-            }
-        }
-
-        $contents = $this
-            ->call('POST', self::SOURCEIMAGE_RESOURCE.'/'.$this->getOrganization($organization), ['multipart' => $requestOptions])
-            ->getBody()
-            ->getContents();
-
-        return SourceImageCollection::createFromJsonResponse($contents);
+        return $this->uploadSourceImageInternal($organization, $options, $requestOptions);
     }
 
     /**
@@ -821,5 +823,48 @@ class Image extends Base
         }
 
         return $fields;
+    }
+
+    /**
+     * @param string     $organization   Optional organization
+     * @param array|null $options        Options for creating the image (like meta_user and meta_dynamic)
+     * @param array      $requestOptions multipart options for the guzzle client
+     *
+     * @throws GuzzleException
+     *
+     * @return SourceImageCollection
+     */
+    private function uploadSourceImageInternal($organization, $options, $requestOptions)
+    {
+        if (isset($options['meta_user'])) {
+            $options['meta_user'] = $this->applyValueTransformationsToUserMeta($options['meta_user']);
+            $requestOptions[] = [
+                'name' => 'meta_user[0]',
+                'contents' => json_encode($options['meta_user']),
+            ];
+        }
+
+        if (isset($options['meta_dynamic'])) {
+            foreach ($options['meta_dynamic'] as $key => $value) {
+                $requestOptions[] = [
+                    'name' => 'meta_dynamic[0]['.$key.']',
+                    'contents' => json_encode($value),
+                ];
+            }
+        }
+
+        if (isset($options['optimize_source']) && true === $options['optimize_source']) {
+            $requestOptions[] = [
+                'name' => 'optimize_source',
+                'contents' => 'true',
+            ];
+        }
+
+        $contents = $this
+            ->call('POST', self::SOURCEIMAGE_RESOURCE.'/'.$this->getOrganization($organization), ['multipart' => $requestOptions])
+            ->getBody()
+            ->getContents();
+
+        return SourceImageCollection::createFromJsonResponse($contents);
     }
 }
