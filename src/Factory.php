@@ -19,7 +19,9 @@ use Rokka\Client\User as UserClient;
 class Factory
 {
     const API_BASE_URL = 'api_base_url';
+
     const PROXY = 'proxy';
+
     const GUZZLE_OPTIONS = 'guzzle_options';
 
     /**
