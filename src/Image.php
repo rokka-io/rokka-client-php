@@ -247,7 +247,7 @@ class Image extends Base
             $options['query']['sort'] = $sort;
         }
 
-        if (is_array($search) && !empty($search)) {
+        if (\is_array($search) && !empty($search)) {
             foreach ($search as $field => $value) {
                 if (!SearchHelper::validateFieldName($field)) {
                     throw new \LogicException(sprintf('Invalid field name "%s" as search field', $field));

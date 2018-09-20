@@ -66,7 +66,7 @@ class UriHelper
      */
     public static function addOptionsToUri(UriInterface $uri, $options)
     {
-        if (is_array($options)) {
+        if (\is_array($options)) {
             return self::addOptionsToUri($uri, self::getUriStringFromStackConfig($options));
         }
         $matches = self::decomposeUri($uri);
@@ -101,7 +101,7 @@ class UriHelper
      */
     public static function composeUri($components, UriInterface $uri = null)
     {
-        if (is_array($components)) {
+        if (\is_array($components)) {
             $components = UriComponents::createFromArray($components);
         }
         $stack = $components->getStack();

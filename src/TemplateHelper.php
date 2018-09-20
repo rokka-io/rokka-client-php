@@ -242,8 +242,8 @@ class TemplateHelper
         $attrs = 'src="'.$url.'"';
         $srcSets = [];
         foreach ($sizes as $size => $custom) {
-            if (is_int($size)) {
-                if (is_int($custom)) {
+            if (\is_int($size)) {
+                if (\is_int($custom)) {
                     $size = $custom.'x';
                 } else {
                     $size = $custom;
@@ -256,7 +256,7 @@ class TemplateHelper
                 $srcSets[] = "${urlx2} ${size}";
             }
         }
-        if (count($srcSets) > 0) {
+        if (\count($srcSets) > 0) {
             $attrs .= ' srcset="'.implode(', ', ($srcSets)).'"';
         }
 
@@ -281,7 +281,7 @@ class TemplateHelper
 
         $srcSets = [];
         foreach ($sizes as $size => $custom) {
-            if (is_int($size)) {
+            if (\is_int($size)) {
                 $size = $custom;
                 $custom = null;
             }
@@ -290,7 +290,7 @@ class TemplateHelper
                 $srcSets[] = "url('${urlx2}') ${size}";
             }
         }
-        if (count($srcSets) > 0) {
+        if (\count($srcSets) > 0) {
             $style .= " background-image: -webkit-image-set(url('$url') 1x, ".implode(', ', $srcSets).');';
         }
 
@@ -426,7 +426,7 @@ class TemplateHelper
         }
         if ($input instanceof \SplFileInfo) {
             return new FileInfo($input, $identifier, $context);
-        } elseif (is_string($input)) {
+        } elseif (\is_string($input)) {
             if (preg_match('/^[0-9a-f]{6,40}$/', $input)) {
                 return new RokkaHash($input, $identifier, $context, $this);
             }
@@ -473,7 +473,7 @@ class TemplateHelper
     {
         $imageClient = $this->getRokkaClient();
         $metadata = $this->callbacks->getMetadata($image);
-        if (0 === count($metadata)) {
+        if (0 === \count($metadata)) {
             $metadata = null;
         }
         $content = $image->getContent();
@@ -489,7 +489,7 @@ class TemplateHelper
                 $metadata
             );
             $sourceImages = $answer->getSourceImages();
-            if (count($sourceImages) > 0) {
+            if (\count($sourceImages) > 0) {
                 return $sourceImages[0];
             }
         }
@@ -506,7 +506,7 @@ class TemplateHelper
     {
         $mimeType = 'application/not-supported';
         $realpath = $image->getRealpath();
-        if (is_string($realpath)) {
+        if (\is_string($realpath)) {
             $mimeType = finfo_file(finfo_open(FILEINFO_MIME_TYPE), $realpath);
         } else {
             $content = $image->getContent();

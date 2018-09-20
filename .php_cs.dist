@@ -17,7 +17,7 @@ return PhpCsFixer\Config::create()
         'psr4' => true,
         '@Symfony' => true,
         '@Symfony:risky' => true,
-        'native_function_invocation' => false
+        'native_function_invocation' => ['include' => ['@compiler_optimized']],
     ])
     ->setFinder(
         PhpCsFixer\Finder::create()

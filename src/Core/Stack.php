@@ -52,7 +52,7 @@ class Stack extends AbstractStack
     public static function createFromDecodedJsonResponse($data)
     {
         $stack_operations = [];
-        if (isset($data['stack_operations']) && is_array($data['stack_operations'])) {
+        if (isset($data['stack_operations']) && \is_array($data['stack_operations'])) {
             foreach ($data['stack_operations'] as $operation) {
                 $stack_operations[] = StackOperation::createFromDecodedJsonResponse($operation);
             }
@@ -66,11 +66,11 @@ class Stack extends AbstractStack
             new \DateTime($data['created'])
         );
 
-        if (isset($data['stack_options']) && is_array($data['stack_options'])) {
+        if (isset($data['stack_options']) && \is_array($data['stack_options'])) {
             $stack->setStackOptions($data['stack_options']);
         }
 
-        if (isset($data['stack_expressions']) && is_array($data['stack_expressions'])) {
+        if (isset($data['stack_expressions']) && \is_array($data['stack_expressions'])) {
             $stack_expressions = [];
             foreach ($data['stack_expressions'] as $expression) {
                 $stack_expressions[] = StackExpression::createFromDecodedJsonResponse($expression);

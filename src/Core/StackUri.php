@@ -121,7 +121,7 @@ class StackUri extends AbstractStack
     {
         $part = 0;
         // if stack already has operations we assume we don't want to add more, it's just overriding parameters
-        if (count($this->getStackOperations()) > 0) {
+        if (\count($this->getStackOperations()) > 0) {
             ++$part;
         }
         foreach (explode('/', $options) as $option) {
@@ -132,7 +132,7 @@ class StackUri extends AbstractStack
                 if ('' == $stringOperationName) {
                     continue;
                 }
-                $parsedOptions = self::parseOptions(array_slice($stringOperationWithOptions, 1));
+                $parsedOptions = self::parseOptions(\array_slice($stringOperationWithOptions, 1));
                 if ('options' === $stringOperationName) {
                     $this->setStackOptions(array_merge($this->getStackOptions(), $parsedOptions));
                 } else {
@@ -170,7 +170,7 @@ class StackUri extends AbstractStack
             return !($key % 2);
         }, ARRAY_FILTER_USE_KEY);
 
-        if (count($optionKeys) !== count($optionValues)) {
+        if (\count($optionKeys) !== \count($optionValues)) {
             throw new \InvalidArgumentException('The options given has to be an even array with key and value.');
         }
 

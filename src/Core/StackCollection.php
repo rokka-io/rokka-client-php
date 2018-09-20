@@ -40,7 +40,7 @@ class StackCollection implements \Countable, \Iterator
      */
     public function count()
     {
-        return count($this->stacks);
+        return \count($this->stacks);
     }
 
     /**
@@ -88,7 +88,7 @@ class StackCollection implements \Countable, \Iterator
 
     public function valid()
     {
-        return $this->current < count($this->stacks);
+        return $this->current < \count($this->stacks);
     }
 
     public function rewind()

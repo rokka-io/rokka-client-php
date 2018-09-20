@@ -17,7 +17,7 @@ class SearchHelper
     public static function validateFieldName($fieldName)
     {
         // Field names must be shorter than 54 chars, and match the given format.
-        return 54 > strlen($fieldName) && 1 === preg_match('/^(user:((str|array|date|latlon|double):)?)?[a-z0-9_]{1,54}$/', $fieldName);
+        return 54 > \strlen($fieldName) && 1 === preg_match('/^(user:((str|array|date|latlon|double):)?)?[a-z0-9_]{1,54}$/', $fieldName);
     }
 
     /**
@@ -39,7 +39,7 @@ class SearchHelper
             if (!self::validateFieldName($sortField)) {
                 throw new \LogicException(sprintf('Invalid field name "%s" for sorting field', $sortField));
             }
-            if (!in_array($direction, [true, 'desc', 'asc'], true)) {
+            if (!\in_array($direction, [true, 'desc', 'asc'], true)) {
                 throw new \LogicException(sprintf('Wrong sorting direction "%s" for field "%s". Use either "desc", "asc"',
                     $direction, $sortField
                 ));

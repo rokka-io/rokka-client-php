@@ -34,10 +34,10 @@ class Factory
     public static function getImageClient($organization, $apiKey, $options = [])
     {
         $baseUrl = BaseClient::DEFAULT_API_BASE_URL;
-        if (!is_array($options)) { // $options was introduced later, if that is an array, we're on the new sig, nothing to change
-            if (func_num_args() > 3) { // if more than 3 args, the 4th is the baseUrl
+        if (!\is_array($options)) { // $options was introduced later, if that is an array, we're on the new sig, nothing to change
+            if (\func_num_args() > 3) { // if more than 3 args, the 4th is the baseUrl
                 $baseUrl = func_get_arg(3);
-            } elseif (3 === func_num_args()) { // if exactly 3 args
+            } elseif (3 === \func_num_args()) { // if exactly 3 args
                 //if $baseUrl doesn't start with http, it may be a secret from the old signature, remove that, it's not used anymore
                 if ('http' !== substr($options, 0, 4)) {
                     $baseUrl = BaseClient::DEFAULT_API_BASE_URL;
@@ -68,7 +68,7 @@ class Factory
     {
         $baseUrl = BaseClient::DEFAULT_API_BASE_URL;
 
-        if (!is_array($options)) {
+        if (!\is_array($options)) {
             $baseUrl = $options;
             $options = [];
         } else {

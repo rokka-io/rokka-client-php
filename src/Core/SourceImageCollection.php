@@ -63,7 +63,7 @@ class SourceImageCollection implements \Countable, \Iterator
      */
     public function count()
     {
-        return count($this->sourceImages);
+        return \count($this->sourceImages);
     }
 
     /**
@@ -145,7 +145,7 @@ class SourceImageCollection implements \Countable, \Iterator
 
     public function valid()
     {
-        return $this->current < count($this->sourceImages);
+        return $this->current < \count($this->sourceImages);
     }
 
     public function rewind()

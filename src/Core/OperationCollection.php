@@ -36,7 +36,7 @@ class OperationCollection implements \Countable, \Iterator
      */
     public function count()
     {
-        return count($this->operations);
+        return \count($this->operations);
     }
 
     /**
@@ -88,7 +88,7 @@ class OperationCollection implements \Countable, \Iterator
 
     public function valid()
     {
-        return $this->current < count($this->operations);
+        return $this->current < \count($this->operations);
     }
 
     public function rewind()
