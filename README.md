@@ -50,6 +50,20 @@ $imageClient = Factory::getImageClient($organization, $apiKey);
 
 There is an optional fourth parameter to specify the base URL of the Rokka API. This usually does not need to be adjusted.
 
+### Options for clients
+
+You can add an options array as 1st or 3rd parameter to Factory::getUserClient` or `Factory::getImageClient`.
+It takes the following format:
+
+```
+[ 
+   Factory::API_BASE_URL => 'https://some-other-api.rokka.io',
+   Factory::PROXY => 'http://proxy:8888', // if you need to use a proxy
+   Factory::GUZZLE_OPTIONS => ['verify' => false] // any guzzle option you need/want
+]
+
+```
+
 ## Usage
 
 See the [official documentation](https://rokka.io/documentation) on how to use the Rokka API.
