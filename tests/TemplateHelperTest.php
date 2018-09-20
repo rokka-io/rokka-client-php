@@ -3,6 +3,8 @@
 namespace Rokka\Client\Tests;
 
 use Rokka\Client\Core\SourceImage;
+use Rokka\Client\Factory;
+use Rokka\Client\Image;
 use Rokka\Client\LocalImage\AbstractLocalImage;
 use Rokka\Client\LocalImage\FileInfo;
 use Rokka\Client\LocalImage\RokkaHash;
@@ -163,6 +165,47 @@ class TemplateHelperTest extends \PHPUnit\Framework\TestCase
         );
     }
 
+    public function testGetTemplateHelper() {
+
+        $templateHelper = new TemplateHelper('testorg', 'key');
+        $this->assertEquals(Image::DEFAULT_API_BASE_URL, $this->checkBaseUrl($templateHelper->getRokkaClient()));
+    }
+
+    public function testGetTemplateHelperWithBase() {
+
+        $templateHelper = new TemplateHelper(
+            'testorg',
+            'key',
+            null,
+            'https://liip.rokka.io/',
+            'https://test.rokka.api/'
+        );
+        $this->assertEquals('https://test.rokka.api/', $this->checkBaseUrl($templateHelper->getRokkaClient()));
+    }
+
+    public function testGetTemplateHelperWithNull() {
+
+        $templateHelper = new TemplateHelper(
+            'testorg',
+            'key',
+            null,
+            'https://liip.rokka.io/',
+            null
+        );
+        $this->assertEquals(Image::DEFAULT_API_BASE_URL, $this->checkBaseUrl($templateHelper->getRokkaClient()));
+    }
+
+    public function testGetTemplateHelperWithOptions() {
+
+        $templateHelper = new TemplateHelper(
+            'testorg',
+            'key',
+            null,
+            'https://liip.rokka.io/',
+            [Factory::API_BASE_URL => 'https://test.rokka.api/' ]
+        );
+        $this->assertEquals('https://test.rokka.api/', $this->checkBaseUrl($templateHelper->getRokkaClient()));
+    }
     /**
      * @return array
      */
@@ -187,6 +230,18 @@ class TemplateHelperTest extends \PHPUnit\Framework\TestCase
     {
         $this->assertEquals($expected, TemplateHelper::slugify($input, $lang));
     }
+
+    private function checkBaseUrl($imageClient)
+    {
+        $reflector = new \ReflectionClass($imageClient);
+        $reflector_property = $reflector->getProperty('client');
+        $reflector_property->setAccessible(true);
+        /** @var Client $client */
+        $client = $reflector_property->getValue($imageClient);
+
+        return (string) $client->getConfig('base_uri');
+    }
+
 }
 
 class TestCallbacks extends AbstractCallbacks

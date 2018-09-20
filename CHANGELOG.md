@@ -6,6 +6,10 @@ This project tries to follow [Semantic Versioning](http://semver.org/) since the
 
 This document mainly describes API changes important to users of this library.
 
+## 1.6.0 - 2018-09-20
+
+* Added possibility to add a proxy and other guzzle options also to TemplateHelper. See [README.md](README.md#options-for-clients) for details.
+
 ## 1.5.0 - 2018-09-20
 
 * Added possibility to add a proxy and other guzzle options to a client. See [README.md](README.md#options-for-clients) for details.
