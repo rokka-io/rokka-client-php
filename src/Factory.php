@@ -18,26 +18,41 @@ use Rokka\Client\User as UserClient;
  */
 class Factory
 {
+    const API_BASE_URL = 'api_base_url';
+    const PROXY = 'proxy';
+    const GUZZLE_OPTIONS = 'guzzle_options';
+
     /**
      * Return an image client.
      *
      * @param string $organization Organization name
      * @param string $apiKey       API key
-     * @param string $baseUrl      Optional base url
+     * @param array  $options      Options like api_base_url or proxy
      *
      * @return Image
      */
-    public static function getImageClient($organization, $apiKey, $baseUrl = BaseClient::DEFAULT_API_BASE_URL)
+    public static function getImageClient($organization, $apiKey, $options = [])
     {
-        if (func_num_args() > 3) {
-            $baseUrl = func_get_arg(3);
-        } elseif (3 === func_num_args()) {
-            //if $baseUrl doesn't start with http, it may be a secret from the old signature, remove that, it's not used anymore
-            if ('http' !== substr($baseUrl, 0, 4)) {
-                $baseUrl = BaseClient::DEFAULT_API_BASE_URL;
+        $baseUrl = BaseClient::DEFAULT_API_BASE_URL;
+        if (!is_array($options)) { // $options was introduced later, if that is an array, we're on the new sig, nothing to change
+            if (func_num_args() > 3) { // if more than 3 args, the 4th is the baseUrl
+                $baseUrl = func_get_arg(3);
+            } elseif (3 === func_num_args()) { // if exactly 3 args
+                //if $baseUrl doesn't start with http, it may be a secret from the old signature, remove that, it's not used anymore
+                if ('http' !== substr($options, 0, 4)) {
+                    $baseUrl = BaseClient::DEFAULT_API_BASE_URL;
+                } else {
+                    $baseUrl = $options;
+                }
+            }
+            $options = [];
+        } else {
+            if (isset($options[self::API_BASE_URL])) {
+                $baseUrl = $options[self::API_BASE_URL];
             }
         }
-        $client = self::getGuzzleClient($baseUrl);
+
+        $client = self::getGuzzleClient($baseUrl, $options);
 
         return new ImageClient($client, $organization, $apiKey);
     }
@@ -45,13 +60,23 @@ class Factory
     /**
      * Return a user client.
      *
-     * @param string $baseUrl Optional base url
+     * @param array $options Options like api_base_url or proxy
      *
      * @return UserClient
      */
-    public static function getUserClient($baseUrl = BaseClient::DEFAULT_API_BASE_URL)
+    public static function getUserClient($options = [])
     {
-        $client = self::getGuzzleClient($baseUrl);
+        $baseUrl = BaseClient::DEFAULT_API_BASE_URL;
+
+        if (!is_array($options)) {
+            $baseUrl = $options;
+            $options = [];
+        } else {
+            if (isset($options[self::API_BASE_URL])) {
+                $baseUrl = $options[self::API_BASE_URL];
+            }
+        }
+        $client = self::getGuzzleClient($baseUrl, $options);
 
         return new UserClient($client);
     }
@@ -60,15 +85,25 @@ class Factory
      * Returns a Guzzle client with a retry middleware.
      *
      * @param string $baseUrl base url
+     * @param array  $options
      *
      * @return GuzzleClient GuzzleClient to connect to the backend
      */
-    private static function getGuzzleClient($baseUrl)
+    private static function getGuzzleClient($baseUrl, $options = [])
     {
+        $guzzleOptions = [];
+        if (isset($options[self::PROXY])) {
+            $guzzleOptions[self::PROXY] = $options[self::PROXY];
+        }
+        if (isset($options[self::GUZZLE_OPTIONS])) {
+            $guzzleOptions = array_merge($guzzleOptions, $options[self::GUZZLE_OPTIONS]);
+        }
+
         $handlerStack = HandlerStack::create();
         $handlerStack->unshift(Middleware::retry(self::retryDecider(), self::retryDelay()));
+        $options = array_merge(['base_uri' => $baseUrl, 'handler' => $handlerStack], $guzzleOptions);
 
-        return new GuzzleClient(['base_uri' => $baseUrl, 'handler' => $handlerStack]);
+        return new GuzzleClient($options);
     }
 
     /**

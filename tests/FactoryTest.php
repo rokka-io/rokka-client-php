@@ -51,6 +51,16 @@ class FactoryTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('https://test.rokka.api/', $this->checkBaseUrl($imageClient));
     }
 
+
+    public function testGetImageClientBaseOptions()
+    {
+        // old signature with apiSecret
+        $imageClient = Factory::getImageClient('testorganization', 'testKey', ['api_base_url' => 'https://test.rokka.api/']);
+
+        $this->assertInstanceOf('\\Rokka\\Client\\Image', $imageClient);
+        $this->assertEquals('https://test.rokka.api/', $this->checkBaseUrl($imageClient));
+    }
+
     public function testGetImageClientSecretEmpty()
     {
         // old signature with apiSecret
@@ -65,6 +75,25 @@ class FactoryTest extends \PHPUnit\Framework\TestCase
         $userClient = Factory::getUserClient();
 
         $this->assertInstanceOf('\\Rokka\\Client\\User', $userClient);
+        $this->assertEquals(Image::DEFAULT_API_BASE_URL, $this->checkBaseUrl($userClient));
+
+    }
+
+    public function testGetUserClientBase()
+    {
+        $userClient = Factory::getUserClient('https://test.rokka.api/');
+
+        $this->assertInstanceOf('\\Rokka\\Client\\User', $userClient);
+        $this->assertEquals('https://test.rokka.api/', $this->checkBaseUrl($userClient));
+    }
+
+
+    public function testGetUserClientBaseOptions()
+    {
+        $userClient = Factory::getUserClient([Factory::API_BASE_URL => 'https://test.rokka.api/']);
+
+        $this->assertInstanceOf('\\Rokka\\Client\\User', $userClient);
+        $this->assertEquals('https://test.rokka.api/', $this->checkBaseUrl($userClient));
     }
 
     private function checkBaseUrl($imageClient)

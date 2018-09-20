@@ -6,6 +6,10 @@ This project tries to follow [Semantic Versioning](http://semver.org/) since the
 
 This document mainly describes API changes important to users of this library.
 
+## unreleased
+
+* Added possibility to add a proxy and other guzzle options to a client. See [README.md](README.md) for details.
+
 ## 1.4.0 - 2018-08-15
 
 * Added `\Rokka\Client\Image::uploadSourceImageByUrl($url, $organization = '', $options = null)` for using an URL instead of the image content for adding new images into rokka.
