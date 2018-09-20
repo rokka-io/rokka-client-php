@@ -2,7 +2,6 @@
 
 namespace Rokka\Client;
 
-use Rokka\Client\Base as BaseClient;
 use Rokka\Client\Core\SourceImage;
 use Rokka\Client\Core\StackUri;
 use Rokka\Client\LocalImage\AbstractLocalImage;
@@ -32,9 +31,9 @@ class TemplateHelper
     private $callbacks = null;
 
     /**
-     * @var string
+     * @var string|array
      */
-    private $rokkaApiHost;
+    private $rokkaClientOptions;
 
     /**
      * @var \Rokka\Client\Image
@@ -48,22 +47,22 @@ class TemplateHelper
      * @param string                 $apiKey            API key
      * @param AbstractCallbacks|null $callbacks         Optional callbacks for read and write of hashes
      * @param string|null            $publicRokkaDomain Optional public rokka URL, if different from the standard one (org.render.rokka.io)
-     * @param string|null            $rokkaApiHost      Optional base url
+     * @param string|array|null      $options           Optional options like api_base_url or proxy
      */
     public function __construct(
         $organization,
         $apiKey,
         AbstractCallbacks $callbacks = null,
         $publicRokkaDomain = null,
-        $rokkaApiHost = BaseClient::DEFAULT_API_BASE_URL
+        $options = []
     ) {
         $this->rokkaApiKey = $apiKey;
         $this->rokkaOrg = $organization;
 
-        if (null === $rokkaApiHost) {
-            $rokkaApiHost = BaseClient::DEFAULT_API_BASE_URL;
+        if (null === $options) {
+            $options = [];
         }
-        $this->rokkaApiHost = $rokkaApiHost;
+        $this->rokkaClientOptions = $options;
 
         if ($publicRokkaDomain) {
             $scheme = parse_url($publicRokkaDomain, PHP_URL_SCHEME);
@@ -366,7 +365,7 @@ class TemplateHelper
     public function getRokkaClient()
     {
         if (null === $this->imageClient) {
-            $this->imageClient = Factory::getImageClient($this->rokkaOrg, $this->rokkaApiKey, '', $this->rokkaApiHost);
+            $this->imageClient = Factory::getImageClient($this->rokkaOrg, $this->rokkaApiKey, $this->rokkaClientOptions);
         }
 
         return $this->imageClient;

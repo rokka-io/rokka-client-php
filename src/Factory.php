@@ -25,9 +25,9 @@ class Factory
     /**
      * Return an image client.
      *
-     * @param string $organization Organization name
-     * @param string $apiKey       API key
-     * @param array  $options      Options like api_base_url or proxy
+     * @param string       $organization Organization name
+     * @param string       $apiKey       API key
+     * @param array|string $options      Options like api_base_url or proxy
      *
      * @return Image
      */
