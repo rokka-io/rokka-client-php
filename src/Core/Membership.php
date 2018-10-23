@@ -13,6 +13,7 @@ class Membership
 
     const ROLE_READ = 'read';
 
+    const ROLE_UPLOAD = 'upload';
     /**
      * UUID v4 of user.
      *
@@ -28,11 +29,11 @@ class Membership
     public $organizationId;
 
     /**
-     * Role.
+     * Roles.
      *
-     * @var string
+     * @var array
      */
-    public $role;
+    public $roles;
 
     /**
      * Active.
@@ -46,14 +47,14 @@ class Membership
      *
      * @param string $userId         User id
      * @param string $organizationId Organization id
-     * @param string $role           Role
+     * @param array  $roles          Roles
      * @param bool   $active         If it is active
      */
-    public function __construct($userId, $organizationId, $role, $active)
+    public function __construct($userId, $organizationId, $roles, $active)
     {
         $this->userId = $userId;
         $this->organizationId = $organizationId;
-        $this->role = $role;
+        $this->roles = $roles;
         $this->active = $active;
     }
 
@@ -62,12 +63,27 @@ class Membership
      *
      * @param string $jsonString JSON as a string
      *
-     * @return Membership
+     * @return Membership|Membership[]
      */
     public static function createFromJsonResponse($jsonString)
     {
         $data = json_decode($jsonString, true);
+        if (\is_array($data) && isset($data['items'])) {
+            return array_map(function ($membership) {
+                return self::getObjectFromArray($membership);
+            }, $data['items']);
+        }
 
-        return new self($data['user_id'], $data['organization_id'], $data['role'], $data['active']);
+        return self::getObjectFromArray($data);
+    }
+
+    /**
+     * @param array $data
+     *
+     * @return Membership
+     */
+    private static function getObjectFromArray($data): self
+    {
+        return new self($data['user_id'], $data['organization_id'], $data['roles'], $data['active']);
     }
 }

@@ -36,13 +36,6 @@ class Image extends Base
     const OPERATIONS_RESOURCE = 'operations';
 
     /**
-     * Default organization.
-     *
-     * @var string
-     */
-    private $defaultOrganization;
-
-    /**
      * Constructor.
      *
      * @param ClientInterface $client              Client instance
@@ -51,9 +44,8 @@ class Image extends Base
      */
     public function __construct(ClientInterface $client, $defaultOrganization, $apiKey)
     {
-        parent::__construct($client);
+        parent::__construct($client, $defaultOrganization);
 
-        $this->defaultOrganization = $defaultOrganization;
         $this->setCredentials($apiKey);
     }
 
@@ -66,6 +58,7 @@ class Image extends Base
      * @param array|null $options      Options for creating the image (like meta_user and meta_dynamic)
      *
      * @throws GuzzleException
+     * @throws \RuntimeException
      *
      * @return SourceImageCollection If no image contents are provided to be uploaded
      */
@@ -91,6 +84,7 @@ class Image extends Base
      * @param array|null $options      Options for creating the image (like meta_user and meta_dynamic)
      *
      * @throws GuzzleException
+     * @throws \RuntimeException
      *
      * @return SourceImageCollection If no image contents are provided to be uploaded
      */
@@ -121,7 +115,7 @@ class Image extends Base
     public function deleteSourceImage($hash, $organization = '')
     {
         try {
-            $response = $this->call('DELETE', implode('/', [self::SOURCEIMAGE_RESOURCE, $this->getOrganization($organization), $hash]));
+            $response = $this->call('DELETE', implode('/', [self::SOURCEIMAGE_RESOURCE, $this->getOrganizationName($organization), $hash]));
         } catch (GuzzleException $e) {
             if (404 == $e->getCode()) {
                 return false;
@@ -146,7 +140,7 @@ class Image extends Base
     public function restoreSourceImage($hash, $organization = '')
     {
         try {
-            $response = $this->call('POST', implode('/', [self::SOURCEIMAGE_RESOURCE, $this->getOrganization($organization), $hash, 'restore']));
+            $response = $this->call('POST', implode('/', [self::SOURCEIMAGE_RESOURCE, $this->getOrganizationName($organization), $hash, 'restore']));
         } catch (GuzzleException $e) {
             if (404 == $e->getCode()) {
                 return false;
@@ -180,7 +174,7 @@ class Image extends Base
                 $headers['Overwrite'] = 'F';
             }
             $response = $this->call('COPY',
-                implode('/', [self::SOURCEIMAGE_RESOURCE, $this->getOrganization($sourceOrg), $hash]),
+                implode('/', [self::SOURCEIMAGE_RESOURCE, $this->getOrganizationName($sourceOrg), $hash]),
                 ['headers' => $headers]
             );
         } catch (GuzzleException $e) {
@@ -211,7 +205,7 @@ class Image extends Base
     public function deleteSourceImagesWithBinaryHash($binaryHash, $organization = '')
     {
         try {
-            $response = $this->call('DELETE', implode('/', [self::SOURCEIMAGE_RESOURCE, $this->getOrganization($organization)]), ['query' => ['binaryHash' => $binaryHash]]);
+            $response = $this->call('DELETE', implode('/', [self::SOURCEIMAGE_RESOURCE, $this->getOrganizationName($organization)]), ['query' => ['binaryHash' => $binaryHash]]);
         } catch (GuzzleException $e) {
             if (404 == $e->getCode()) {
                 return false;
@@ -235,6 +229,7 @@ class Image extends Base
      * @param string          $organization Optional organization name
      *
      * @throws GuzzleException
+     * @throws \RuntimeException
      *
      * @return SourceImageCollection
      */
@@ -265,7 +260,7 @@ class Image extends Base
         }
 
         $contents = $this
-          ->call('GET', self::SOURCEIMAGE_RESOURCE.'/'.$this->getOrganization($organization), $options)
+          ->call('GET', self::SOURCEIMAGE_RESOURCE.'/'.$this->getOrganizationName($organization), $options)
           ->getBody()
           ->getContents();
 
@@ -283,6 +278,7 @@ class Image extends Base
      * @param string          $organization Optional organization name
      *
      * @throws GuzzleException
+     * @throws \RuntimeException
      *
      * @return SourceImageCollection
      */
@@ -298,12 +294,13 @@ class Image extends Base
      * @param string $organization Optional organization name
      *
      * @throws GuzzleException
+     * @throws \RuntimeException
      *
      * @return SourceImage
      */
     public function getSourceImage($hash, $organization = '')
     {
-        $path = self::SOURCEIMAGE_RESOURCE.'/'.$this->getOrganization($organization);
+        $path = self::SOURCEIMAGE_RESOURCE.'/'.$this->getOrganizationName($organization);
 
         $path .= '/'.$hash;
 
@@ -324,12 +321,13 @@ class Image extends Base
      * @param string $organization Optional organization name
      *
      * @throws GuzzleException
+     * @throws \RuntimeException
      *
      * @return SourceImageCollection
      */
     public function getSourceImagesWithBinaryHash($binaryHash, $organization = '')
     {
-        $path = self::SOURCEIMAGE_RESOURCE.'/'.$this->getOrganization($organization);
+        $path = self::SOURCEIMAGE_RESOURCE.'/'.$this->getOrganizationName($organization);
 
         $options['query'] = ['binaryHash' => $binaryHash];
         $contents = $this
@@ -347,6 +345,7 @@ class Image extends Base
      * @param string $organization Optional organization name
      *
      * @throws GuzzleException
+     * @throws \RuntimeException
      *
      * @return string
      */
@@ -354,7 +353,7 @@ class Image extends Base
     {
         $path = implode('/', [
             self::SOURCEIMAGE_RESOURCE,
-            $this->getOrganization($organization),
+            $this->getOrganizationName($organization),
             $hash,
             'download', ]
         );
@@ -369,6 +368,7 @@ class Image extends Base
      * List operations.
      *
      * @throws GuzzleException
+     * @throws \RuntimeException
      *
      * @return OperationCollection
      */
@@ -395,6 +395,7 @@ class Image extends Base
      * @param bool   $overwrite       If an existing stack should be overwritten
      *
      * @throws GuzzleException
+     * @throws \RuntimeException
      *
      * @return Stack
      */
@@ -419,13 +420,13 @@ class Image extends Base
      *
      * Example:
      * ```language-php
-        $stack = new Stack(null, 'teststack');
-        $stack->addStackOperation(new StackOperation('resize', ['width' => 200, 'height' => 200]));
-        $stack->addStackOperation(new StackOperation('rotate', ['angle' => 45]));
-        $stack->setStackOptions(['jpg.quality' => 80]);
-        $requestConfig = ['overwrite' => true];
-        $stack = $client->saveStack($stack, $requestConfig);
-        echo 'Created stack ' . $stack->getName() . PHP_EOL;
+     * $stack = new Stack(null, 'teststack');
+     * $stack->addStackOperation(new StackOperation('resize', ['width' => 200, 'height' => 200]));
+     * $stack->addStackOperation(new StackOperation('rotate', ['angle' => 45]));
+     * $stack->setStackOptions(['jpg.quality' => 80]);
+     * $requestConfig = ['overwrite' => true];
+     * $stack = $client->saveStack($stack, $requestConfig);
+     * echo 'Created stack ' . $stack->getName() . PHP_EOL;
      * ```
      * The only requestConfig option currently can be
      * ['overwrite' => true|false] (false is the default)
@@ -436,7 +437,8 @@ class Image extends Base
      * @param array $requestConfig options for the request
      *
      * @throws GuzzleException
-     * @throws \LogicException when stack name is not set
+     * @throws \LogicException   when stack name is not set
+     * @throws \RuntimeException
      *
      * @return Stack
      */
@@ -482,6 +484,7 @@ class Image extends Base
      * @param string   $organization Optional organization name
      *
      * @throws GuzzleException
+     * @throws \RuntimeException
      *
      * @return StackCollection
      */
@@ -494,7 +497,7 @@ class Image extends Base
         }
 
         $contents = $this
-            ->call('GET', self::STACK_RESOURCE.'/'.$this->getOrganization($organization), $options)
+            ->call('GET', self::STACK_RESOURCE.'/'.$this->getOrganizationName($organization), $options)
             ->getBody()
             ->getContents();
 
@@ -508,13 +511,14 @@ class Image extends Base
      * @param string $organization Optional organization name
      *
      * @throws GuzzleException
+     * @throws \RuntimeException
      *
      * @return Stack
      */
     public function getStack($stackName, $organization = '')
     {
         $contents = $this
-            ->call('GET', implode('/', [self::STACK_RESOURCE, $this->getOrganization($organization), $stackName]))
+            ->call('GET', implode('/', [self::STACK_RESOURCE, $this->getOrganizationName($organization), $stackName]))
             ->getBody()
             ->getContents();
 
@@ -533,7 +537,7 @@ class Image extends Base
      */
     public function deleteStack($stackName, $organization = '')
     {
-        $response = $this->call('DELETE', implode('/', [self::STACK_RESOURCE, $this->getOrganization($organization), $stackName]));
+        $response = $this->call('DELETE', implode('/', [self::STACK_RESOURCE, $this->getOrganizationName($organization), $stackName]));
 
         return '204' == $response->getStatusCode();
     }
@@ -555,6 +559,7 @@ class Image extends Base
      * @param array                    $options         Optional options
      *
      * @throws GuzzleException
+     * @throws \RuntimeException
      *
      * @return string|false
      */
@@ -562,7 +567,7 @@ class Image extends Base
     {
         $path = implode('/', [
             self::SOURCEIMAGE_RESOURCE,
-            $this->getOrganization($organization),
+            $this->getOrganizationName($organization),
             $hash,
             self::DYNAMIC_META_RESOURCE,
             $dynamicMetadata::getName(),
@@ -599,6 +604,7 @@ class Image extends Base
      * @param array  $options             Optional options
      *
      * @throws GuzzleException
+     * @throws \RuntimeException
      *
      * @return string|false
      */
@@ -614,7 +620,7 @@ class Image extends Base
 
         $path = implode('/', [
             self::SOURCEIMAGE_RESOURCE,
-            $this->getOrganization($organization),
+            $this->getOrganizationName($organization),
             $hash,
             self::DYNAMIC_META_RESOURCE,
             $dynamicMetadataName,
@@ -643,6 +649,8 @@ class Image extends Base
      * @param string $hash         The image hash
      * @param string $organization The organization name
      *
+     * @throws GuzzleException
+     *
      * @return bool
      */
     public function setUserMetadataField($field, $value, $hash, $organization = '')
@@ -656,6 +664,8 @@ class Image extends Base
      * @param array  $fields       An associative array of "field-name => value"
      * @param string $hash         The image hash
      * @param string $organization The organization name
+     *
+     * @throws GuzzleException
      *
      * @return bool
      */
@@ -671,6 +681,8 @@ class Image extends Base
      * @param string $hash         The image hash
      * @param string $organization The organization name
      *
+     * @throws GuzzleException
+     *
      * @return bool
      */
     public function setUserMetadata($fields, $hash, $organization = '')
@@ -683,6 +695,8 @@ class Image extends Base
      *
      * @param string $hash         The image hash
      * @param string $organization The organization name
+     *
+     * @throws GuzzleException
      *
      * @return bool
      */
@@ -698,6 +712,8 @@ class Image extends Base
      * @param string $hash         The image hash
      * @param string $organization The organization name
      *
+     * @throws GuzzleException
+     *
      * @return bool
      */
     public function deleteUserMetadataField($field, $hash, $organization = '')
@@ -711,6 +727,8 @@ class Image extends Base
      * @param array  $fields       The fields name
      * @param string $hash         The image hash
      * @param string $organization The organization name
+     *
+     * @throws GuzzleException
      *
      * @return bool
      */
@@ -733,6 +751,8 @@ class Image extends Base
      * @param string          $name         Optional image name for SEO purposes
      * @param string          $organization Optional organization name (if different from default in client)
      *
+     * @throws \RuntimeException
+     *
      * @return UriInterface
      */
     public function getSourceImageUri($hash, $stack, $format = 'jpg', $name = null, $organization = null)
@@ -749,7 +769,7 @@ class Image extends Base
         $parts = [
             'scheme' => $apiUri->getScheme(),
             'port' => $apiUri->getPort(),
-            'host' => $this->getOrganization($organization).'.'.$baseHost,
+            'host' => $this->getOrganizationName($organization).'.'.$baseHost,
             'path' => $path->getPath(),
         ];
 
@@ -784,11 +804,22 @@ class Image extends Base
         return $return;
     }
 
+    /**
+     * @param array|null $fields
+     * @param string     $hash
+     * @param string     $method
+     * @param string     $organization
+     *
+     * @throws GuzzleException
+     * @throws \RuntimeException
+     *
+     * @return bool
+     */
     private function doUserMetadataRequest($fields, $hash, $method, $organization = '')
     {
         $path = implode('/', [
             self::SOURCEIMAGE_RESOURCE,
-            $this->getOrganization($organization),
+            $this->getOrganizationName($organization),
             $hash,
             self::USER_META_RESOURCE,
         ]);
@@ -800,18 +831,6 @@ class Image extends Base
         $response = $this->call($method, $path, $data);
 
         return true;
-    }
-
-    /**
-     * Return the organization or the default if empty.
-     *
-     * @param string|null $organization Organization
-     *
-     * @return string
-     */
-    private function getOrganization($organization = null)
-    {
-        return (empty($organization)) ? $this->defaultOrganization : $organization;
     }
 
     private function applyValueTransformationsToUserMeta(array $fields)
@@ -831,6 +850,7 @@ class Image extends Base
      * @param array      $requestOptions multipart options for the guzzle client
      *
      * @throws GuzzleException
+     * @throws \RuntimeException
      *
      * @return SourceImageCollection
      */
@@ -861,7 +881,7 @@ class Image extends Base
         }
 
         $contents = $this
-            ->call('POST', self::SOURCEIMAGE_RESOURCE.'/'.$this->getOrganization($organization), ['multipart' => $requestOptions])
+            ->call('POST', self::SOURCEIMAGE_RESOURCE.'/'.$this->getOrganizationName($organization), ['multipart' => $requestOptions])
             ->getBody()
             ->getContents();
 

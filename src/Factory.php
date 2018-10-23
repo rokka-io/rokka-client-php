@@ -31,6 +31,8 @@ class Factory
      * @param string       $apiKey       API key
      * @param array|string $options      Options like api_base_url or proxy
      *
+     * @throws \RuntimeException
+     *
      * @return Image
      */
     public static function getImageClient($organization, $apiKey, $options = [])
@@ -62,11 +64,15 @@ class Factory
     /**
      * Return a user client.
      *
-     * @param array $options Options like api_base_url or proxy
+     * @param string|null $organization
+     * @param string|null $apiKey       API key
+     * @param array       $options      Options like api_base_url or proxy
+     *
+     * @throws \RuntimeException
      *
      * @return UserClient
      */
-    public static function getUserClient($options = [])
+    public static function getUserClient($organization = null, $apiKey = null, $options = [])
     {
         $baseUrl = BaseClient::DEFAULT_API_BASE_URL;
 
@@ -80,7 +86,7 @@ class Factory
         }
         $client = self::getGuzzleClient($baseUrl, $options);
 
-        return new UserClient($client);
+        return new UserClient($client, $organization, $apiKey);
     }
 
     /**
@@ -88,6 +94,8 @@ class Factory
      *
      * @param string $baseUrl base url
      * @param array  $options
+     *
+     * @throws \RuntimeException
      *
      * @return GuzzleClient GuzzleClient to connect to the backend
      */
@@ -122,7 +130,7 @@ class Factory
             RequestException $exception = null
         ) {
             // Limit the number of retries to 10
-            if ($retries >= 10) {
+            if ($retries >= 0) {
                 return false;
             }
 
@@ -134,7 +142,9 @@ class Factory
             if ($response) {
                 // Retry on server errors or overload
                 $statusCode = $response->getStatusCode();
-                if (429 == $statusCode || 504 == $statusCode || 503 == $statusCode || 502 == $statusCode) {
+                if (200 == $statusCode || 429 == $statusCode || 504 == $statusCode || 503 == $statusCode || 502 == $statusCode) {
+                    echo ' retry ';
+
                     return true;
                 }
             }
@@ -151,6 +161,8 @@ class Factory
     private static function retryDelay()
     {
         return function ($numberOfRetries) {
+            echo $numberOfRetries;
+
             return 2000 * $numberOfRetries;
         };
     }
