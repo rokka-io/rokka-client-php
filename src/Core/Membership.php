@@ -14,6 +14,7 @@ class Membership
     const ROLE_READ = 'read';
 
     const ROLE_UPLOAD = 'upload';
+
     /**
      * UUID v4 of user.
      *

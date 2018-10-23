@@ -61,6 +61,8 @@ class User extends Base
     /**
      * Get current user.
      *
+     * @since 1.7.0
+     *
      * @throws GuzzleException
      * @throws \RuntimeException
      *
@@ -112,6 +114,8 @@ class User extends Base
     /**
      * Return an organization.
      *
+     * @since 1.7.0
+     *
      * @param string $organization Organization name
      *
      * @throws GuzzleException
@@ -133,6 +137,8 @@ class User extends Base
     /**
      * Create a membership.
      *
+     * @since 1.7.0
+     *
      * @param string       $organization Organization
      * @param string       $userId       User ID
      * @param string|array $roles        Role to add
@@ -147,7 +153,9 @@ class User extends Base
         if (\is_string($roles)) {
             $roles = [$roles];
         }
-        $roles = array_map(function ($role) { return strtolower($role); }, $roles);
+        $roles = array_map(function ($role) {
+            return strtolower($role);
+        }, $roles);
         $contents = $this
             ->call('PUT', implode('/', [self::ORGANIZATION_RESOURCE, $this->getOrganizationName($organization), 'memberships', $userId]), ['json' => [
                 'roles' => $roles,
@@ -160,16 +168,13 @@ class User extends Base
             return $this->getMembership($this->getOrganizationName($organization), $userId);
         }
 
-        $membership = Membership::createFromJsonResponse($contents);
-        if (\is_array($membership)) {
-            throw new \RuntimeException("Something went wrong, return was an array, but shouldn't be");
-        }
-
-        return $membership;
+        return $this->getSingleMemberShipFromJsonResponse($contents);
     }
 
     /**
      * Create a user and membership associated to this organization.
+     *
+     * @since 1.7.0
      *
      * @param string       $organization Organization
      * @param string|array $roles        Role to add
@@ -184,7 +189,9 @@ class User extends Base
         if (\is_string($roles)) {
             $roles = [$roles];
         }
-        $roles = array_map(function ($role) { return strtolower($role); }, $roles);
+        $roles = array_map(function ($role) {
+            return strtolower($role);
+        }, $roles);
         $contents = $this
             ->call('POST',
                 implode('/', [self::ORGANIZATION_RESOURCE, $this->getOrganizationName($organization), 'memberships']),
@@ -194,16 +201,13 @@ class User extends Base
             ->getBody()
             ->getContents();
 
-        $membership = Membership::createFromJsonResponse($contents);
-        if (\is_array($membership)) {
-            throw new \RuntimeException("Something went wrong, return was an array, but shouldn't be");
-        }
-
-        return $membership;
+        return $this->getSingleMemberShipFromJsonResponse($contents);
     }
 
     /**
      * Get the membership metadata for the given organization and user's ID.
+     *
+     * @since 1.7.0
      *
      * @param string $organization Organization
      * @param string $userId       User ID
@@ -220,21 +224,19 @@ class User extends Base
             ->getBody()
             ->getContents();
 
-        $membership = Membership::createFromJsonResponse($contents);
-        if (\is_array($membership)) {
-            throw new \RuntimeException("Something went wrong, return was an array, but shouldn't be");
-        }
-
-        return $membership;
+        return $this->getSingleMemberShipFromJsonResponse($contents);
     }
 
     /**
      * Deletes a membership for the given organization and user's ID.
      *
+     * @since 1.7.0
+     *
      * @param string $organization Organization
      * @param string $userId       User ID
      *
      * @throws GuzzleException
+     * @throws \RuntimeException
      *
      * @return bool
      */
@@ -257,6 +259,8 @@ class User extends Base
     /**
      * List the membership metadata for the given organization.
      *
+     * @since 1.7.0
+     *
      * @param string $organization Organization
      *
      * @throws GuzzleException
@@ -275,6 +279,23 @@ class User extends Base
         $membership = Membership::createFromJsonResponse($contents);
         if (!\is_array($membership)) {
             throw new \RuntimeException('Something went wrong, return was not array, but should be');
+        }
+
+        return $membership;
+    }
+
+    /**
+     * @param string $jsonString
+     *
+     * @throws \RuntimeException
+     *
+     * @return Membership
+     */
+    private function getSingleMemberShipFromJsonResponse($jsonString)
+    {
+        $membership = Membership::createFromJsonResponse($jsonString);
+        if (\is_array($membership)) {
+            throw new \RuntimeException("Something went wrong, return was an array, but shouldn't be");
         }
 
         return $membership;
