@@ -89,6 +89,7 @@ class TemplateHelper
      * @param AbstractLocalImage $image
      *
      * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \RuntimeException
      *
      * @return string|null
      */
@@ -123,6 +124,7 @@ class TemplateHelper
      * @param string|null                            $seoLanguage Optional language to be used for slugifying (eg. 'de' slugifies 'ö' to 'oe')
      *
      * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \RuntimeException
      *
      * @return string
      */
@@ -161,6 +163,7 @@ class TemplateHelper
      * @param string                                 $seoLanguage
      *
      * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \RuntimeException
      *
      * @return string
      */
@@ -190,6 +193,7 @@ class TemplateHelper
      * @param string                                 $seoLanguage
      *
      * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \RuntimeException
      *
      * @return string
      */
@@ -213,6 +217,7 @@ class TemplateHelper
      * @param string                                 $seoLanguage
      *
      * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \RuntimeException
      *
      * @return string
      */
@@ -234,6 +239,8 @@ class TemplateHelper
      *
      * @param string $url   The render URL of the "non-retina" image
      * @param array  $sizes For which sizes srcset links should be generated, works with 'x' or 'w' style
+     *
+     * @throws \RuntimeException
      *
      * @return string
      */
@@ -272,6 +279,8 @@ class TemplateHelper
      *
      * @param string $url   The render URL of the "non-retina" image
      * @param array  $sizes For which sizes srcset links should be generated, works with 'x' or 'w' style
+     *
+     * @throws \RuntimeException
      *
      * @return string
      */
@@ -331,6 +340,8 @@ class TemplateHelper
      * @param string|null     $seo         If you want to use a seo string in the URL
      * @param string|null     $seoLanguage Optional language to be used for slugifying (eg. 'de' slugifies 'ö' to 'oe')
      *
+     * @throws \RuntimeException
+     *
      * @return string
      */
     public function generateRokkaUrl(
@@ -360,6 +371,8 @@ class TemplateHelper
      *
      * @since 1.3.0
      *
+     * @throws \RuntimeException
+     *
      * @return \Rokka\Client\Image
      */
     public function getRokkaClient()
@@ -379,6 +392,8 @@ class TemplateHelper
      * @param string $text     Text to slugify
      * @param string $language Optional language to be used for slugifying (eg. 'de' slugifies 'ö' to 'oe')
      *
+     * @throws \RuntimeException
+     *
      * @return string A string that should work in urls. Empty string is only allowed if $emptyText is ''
      */
     public static function slugify($text, $language = 'de')
@@ -391,6 +406,10 @@ class TemplateHelper
         $slug = \URLify::filter($text, 60, $language, true, false);
         $slug = str_replace(['_'], '-', $slug);
         $slug = preg_replace('/[^0-9a-z-]/', '', $slug);
+
+        if (null === $slug) {
+            throw new \RuntimeException('An error eccored when generating the slug for '.$text);
+        }
 
         return $slug;
     }
@@ -409,6 +428,8 @@ class TemplateHelper
      * @param AbstractLocalImage|string|\SplFileInfo $input
      * @param string|null                            $identifier
      * @param mixed                                  $context
+     *
+     * @throws \RuntimeException
      *
      * @return AbstractLocalImage
      */
@@ -450,6 +471,8 @@ class TemplateHelper
      * @param AbstractLocalImage $image       The image
      * @param string|null        $seoLanguage Optional language to be used for slugifying (eg. 'de' slugifies 'ö' to 'oe')
      *
+     * @throws \RuntimeException
+     *
      * @return string
      */
     private function generateRokkaUrlWithImage(
@@ -466,6 +489,7 @@ class TemplateHelper
      * @param AbstractLocalImage $image
      *
      * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \RuntimeException
      *
      * @return null|SourceImage
      */

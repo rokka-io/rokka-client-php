@@ -30,14 +30,27 @@ class StackUri extends AbstractStack
      */
     private $baseUrl;
 
+    /**
+     * StackUri constructor.
+     *
+     * @param string|null $name
+     * @param array       $stackOperations
+     * @param array       $stackOptions
+     * @param string|null $baseUrl
+     *
+     * @throws \RuntimeException
+     */
     public function __construct($name = null, array $stackOperations = [], array $stackOptions = [], $baseUrl = null)
     {
         $this->baseUrl = $baseUrl;
         parent::__construct($name, $stackOperations, $stackOptions);
 
-        if (false !== strpos($name, '/')) {
+        if (null !== $name && false !== strpos($name, '/')) {
             // Some part of a rokka URL can have // in it, but it means nothing, remove them here.
             $name = preg_replace('#/{2,}#', '/', $name);
+            if (!\is_string($name)) {
+                throw new \RuntimeException("Couldn't parse stack name");
+            }
             list($name, $options) = explode('/', $name, 2);
             $this->addOverridingOptions($options);
             $this->setName($name);
@@ -173,7 +186,13 @@ class StackUri extends AbstractStack
         if (\count($optionKeys) !== \count($optionValues)) {
             throw new \InvalidArgumentException('The options given has to be an even array with key and value.');
         }
+        $combined = array_combine($optionKeys, $optionValues);
+        if (false === $combined) {
+            // returns false, if both are empty (or not equal length, but that's handled above)
+            // phpstan complained
+            return [];
+        }
 
-        return array_combine($optionKeys, $optionValues);
+        return $combined;
     }
 }

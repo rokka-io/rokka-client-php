@@ -1,21 +1,34 @@
 language: php
 dist: trusty
 
-php:
-    - 5.6
-    - hhvm
-    - 7
-    - 7.1
-    - 7.2
+matrix:
+  fast_finish: true
+  include:
+  # Minimum supported dependencies with min and max PHP version
+  - php: 5.6
+    env: COMPOSER_FLAGS="--prefer-stable --prefer-lowest"
+  - php: 7.3
+    env: COMPOSER_FLAGS="--prefer-stable --prefer-lowest"
+
+  # Latest supported dependencies with each PHP version
+  - php: 5.6
+  - php: hhvm
+  - php: 7.0
+  - php: 7.1
+  - php: 7.2
+    env: COVERAGE=true PHPUNIT_FLAGS="-v --coverage-text"
+  - php: 7.3
 
 before_install:
     - composer self-update
 
 install:
-    - composer install --prefer-source
+    # To be removed when this issue will be resolved: https://github.com/composer/composer/issues/5355
+    - if [[ "$COMPOSER_FLAGS" == *"--prefer-lowest"* ]]; then composer update --prefer-dist --no-interaction --prefer-stable --quiet; fi
+    - composer update ${COMPOSER_FLAGS} --prefer-dist --no-interaction
 
 script:
-    - ./vendor/bin/phpunit --coverage-text
+    - ./vendor/bin/phpunit ${PHPUNIT_FLAGS}
     - if [[ ${TRAVIS_PHP_VERSION:0:3} == "7.1" ]]; then composer require phpstan/phpstan; ./vendor/bin/phpstan analyze -c phpstan.neon -l 7 src/; fi
     - if [[ ( ${TRAVIS_PHP_VERSION:0:3} == "7.1" ) && ( $TRAVIS_BRANCH == "master" ) ]]; then ./scripts/run_sami_docs_on_travis.sh; fi
 
