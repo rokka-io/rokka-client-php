@@ -165,7 +165,7 @@ class User extends Base
 
         // get the membership, if it already exists
         if (empty($contents)) {
-            return $this->getMembership($this->getOrganizationName($organization), $userId);
+            return $this->getMembership($userId, $this->getOrganizationName($organization));
         }
 
         return $this->getSingleMemberShipFromJsonResponse($contents);
