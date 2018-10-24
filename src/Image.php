@@ -420,13 +420,13 @@ class Image extends Base
      *
      * Example:
      * ```language-php
-     * $stack = new Stack(null, 'teststack');
-     * $stack->addStackOperation(new StackOperation('resize', ['width' => 200, 'height' => 200]));
-     * $stack->addStackOperation(new StackOperation('rotate', ['angle' => 45]));
-     * $stack->setStackOptions(['jpg.quality' => 80]);
-     * $requestConfig = ['overwrite' => true];
-     * $stack = $client->saveStack($stack, $requestConfig);
-     * echo 'Created stack ' . $stack->getName() . PHP_EOL;
+        $stack = new Stack(null, 'teststack');
+        $stack->addStackOperation(new StackOperation('resize', ['width' => 200, 'height' => 200]));
+        $stack->addStackOperation(new StackOperation('rotate', ['angle' => 45]));
+        $stack->setStackOptions(['jpg.quality' => 80]);
+        $requestConfig = ['overwrite' => true];
+        $stack = $client->saveStack($stack, $requestConfig);
+        echo 'Created stack ' . $stack->getName() . PHP_EOL;
      * ```
      * The only requestConfig option currently can be
      * ['overwrite' => true|false] (false is the default)

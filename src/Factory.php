@@ -130,7 +130,7 @@ class Factory
             RequestException $exception = null
         ) {
             // Limit the number of retries to 10
-            if ($retries >= 0) {
+            if ($retries >= 10) {
                 return false;
             }
 
@@ -142,9 +142,7 @@ class Factory
             if ($response) {
                 // Retry on server errors or overload
                 $statusCode = $response->getStatusCode();
-                if (200 == $statusCode || 429 == $statusCode || 504 == $statusCode || 503 == $statusCode || 502 == $statusCode) {
-                    echo ' retry ';
-
+                if (429 == $statusCode || 504 == $statusCode || 503 == $statusCode || 502 == $statusCode) {
                     return true;
                 }
             }
@@ -161,8 +159,6 @@ class Factory
     private static function retryDelay()
     {
         return function ($numberOfRetries) {
-            echo $numberOfRetries;
-
             return 2000 * $numberOfRetries;
         };
     }
