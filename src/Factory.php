@@ -64,9 +64,9 @@ class Factory
     /**
      * Return a user client.
      *
-     * @param string|null $organization
-     * @param string|null $apiKey       API key
-     * @param array       $options      Options like api_base_url or proxy
+     * @param string|null|array $organization
+     * @param string|null       $apiKey       API key
+     * @param array             $options      Options like api_base_url or proxy
      *
      * @throws \RuntimeException
      *
@@ -76,14 +76,16 @@ class Factory
     {
         $baseUrl = BaseClient::DEFAULT_API_BASE_URL;
 
-        if (!\is_array($options)) {
-            $baseUrl = $options;
-            $options = [];
-        } else {
-            if (isset($options[self::API_BASE_URL])) {
-                $baseUrl = $options[self::API_BASE_URL];
-            }
+        //bc compability, when first param was $options
+        if (\is_array($organization)) {
+            $options = $organization;
+            $organization = null;
+            $apiKey = null;
         }
+        if (isset($options[self::API_BASE_URL])) {
+            $baseUrl = $options[self::API_BASE_URL];
+        }
+
         $client = self::getGuzzleClient($baseUrl, $options);
 
         return new UserClient($client, $organization, $apiKey);
