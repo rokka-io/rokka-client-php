@@ -44,19 +44,28 @@ class Membership
     public $active;
 
     /**
+     * Last acess of this user to this organization.
+     *
+     * @var \DateTime|null
+     */
+    public $lastAccess;
+
+    /**
      * Constructor.
      *
-     * @param string $userId         User id
-     * @param string $organizationId Organization id
-     * @param array  $roles          Roles
-     * @param bool   $active         If it is active
+     * @param string         $userId         User id
+     * @param string         $organizationId Organization id
+     * @param array          $roles          Roles
+     * @param bool           $active         If it is active
+     * @param \DateTime|null $lastAccess     Last access of the user to the organization
      */
-    public function __construct($userId, $organizationId, $roles, $active)
+    public function __construct($userId, $organizationId, $roles, $active, $lastAccess = null)
     {
         $this->userId = $userId;
         $this->organizationId = $organizationId;
         $this->roles = $roles;
         $this->active = $active;
+        $this->lastAccess = $lastAccess;
     }
 
     /**
@@ -85,6 +94,18 @@ class Membership
      */
     private static function getObjectFromArray($data): self
     {
-        return new self($data['user_id'], $data['organization_id'], $data['roles'], $data['active']);
+        if (!isset($data['last_access'])) {
+            $lastAccess = null;
+        } else {
+            $lastAccess = new \DateTime($data['last_access']);
+        }
+
+        return new self(
+            $data['user_id'],
+            $data['organization_id'],
+            $data['roles'],
+            $data['active'],
+            $lastAccess
+        );
     }
 }
