@@ -6,7 +6,7 @@ This project tries to follow [Semantic Versioning](http://semver.org/) since the
 
 This document mainly describes API changes important to users of this library.
 
-## 1.7.0 - unreleased
+## 1.7.0 - 2018-10-25
 
 * Added new membership methods to `\Rokka\Client\User`. It's not totally backwards compatible, but the methods changed were not
   working as documented.
