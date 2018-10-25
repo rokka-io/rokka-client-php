@@ -30,7 +30,7 @@ install:
 script:
     - ./vendor/bin/phpunit ${PHPUNIT_FLAGS}
     - if [[ ${TRAVIS_PHP_VERSION:0:3} == "7.1" ]]; then composer require phpstan/phpstan; ./vendor/bin/phpstan analyze -c phpstan.neon -l 7 src/; fi
-    - if [[ ( ${TRAVIS_PHP_VERSION:0:3} == "7.1" ) && ( $TRAVIS_BRANCH == "master" ) ]]; then ./scripts/run_sami_docs_on_travis.sh; fi
+    - if [[ ( ${TRAVIS_PHP_VERSION:0:3} == "7.2" ) && ( $TRAVIS_BRANCH == "master" ) ]]; then ./scripts/run_sami_docs_on_travis.sh; fi
 
 deploy:
   # How to deploy to S3: https://docs.travis-ci.com/user/deployment/s3/
