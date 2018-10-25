@@ -27,6 +27,13 @@ abstract class Base
     protected $client;
 
     /**
+     * Default organization.
+     *
+     * @var string|null
+     */
+    protected $defaultOrganization;
+
+    /**
      * @var int
      */
     private $apiVersion = self::DEFAULT_API_VERSION;
@@ -43,10 +50,13 @@ abstract class Base
     /**
      * Constructor.
      *
-     * @param ClientInterface $client Client instance
+     * @param ClientInterface $client              Client instance
+     * @param string|null     $defaultOrganization
      */
-    public function __construct(ClientInterface $client)
+    public function __construct(ClientInterface $client, $defaultOrganization)
     {
+        $this->defaultOrganization = $defaultOrganization;
+
         $this->client = $client;
     }
 
@@ -81,5 +91,24 @@ abstract class Base
         }
 
         return $this->client->request($method, $path, $options);
+    }
+
+    /**
+     * Return the organization or the default if empty.
+     *
+     * @param string|null $organization Organization
+     *
+     * @throws \RuntimeException
+     *
+     * @return string
+     */
+    protected function getOrganizationName($organization = null)
+    {
+        $org = (empty($organization)) ? $this->defaultOrganization : $organization;
+        if (null === $org) {
+            throw new \RuntimeException('Organization is empty');
+        }
+
+        return $org;
     }
 }

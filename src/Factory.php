@@ -31,6 +31,8 @@ class Factory
      * @param string       $apiKey       API key
      * @param array|string $options      Options like api_base_url or proxy
      *
+     * @throws \RuntimeException
+     *
      * @return Image
      */
     public static function getImageClient($organization, $apiKey, $options = [])
@@ -62,25 +64,31 @@ class Factory
     /**
      * Return a user client.
      *
-     * @param array $options Options like api_base_url or proxy
+     * @param string|null|array $organization
+     * @param string|null       $apiKey       API key
+     * @param array             $options      Options like api_base_url or proxy
+     *
+     * @throws \RuntimeException
      *
      * @return UserClient
      */
-    public static function getUserClient($options = [])
+    public static function getUserClient($organization = null, $apiKey = null, $options = [])
     {
         $baseUrl = BaseClient::DEFAULT_API_BASE_URL;
 
-        if (!\is_array($options)) {
-            $baseUrl = $options;
-            $options = [];
-        } else {
-            if (isset($options[self::API_BASE_URL])) {
-                $baseUrl = $options[self::API_BASE_URL];
-            }
+        //bc compability, when first param was $options
+        if (\is_array($organization)) {
+            $options = $organization;
+            $organization = null;
+            $apiKey = null;
         }
+        if (isset($options[self::API_BASE_URL])) {
+            $baseUrl = $options[self::API_BASE_URL];
+        }
+
         $client = self::getGuzzleClient($baseUrl, $options);
 
-        return new UserClient($client);
+        return new UserClient($client, $organization, $apiKey);
     }
 
     /**
@@ -88,6 +96,8 @@ class Factory
      *
      * @param string $baseUrl base url
      * @param array  $options
+     *
+     * @throws \RuntimeException
      *
      * @return GuzzleClient GuzzleClient to connect to the backend
      */

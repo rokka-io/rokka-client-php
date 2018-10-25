@@ -6,13 +6,29 @@ This project tries to follow [Semantic Versioning](http://semver.org/) since the
 
 This document mainly describes API changes important to users of this library.
 
+## 1.7.0 - unreleased
+
+* Added new membership methods to `\Rokka\Client\User`. It's not totally backwards compatible, but the methods changed were not
+  working as documented.
+  See [documentation about users and memberships](https://rokka.io/documentation/references/users-and-memberships.html) for details.
+  * `\Rokka\Client\Factory::getUserClient` takes an organisation and apikey as 1st and 2nd parameter now. 
+  * `\Rokka\Client\Core\Membership` returns now an array with `roles` instead of a string with `role`, since a Membership can now multiple roles.
+  * Added `\Rokka\Client\User::getCurrentUserId()`. Returns the user_id for the logged in user.
+  * Added `\Rokka\Client\User::createUserAndMembership()`.
+  * Added `\Rokka\Client\User::listMemberships()`.
+  * Changed parameter order of `\Rokka\Client\User::createMembership()`. Wasn't working before at all.
+  * Changed parameter order of `\Rokka\Client\User::getMembership()`. Wasn't working before at all.
+  
+
 ## 1.6.0 - 2018-09-20
 
-* Added possibility to add a proxy and other guzzle options also to TemplateHelper. See [README.md](README.md#options-for-clients) for details.
+* Added possibility to add a proxy and other guzzle options also to TemplateHelper. 
+  See [README.md](README.md#options-for-clients) for details.
 
 ## 1.5.0 - 2018-09-20
 
-* Added possibility to add a proxy and other guzzle options to a client. See [README.md](README.md#options-for-clients) for details.
+* Added possibility to add a proxy and other guzzle options to a client. 
+  See [README.md](README.md#options-for-clients) for details.
 
 ## 1.4.0 - 2018-08-15
 

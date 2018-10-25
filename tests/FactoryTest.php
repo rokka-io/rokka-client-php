@@ -77,17 +77,9 @@ class FactoryTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(Image::DEFAULT_API_BASE_URL, $this->checkBaseUrl($userClient));
     }
 
-    public function testGetUserClientBase()
+    public function testGetUserClientBaseOptionsWithOrgAndKey()
     {
-        $userClient = Factory::getUserClient('https://test.rokka.api/');
-
-        $this->assertInstanceOf('\\Rokka\\Client\\User', $userClient);
-        $this->assertEquals('https://test.rokka.api/', $this->checkBaseUrl($userClient));
-    }
-
-    public function testGetUserClientBaseOptions()
-    {
-        $userClient = Factory::getUserClient([Factory::API_BASE_URL => 'https://test.rokka.api/']);
+        $userClient = Factory::getUserClient('foo', 'bar', [Factory::API_BASE_URL => 'https://test.rokka.api/']);
 
         $this->assertInstanceOf('\\Rokka\\Client\\User', $userClient);
         $this->assertEquals('https://test.rokka.api/', $this->checkBaseUrl($userClient));
