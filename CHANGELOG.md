@@ -8,10 +8,11 @@ This document mainly describes API changes important to users of this library.
 
 ## 1.8.0 - 2018-10-xx
 
-* Added an object for the new dynamic metadata "version".
+* Added an object for the new dynamic metadata "version". 
+  See https://rokka.io//documentation/references/dynamic-metadata.html#version for details 
 * $option in `\Rokka\Client\Image::uploadSourceImage` and `\Rokka\Client\Image::setDynamicMetadata` now takes either
   a single DynamicMetaData Object or an array with the needed fields. Or an array thereof for multiple new sets.
-
+  
 ## 1.7.0 - 2018-10-25
 
 * Added new membership methods to `\Rokka\Client\User`. It's not totally backwards compatible, but the methods changed were not
