@@ -5,6 +5,7 @@ namespace Rokka\Client;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Psr7\Uri;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\UriInterface;
 use Rokka\Client\Core\DynamicMetadata\DynamicMetadataInterface;
 use Rokka\Client\Core\OperationCollection;
@@ -571,6 +572,7 @@ class Image extends Base
         }
 
         $count = 0;
+        $response = null;
         foreach ($dynamicMetadata as $value => $data) {
             $callOptions = [];
             if ($data instanceof DynamicMetadataInterface) {
@@ -601,11 +603,14 @@ class Image extends Base
             }
             $hash = $this->extractHashFromLocationHeader($response->getHeader('Location'));
         }
-        if ($response->getStatusCode() >= 200 && $response->getStatusCode() < 300) {
-            return $hash;
+        if ($response instanceof ResponseInterface) {
+            if ($response->getStatusCode() >= 200 && $response->getStatusCode() < 300) {
+                return $hash;
+            }
+            // Throw an exception to be handled by the caller.
+            throw new \LogicException($response->getBody()->getContents(), $response->getStatusCode());
         }
-        // Throw an exception to be handled by the caller.
-        throw new \LogicException($response->getBody()->getContents(), $response->getStatusCode());
+        throw new \LogicException('Something went wrong with the call/response to the rokka API', 0);
     }
 
     /**
