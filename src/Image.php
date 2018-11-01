@@ -553,37 +553,57 @@ class Image extends Base
      * which deletes the previous image from rokka (but not the binary, since that's still used)
      * If not set, the original image is kept in rokka.
      *
-     * @param DynamicMetadataInterface $dynamicMetadata The Dynamic Metadata
-     * @param string                   $hash            The Image hash
-     * @param string                   $organization    Optional organization name
-     * @param array                    $options         Optional options
+     * @param DynamicMetadataInterface|array $dynamicMetadata A Dynamic Metadata object, an array with all the needed info.
+     *                                                        Or an array with more than one of those.
+     * @param string                         $hash            The Image hash
+     * @param string                         $organization    Optional organization name
+     * @param array                          $options         Optional options
      *
      * @throws GuzzleException
      * @throws \RuntimeException
      *
      * @return string|false
      */
-    public function setDynamicMetadata(DynamicMetadataInterface $dynamicMetadata, $hash, $organization = '', $options = [])
+    public function setDynamicMetadata($dynamicMetadata, $hash, $organization = '', $options = [])
     {
-        $path = implode('/', [
-            self::SOURCEIMAGE_RESOURCE,
-            $this->getOrganizationName($organization),
-            $hash,
-            self::DYNAMIC_META_RESOURCE,
-            $dynamicMetadata::getName(),
-        ]);
-        $callOptions = [];
-        $callOptions['json'] = $dynamicMetadata->getForJson();
-        if (isset($options['deletePrevious']) && $options['deletePrevious']) {
-            $callOptions['query'] = ['deletePrevious' => 'true'];
+        if (!\is_array($dynamicMetadata)) {
+            $dynamicMetadata = [$dynamicMetadata];
         }
 
-        $response = $this->call('PUT', $path, $callOptions);
+        $count = 0;
+        foreach ($dynamicMetadata as $value => $data) {
+            $callOptions = [];
+            if ($data instanceof DynamicMetadataInterface) {
+                $name = $data::getName();
+                $callOptions['json'] = $data->getForJson();
+            } else {
+                $name = $value;
+                $callOptions['json'] = $data;
+            }
 
+            $path = implode('/', [
+                self::SOURCEIMAGE_RESOURCE,
+                $this->getOrganizationName($organization),
+                $hash,
+                self::DYNAMIC_META_RESOURCE,
+                $name,
+            ]);
+
+            // delete the previous, if we're not on the first one anymore, or if we want to delete it.
+            if ($count > 0 || (0 === $count && isset($options['deletePrevious']) && $options['deletePrevious'])) {
+                $callOptions['query'] = ['deletePrevious' => 'true'];
+            }
+
+            ++$count;
+            $response = $this->call('PUT', $path, $callOptions);
+            if (!($response->getStatusCode() >= 200 && $response->getStatusCode() < 300)) {
+                throw new \LogicException($response->getBody()->getContents(), $response->getStatusCode());
+            }
+            $hash = $this->extractHashFromLocationHeader($response->getHeader('Location'));
+        }
         if ($response->getStatusCode() >= 200 && $response->getStatusCode() < 300) {
-            return $this->extractHashFromLocationHeader($response->getHeader('Location'));
+            return $hash;
         }
-
         // Throw an exception to be handled by the caller.
         throw new \LogicException($response->getBody()->getContents(), $response->getStatusCode());
     }
@@ -866,6 +886,10 @@ class Image extends Base
 
         if (isset($options['meta_dynamic'])) {
             foreach ($options['meta_dynamic'] as $key => $value) {
+                if ($value instanceof  DynamicMetadataInterface) {
+                    $key = $value::getName();
+                    $value = $value->getForJson();
+                }
                 $requestOptions[] = [
                     'name' => 'meta_dynamic[0]['.$key.']',
                     'contents' => json_encode($value),
