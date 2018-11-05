@@ -6,7 +6,7 @@ This project tries to follow [Semantic Versioning](http://semver.org/) since the
 
 This document mainly describes API changes important to users of this library.
 
-## 1.8.0 - 2018-10-xx
+## 1.8.0 - 2018-11-05
 
 * Added an object for the new dynamic metadata "version". 
   See https://rokka.io//documentation/references/dynamic-metadata.html#version for details 
