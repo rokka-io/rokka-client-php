@@ -610,6 +610,7 @@ class Image extends Base
             // Throw an exception to be handled by the caller.
             throw new \LogicException($response->getBody()->getContents(), $response->getStatusCode());
         }
+
         throw new \LogicException('Something went wrong with the call/response to the rokka API', 0);
     }
 
