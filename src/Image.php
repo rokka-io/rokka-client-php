@@ -191,6 +191,43 @@ class Image extends Base
     }
 
     /**
+     * Copy multiple sources image to another org.
+     *
+     * Needs read permissions on the source organization and write permissions on the write organization.
+     *
+     * @param array  $hashes         Hashes of the images as array (max. 100)
+     * @param string $destinationOrg The destination organization
+     * @param bool   $overwrite      If an existing image should be overwritten
+     * @param string $sourceOrg      Optional source organization name
+     *
+     * @throws GuzzleException   If the request fails for a different reason than image not found
+     * @throws \RuntimeException
+     *
+     * @return array An array in the form of ['existing' => [...], 'created' => [..]] with all the hashes in it
+     */
+    public function copySourceImages($hashes, $destinationOrg, $overwrite = true, $sourceOrg = '')
+    {
+        try {
+            $headers = ['Destination' => $destinationOrg];
+            if (false === $overwrite) {
+                $headers['Overwrite'] = 'F';
+            }
+            $response = $this->call('POST',
+                implode('/', [self::SOURCEIMAGE_RESOURCE, $this->getOrganizationName($sourceOrg), 'copy']),
+                ['headers' => $headers, 'json' => $hashes]
+            );
+        } catch (GuzzleException $e) {
+            if (404 == $e->getCode()) {
+                return ['existing' => [], 'created' => []];
+            }
+
+            throw $e;
+        }
+
+        return json_decode($response->getBody()->getContents(), true);
+    }
+
+    /**
      * Delete source images by binaryhash.
      *
      * Since the same binaryhash can have different images in rokka, this may delete more than one picture.
