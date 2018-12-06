@@ -6,6 +6,10 @@ This project tries to follow [Semantic Versioning](http://semver.org/) since the
 
 This document mainly describes API changes important to users of this library.
 
+## 1.8.1 - 2018-12-06
+
+* Fixed search for integer user metadata. https://github.com/rokka-io/rokka-client-php/pull/62 thanks to @pascalvb
+
 ## 1.8.0 - 2018-11-05
 
 * Added an object for the new dynamic metadata "version". 
