@@ -6,6 +6,11 @@ This project tries to follow [Semantic Versioning](http://semver.org/) since the
 
 This document mainly describes API changes important to users of this library.
 
+## 1.9.0 - unreleased
+
+* added public `\Rokka\Client\Image::copySourceImages($hashes, $destinationOrg, $overwrite = true, $sourceOrg = '')`
+  to copy multiple images at once (max 100). Improves performance a lot.
+
 ## 1.8.1 - 2018-12-06
 
 * Fixed search for integer user metadata. https://github.com/rokka-io/rokka-client-php/pull/62 thanks to @pascalvb
