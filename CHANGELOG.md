@@ -6,7 +6,11 @@ This project tries to follow [Semantic Versioning](http://semver.org/) since the
 
 This document mainly describes API changes important to users of this library.
 
-## 1.9.0 - unreleased
+## 1.10.0 - unreleased
+
+* removed HHVM support on travis tests, therefore HHVM isn't officially supported anymore.
+
+## 1.9.0 - 2018-12-13
 
 * added public `\Rokka\Client\Image::copySourceImages($hashes, $destinationOrg, $overwrite = true, $sourceOrg = '')`
   to copy multiple images at once (max 100). Improves performance a lot.

@@ -17,7 +17,6 @@ matrix:
 
   # Latest supported dependencies with each PHP version
   - php: 5.6
-  - php: hhvm
 
 before_install:
     - composer self-update
