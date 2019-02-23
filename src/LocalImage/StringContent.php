@@ -35,7 +35,7 @@ class StringContent extends AbstractLocalImage
         if (null !== $this->identifier) {
             return $this->identifier;
         }
-        $this->identifier = md5($this->getContent());
+        $this->identifier = md5((string) $this->getContent());
 
         return $this->identifier;
     }

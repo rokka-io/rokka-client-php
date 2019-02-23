@@ -68,7 +68,7 @@ class FileInfo extends AbstractLocalImage
         if (false !== $this->getRealpath()) {
             $this->identifier = $this->image->getFilename();
         } else {
-            $this->identifier = md5($this->getContent());
+            $this->identifier = md5((string) $this->getContent());
         }
 
         return $this->identifier;
@@ -79,6 +79,9 @@ class FileInfo extends AbstractLocalImage
         return $this->image->getRealPath();
     }
 
+    /**
+     * @return string|null
+     */
     public function getContent()
     {
         if (null === $this->content) {

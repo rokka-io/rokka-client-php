@@ -282,7 +282,7 @@ class Image extends Base
 
         if (\is_array($search) && !empty($search)) {
             foreach ($search as $field => $value) {
-                if (!SearchHelper::validateFieldName($field)) {
+                if (!SearchHelper::validateFieldName((string) $field)) {
                     throw new \LogicException(sprintf('Invalid field name "%s" as search field', $field));
                 }
 
