@@ -102,6 +102,7 @@ class StackUri extends AbstractStack
             $config['operations'][] = $operation->toArray();
         }
         $config['options'] = $this->getStackOptions();
+        $config['variables'] = $this->getStackVariables();
 
         return $config;
     }
@@ -146,8 +147,10 @@ class StackUri extends AbstractStack
                     continue;
                 }
                 $parsedOptions = self::parseOptions(\array_slice($stringOperationWithOptions, 1));
-                if ('options' === $stringOperationName) {
+                if ('options' === $stringOperationName || 'o' === $stringOperationName) {
                     $this->setStackOptions(array_merge($this->getStackOptions(), $parsedOptions));
+                } elseif ('variables' === $stringOperationName || 'v' === $stringOperationName) {
+                    $this->setStackVariables(array_merge($this->getStackVariables(), $parsedOptions));
                 } else {
                     // only add as stack operation everything before the first /
                     if (1 === $part) {

@@ -19,6 +19,11 @@ abstract class AbstractStack
      */
     public $stackOptions;
 
+    /**
+     * @var array Array of stack variables that this stack has
+     */
+    public $stackVariables = [];
+
     public function __construct($name = null, array $stackOperations = [], array $stackOptions = [])
     {
         $this->name = $name;
@@ -130,6 +135,30 @@ abstract class AbstractStack
     public function setStackOptions(array $options)
     {
         $this->stackOptions = $options;
+
+        return $this;
+    }
+
+    /**
+     * @since 1.10.0
+     *
+     * @return array
+     */
+    public function getStackVariables()
+    {
+        return $this->stackVariables;
+    }
+
+    /**
+     * @since 1.10.0
+     *
+     * @param array $variables
+     *
+     * @return self
+     */
+    public function setStackVariables(array $variables)
+    {
+        $this->stackVariables = $variables;
 
         return $this;
     }

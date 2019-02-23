@@ -248,6 +248,15 @@ class UriHelper
         if ('options' !== $newStackOptions) {
             $newOptions[] = $newStackOptions;
         }
+
+        $newStackVariables = null;
+        if (isset($config['variables'])) {
+            $newStackVariables = self::getStringForOptions('variables', $config['variables']);
+        }
+        //don't return this, if it's only "variables" as string
+        if ('variables' !== $newStackVariables && null !== $newStackVariables) {
+            $newOptions[] = $newStackVariables;
+        }
         $options = implode('--', $newOptions);
 
         return $options;
