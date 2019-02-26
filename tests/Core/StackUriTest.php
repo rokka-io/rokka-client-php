@@ -15,6 +15,8 @@ class StackUriTest extends \PHPUnit\Framework\TestCase
             'simple stack with operations  override' => ['foo/resize-width-100', 'foo', [],  [new StackOperation('resize', ['width' => '100'])], 'foo/resize-width-100'],
             'simple stack with variables' => ['foo/resize-width-100/variables-w-100-h-200', 'foo', [],  [new StackOperation('resize', ['width' => '100'])], 'foo/resize-width-100--variables-h-200-w-100'],
             'simple stack with variables override' => ['foo/resize-width-100/variables-w-100-h-200/v-w-300', 'foo', [],  [new StackOperation('resize', ['width' => '100'])], 'foo/resize-width-100--variables-h-200-w-300'],
+            'simple stack with expression' => ['foo/resize-width-[$w]/variables-w-100-h-200', 'foo', [],  [new StackOperation('resize', [], ['width' => '$w'])], 'foo/resize-width-%5B$w%5D--variables-h-200-w-100'],
+
             'dynamic with options' => ['dynamic/options-autoformat-true', 'dynamic', ['autoformat' => 'true'], [], 'dynamic/options-autoformat-true'],
             'dynamic with operations' => ['dynamic/resize-width-100--options-autoformat-true', 'dynamic', ['autoformat' => 'true'], [new StackOperation('resize', ['width' => '100'])], 'dynamic/resize-width-100--options-autoformat-true'],
             'dynamic with operations override' => ['dynamic/resize-width-100--options-autoformat-true/resize-width-200', 'dynamic', ['autoformat' => 'true'], [new StackOperation('resize', ['width' => '200'])], 'dynamic/resize-width-200--options-autoformat-true'],

@@ -22,6 +22,8 @@ class UriHelper
      * @param string       $url     The rokka image render URL
      * @param array|string $options The options you want to add as string
      *
+     * @throws \RuntimeException
+     *
      * @return string
      */
     public static function addOptionsToUriString($url, $options)
@@ -62,6 +64,8 @@ class UriHelper
      * @param UriInterface $uri     The rokka image render URL
      * @param array|string $options The options you want to add as string
      *
+     * @throws \RuntimeException
+     *
      * @return UriInterface
      */
     public static function addOptionsToUri(UriInterface $uri, $options)
@@ -96,6 +100,8 @@ class UriHelper
      *
      * @param array|UriComponents $components
      * @param UriInterface        $uri        If this is provided, it will change the path for that object and return
+     *
+     * @throws \RuntimeException
      *
      * @return UriInterface
      */
@@ -136,6 +142,8 @@ class UriHelper
      *
      * @param UriInterface $uri
      *
+     * @throws \RuntimeException
+     *
      * @return UriComponents|null
      */
     public static function decomposeUri(UriInterface $uri)
@@ -145,15 +153,15 @@ class UriHelper
         $filenamePattern = '(?<filename>[A-Za-z\-\0-\9]+)';
         $formatPattern = '(?<format>.{3,4})';
         $pathPattern = '(?<hash>-.+-)';
-
+        $path = $uri->getPath();
         // hash with seo-filename
-        if (preg_match('#^/'.$stackPattern.'/'.$hashPattern.'/'.$filenamePattern.'\.'.$formatPattern.'$#', $uri->getPath(), $matches) ||
+        if (preg_match('#^/'.$stackPattern.'/'.$hashPattern.'/'.$filenamePattern.'\.'.$formatPattern.'$#', $path, $matches) ||
             // hash without seo-filename
-            preg_match('#^/'.$stackPattern.'/'.$hashPattern.'.'.$formatPattern.'$#', $uri->getPath(), $matches) ||
+            preg_match('#^/'.$stackPattern.'/'.$hashPattern.'.'.$formatPattern.'$#', $path, $matches) ||
             // remote_path with seo-filename
-            preg_match('#^/'.$stackPattern.'/'.$pathPattern.'/'.$filenamePattern.'\.'.$formatPattern.'$#', $uri->getPath(), $matches) ||
+            preg_match('#^/'.$stackPattern.'/'.$pathPattern.'/'.$filenamePattern.'\.'.$formatPattern.'$#', $path, $matches) ||
             // remote_path without seo-filename
-            preg_match('#^/'.$stackPattern.'/'.$pathPattern.'.'.$formatPattern.'$#', $uri->getPath(), $matches)) {
+            preg_match('#^/'.$stackPattern.'/'.$pathPattern.'.'.$formatPattern.'$#', $path, $matches)) {
             return UriComponents::createFromArray($matches);
         }
     }
@@ -162,6 +170,8 @@ class UriHelper
      * @param string      $url    The original rokka render URL to be adjusted
      * @param string      $size   The size of the image, eg '300w' or '2x'
      * @param null|string $custom Any rokka options you'd like to add, or are a dpi identifier like '2x'
+     *
+     * @throws \RuntimeException
      *
      * @return UriInterface
      */
@@ -182,6 +192,8 @@ class UriHelper
      * @param UriInterface $url    The original rokka render URL to be adjusted
      * @param string       $size   The size of the image, eg '300w' or '2x'
      * @param null|string  $custom Any rokka options you'd like to add, or are a dpi identifier like '2x'
+     *
+     * @throws \RuntimeException
      *
      * @return UriInterface
      */
@@ -234,9 +246,12 @@ class UriHelper
         if (isset($config['operations'])) {
             foreach ($config['operations'] as $values) {
                 if ($values instanceof StackOperation) {
-                    $newOptions[] = self::getStringForOptions($values->name, $values->options);
+                    $newOptions[] = self::getStringForOptions($values->name, $values->options, $values->expressions);
                 } else {
-                    $newOptions[] = self::getStringForOptions($values['name'], $values['options']);
+                    if (!isset($values['expressions'])) {
+                        $values['expressions'] = [];
+                    }
+                    $newOptions[] = self::getStringForOptions($values['name'], $values['options'], $values['expressions']);
                 }
             }
         }
@@ -264,15 +279,20 @@ class UriHelper
 
     /**
      * @param string $name
-     * @param array  $values
+     * @param array  $options
+     * @param array  $expressions
      *
      * @return string
      */
-    private static function getStringForOptions($name, $values)
+    private static function getStringForOptions($name, $options, $expressions = [])
     {
         $newOption = $name;
-        ksort($values);
-        foreach ($values as $k => $v) {
+        foreach ($expressions as $key => $value) {
+            $expressions[$key] = '['.$value.']';
+        }
+        $options = array_merge($options, $expressions);
+        ksort($options);
+        foreach ($options as $k => $v) {
             if (false === $v) {
                 $v = 'false';
             } elseif (true === $v) {

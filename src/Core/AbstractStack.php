@@ -24,11 +24,12 @@ abstract class AbstractStack
      */
     public $stackVariables = [];
 
-    public function __construct($name = null, array $stackOperations = [], array $stackOptions = [])
+    public function __construct($name = null, array $stackOperations = [], array $stackOptions = [], array $stackVariables = [])
     {
         $this->name = $name;
         $this->stackOperations = $stackOperations;
         $this->stackOptions = $stackOptions;
+        $this->stackVariables = $stackVariables;
     }
 
     /**

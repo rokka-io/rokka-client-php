@@ -240,11 +240,13 @@ class Stack extends AbstractStack
      *
      * @since 1.2.0
      *
+     * @throws \RuntimeException
+     *
      * @return string
      */
     public function getDynamicUriString()
     {
-        $stack = new StackUri('dynamic', $this->getStackOperations(), $this->getStackOptions());
+        $stack = new StackUri('dynamic', $this->getStackOperations(), $this->getStackOptions(), $this->getStackVariables());
 
         return $stack->getStackUriString();
     }
