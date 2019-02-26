@@ -13,6 +13,8 @@ class StackUriTest extends \PHPUnit\Framework\TestCase
             'simple stack' => ['foo', 'foo', [], [], 'foo'],
             'simple stack with override' => ['foo/options-autoformat-true', 'foo', ['autoformat' => 'true'], [], 'foo/options-autoformat-true'],
             'simple stack with operations  override' => ['foo/resize-width-100', 'foo', [],  [new StackOperation('resize', ['width' => '100'])], 'foo/resize-width-100'],
+            'simple stack with variables' => ['foo/resize-width-100/variables-w-100-h-200', 'foo', [],  [new StackOperation('resize', ['width' => '100'])], 'foo/resize-width-100--variables-h-200-w-100'],
+            'simple stack with variables override' => ['foo/resize-width-100/variables-w-100-h-200/v-w-300', 'foo', [],  [new StackOperation('resize', ['width' => '100'])], 'foo/resize-width-100--variables-h-200-w-300'],
             'dynamic with options' => ['dynamic/options-autoformat-true', 'dynamic', ['autoformat' => 'true'], [], 'dynamic/options-autoformat-true'],
             'dynamic with operations' => ['dynamic/resize-width-100--options-autoformat-true', 'dynamic', ['autoformat' => 'true'], [new StackOperation('resize', ['width' => '100'])], 'dynamic/resize-width-100--options-autoformat-true'],
             'dynamic with operations override' => ['dynamic/resize-width-100--options-autoformat-true/resize-width-200', 'dynamic', ['autoformat' => 'true'], [new StackOperation('resize', ['width' => '200'])], 'dynamic/resize-width-200--options-autoformat-true'],
@@ -24,6 +26,12 @@ class StackUriTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @dataProvider provide__construct
+     *
+     * @param mixed      $stackName
+     * @param mixed      $name
+     * @param mixed      $options
+     * @param mixed      $operations
+     * @param null|mixed $expectedUri
      */
     public function test__construct($stackName, $name, $options, $operations, $expectedUri = null)
     {
