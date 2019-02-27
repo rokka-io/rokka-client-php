@@ -92,4 +92,39 @@ class StackExpression
 
         return $this;
     }
+
+    /**
+     * @return array
+     */
+    public function getVariablesOverrides()
+    {
+        return $this->overrides['variables'];
+    }
+
+    /**
+     * @param array $overrides
+     *
+     * @return self
+     */
+    public function setVariablesOverrides(array $overrides)
+    {
+        $this->overrides['variables'] = $overrides;
+
+        return $this;
+    }
+
+    /**
+     * Adds a single variable override to the variables overrides.
+     *
+     * @param string $key
+     * @param mixed  $value
+     *
+     * @return self
+     */
+    public function addVariableOverride($key, $value)
+    {
+        $this->overrides['variables'][$key] = $value;
+
+        return $this;
+    }
 }
