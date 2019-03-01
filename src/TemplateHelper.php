@@ -237,14 +237,15 @@ class TemplateHelper
      *
      * @since 1.3.0
      *
-     * @param string $url   The render URL of the "non-retina" image
-     * @param array  $sizes For which sizes srcset links should be generated, works with 'x' or 'w' style
+     * @param string $url           The render URL of the "non-retina" image
+     * @param array  $sizes         For which sizes srcset links should be generated, works with 'x' or 'w' style
+     * @param bool   $setWidthInUrl If false, don't set the width as stack operation option, we provide it in $custom, usually as parameter
      *
      * @throws \RuntimeException
      *
      * @return string
      */
-    public static function getSrcAttributes($url, $sizes = ['2x'])
+    public static function getSrcAttributes($url, $sizes = ['2x'], $setWidthInUrl = true)
     {
         $attrs = 'src="'.$url.'"';
         $srcSets = [];
@@ -258,7 +259,7 @@ class TemplateHelper
 
                 $custom = null;
             }
-            $urlx2 = UriHelper::getSrcSetUrlString($url, $size, $custom);
+            $urlx2 = UriHelper::getSrcSetUrlString($url, $size, $custom, $setWidthInUrl);
             if ($urlx2 != $url) {
                 $srcSets[] = "${urlx2} ${size}";
             }

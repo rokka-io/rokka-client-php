@@ -74,19 +74,19 @@ class TemplateHelperTest extends \PHPUnit\Framework\TestCase
         $urlPrefix = 'https://testorg.rokka.io/dynamic';
 
         $this->assertEquals(
-            $urlPrefix."/resize-height-300-width-200--options-autoformat-true-jpg.transparency.autoformat-true/$hash/small-bratpfanne.jpg",
+            $urlPrefix."/resize-height-300-width-200--o-autoformat-true-jpg.transparency.autoformat-true/$hash/small-bratpfanne.jpg",
             $this->rokka->getResizeUrl($image, 200, 300)
         );
         $this->assertEquals(
-            $urlPrefix."/resize-height-300-width-200--options-autoformat-true-jpg.transparency.autoformat-true/$hash/seo-straeng.png",
+            $urlPrefix."/resize-height-300-width-200--o-autoformat-true-jpg.transparency.autoformat-true/$hash/seo-straeng.png",
             $this->rokka->getResizeUrl($image, 200, 300, 'png', 'seo-sträng')
         );
         $this->assertEquals(
-            $urlPrefix."/resize-height-300-width-200--options-autoformat-true-jpg.transparency.autoformat-true/$hash/seo-strang.png",
+            $urlPrefix."/resize-height-300-width-200--o-autoformat-true-jpg.transparency.autoformat-true/$hash/seo-strang.png",
             $this->rokka->getResizeUrl($image, 200, 300, 'png', 'seo-sträng', 'latin')
         );
         $this->assertEquals(
-            $urlPrefix."/resize-width-200--options-autoformat-true-jpg.transparency.autoformat-true/$hash/small-bratpfanne.jpg",
+            $urlPrefix."/resize-width-200--o-autoformat-true-jpg.transparency.autoformat-true/$hash/small-bratpfanne.jpg",
             $this->rokka->getResizeUrl($image, 200)
         );
     }
@@ -98,7 +98,7 @@ class TemplateHelperTest extends \PHPUnit\Framework\TestCase
         $urlPrefix = 'https://testorg.rokka.io/dynamic';
 
         $this->assertEquals(
-            $urlPrefix."/resize-height-300-mode-fill-width-200--crop-height-300-width-200--options-autoformat-true-jpg.transparency.autoformat-true/$hash/small-bratpfanne.jpg",
+            $urlPrefix."/resize-height-300-mode-fill-width-200--crop-height-300-width-200--o-autoformat-true-jpg.transparency.autoformat-true/$hash/small-bratpfanne.jpg",
             $this->rokka->getResizeCropUrl($image, 200, 300)
         );
     }
@@ -110,22 +110,22 @@ class TemplateHelperTest extends \PHPUnit\Framework\TestCase
         $url = $this->rokka->getStackUrl($image, 'test');
 
         $this->assertEquals(
-            'src="https://testorg.rokka.io/test/71775293697709c1a1ce66f05d7c011a6982a6a9/small-bratpfanne.jpg" srcset="https://testorg.rokka.io/test/options-dpr-2/71775293697709c1a1ce66f05d7c011a6982a6a9/small-bratpfanne.jpg 2x"',
+            'src="https://testorg.rokka.io/test/71775293697709c1a1ce66f05d7c011a6982a6a9/small-bratpfanne.jpg" srcset="https://testorg.rokka.io/test/o-dpr-2/71775293697709c1a1ce66f05d7c011a6982a6a9/small-bratpfanne.jpg 2x"',
             $this->rokka->getSrcAttributes($url)
         );
 
         $this->assertEquals(
-            'src="https://testorg.rokka.io/test/71775293697709c1a1ce66f05d7c011a6982a6a9/small-bratpfanne.jpg" srcset="https://testorg.rokka.io/test/options-dpr-2/71775293697709c1a1ce66f05d7c011a6982a6a9/small-bratpfanne.jpg 2x"',
+            'src="https://testorg.rokka.io/test/71775293697709c1a1ce66f05d7c011a6982a6a9/small-bratpfanne.jpg" srcset="https://testorg.rokka.io/test/o-dpr-2/71775293697709c1a1ce66f05d7c011a6982a6a9/small-bratpfanne.jpg 2x"',
             $this->rokka->getSrcAttributes($url, [2])
         );
 
         $this->assertEquals(
-            'src="https://testorg.rokka.io/test/71775293697709c1a1ce66f05d7c011a6982a6a9/small-bratpfanne.jpg" srcset="https://testorg.rokka.io/test/options-dpr-2/71775293697709c1a1ce66f05d7c011a6982a6a9/small-bratpfanne.jpg 2x, https://testorg.rokka.io/test/options-dpr-3/71775293697709c1a1ce66f05d7c011a6982a6a9/small-bratpfanne.jpg 3x"',
+            'src="https://testorg.rokka.io/test/71775293697709c1a1ce66f05d7c011a6982a6a9/small-bratpfanne.jpg" srcset="https://testorg.rokka.io/test/o-dpr-2/71775293697709c1a1ce66f05d7c011a6982a6a9/small-bratpfanne.jpg 2x, https://testorg.rokka.io/test/o-dpr-3/71775293697709c1a1ce66f05d7c011a6982a6a9/small-bratpfanne.jpg 3x"',
             $this->rokka->getSrcAttributes($url, ['2x', '3x'])
         );
 
         $this->assertEquals(
-            'src="https://testorg.rokka.io/test/71775293697709c1a1ce66f05d7c011a6982a6a9/small-bratpfanne.jpg" srcset="https://testorg.rokka.io/test/options-dpr-2-jpg.quality-50/71775293697709c1a1ce66f05d7c011a6982a6a9/small-bratpfanne.jpg 2x"',
+            'src="https://testorg.rokka.io/test/71775293697709c1a1ce66f05d7c011a6982a6a9/small-bratpfanne.jpg" srcset="https://testorg.rokka.io/test/o-dpr-2-jpg.quality-50/71775293697709c1a1ce66f05d7c011a6982a6a9/small-bratpfanne.jpg 2x"',
             $this->rokka->getSrcAttributes($url, ['2x' => 'options-jpg.quality-50'])
         );
 
@@ -134,8 +134,22 @@ class TemplateHelperTest extends \PHPUnit\Framework\TestCase
             $this->rokka->getSrcAttributes($url, ['200w', '500w'])
         );
         $this->assertEquals(
-            'src="https://testorg.rokka.io/test/71775293697709c1a1ce66f05d7c011a6982a6a9/small-bratpfanne.jpg" srcset="https://testorg.rokka.io/test/resize-width-250--options-dpr-2/71775293697709c1a1ce66f05d7c011a6982a6a9/small-bratpfanne.jpg 500w"',
+            'src="https://testorg.rokka.io/test/71775293697709c1a1ce66f05d7c011a6982a6a9/small-bratpfanne.jpg" srcset="https://testorg.rokka.io/test/resize-width-250--o-dpr-2/71775293697709c1a1ce66f05d7c011a6982a6a9/small-bratpfanne.jpg 500w"',
             $this->rokka->getSrcAttributes($url, ['500w' => '2x'])
+        );
+        $this->assertEquals(
+            'src="https://testorg.rokka.io/test/71775293697709c1a1ce66f05d7c011a6982a6a9/small-bratpfanne.jpg" srcset="https://testorg.rokka.io/test/o-dpr-2--v-w-250/71775293697709c1a1ce66f05d7c011a6982a6a9/small-bratpfanne.jpg 500w"',
+            $this->rokka->getSrcAttributes($url, ['500w' => 'o-dpr-2--v-w-250'], false)
+        );
+
+        $this->assertEquals(
+            'src="https://testorg.rokka.io/test/71775293697709c1a1ce66f05d7c011a6982a6a9/small-bratpfanne.jpg" srcset="https://testorg.rokka.io/test/v-w-500/71775293697709c1a1ce66f05d7c011a6982a6a9/small-bratpfanne.jpg 500w"',
+            $this->rokka->getSrcAttributes($url, ['500w' => 'v-w-500'], false)
+        );
+
+        $this->assertEquals(
+            'src="https://testorg.rokka.io/test/71775293697709c1a1ce66f05d7c011a6982a6a9/small-bratpfanne.jpg" srcset="https://testorg.rokka.io/test/o-dpr-2-j.q-50/71775293697709c1a1ce66f05d7c011a6982a6a9/small-bratpfanne.jpg 2x"',
+            $this->rokka->getSrcAttributes($url, ['2x' => 'o-j.q-50'], false)
         );
 
         // non rokka url
@@ -152,11 +166,11 @@ class TemplateHelperTest extends \PHPUnit\Framework\TestCase
         $url = $this->rokka->getStackUrl($image, 'test');
 
         $this->assertEquals(
-            "background-image:url('https://testorg.rokka.io/test/71775293697709c1a1ce66f05d7c011a6982a6a9/small-bratpfanne.jpg'); background-image: -webkit-image-set(url('https://testorg.rokka.io/test/71775293697709c1a1ce66f05d7c011a6982a6a9/small-bratpfanne.jpg') 1x, url('https://testorg.rokka.io/test/options-dpr-2/71775293697709c1a1ce66f05d7c011a6982a6a9/small-bratpfanne.jpg') 2x);",
+            "background-image:url('https://testorg.rokka.io/test/71775293697709c1a1ce66f05d7c011a6982a6a9/small-bratpfanne.jpg'); background-image: -webkit-image-set(url('https://testorg.rokka.io/test/71775293697709c1a1ce66f05d7c011a6982a6a9/small-bratpfanne.jpg') 1x, url('https://testorg.rokka.io/test/o-dpr-2/71775293697709c1a1ce66f05d7c011a6982a6a9/small-bratpfanne.jpg') 2x);",
             $this->rokka->getBackgroundImageStyle($url)
         );
         $this->assertEquals(
-            "background-image:url('https://testorg.rokka.io/test/71775293697709c1a1ce66f05d7c011a6982a6a9/small-bratpfanne.jpg'); background-image: -webkit-image-set(url('https://testorg.rokka.io/test/71775293697709c1a1ce66f05d7c011a6982a6a9/small-bratpfanne.jpg') 1x, url('https://testorg.rokka.io/test/options-dpr-2/71775293697709c1a1ce66f05d7c011a6982a6a9/small-bratpfanne.jpg') 2x, url('https://testorg.rokka.io/test/options-dpr-3/71775293697709c1a1ce66f05d7c011a6982a6a9/small-bratpfanne.jpg') 3x);",
+            "background-image:url('https://testorg.rokka.io/test/71775293697709c1a1ce66f05d7c011a6982a6a9/small-bratpfanne.jpg'); background-image: -webkit-image-set(url('https://testorg.rokka.io/test/71775293697709c1a1ce66f05d7c011a6982a6a9/small-bratpfanne.jpg') 1x, url('https://testorg.rokka.io/test/o-dpr-2/71775293697709c1a1ce66f05d7c011a6982a6a9/small-bratpfanne.jpg') 2x, url('https://testorg.rokka.io/test/o-dpr-3/71775293697709c1a1ce66f05d7c011a6982a6a9/small-bratpfanne.jpg') 3x);",
             $this->rokka->getBackgroundImageStyle($url, ['2x', '3x'])
         );
         $this->assertEquals(
