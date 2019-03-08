@@ -15,11 +15,18 @@ class StackOperation
     public $name;
 
     /**
-     * Configured options provided for the stack.
+     * Configured operation options provided for the stack.
      *
      * @var array
      */
     public $options = [];
+
+    /**
+     * Configured operation expressions provided for the stack.
+     *
+     * @var array
+     */
+    public $expressions = [];
 
     /**
      * Constructor.
@@ -27,10 +34,11 @@ class StackOperation
      * @param string $name    Operation name
      * @param array  $options Optional options for the operation
      */
-    public function __construct($name, array $options = [])
+    public function __construct($name, array $options = [], array $expressions = [])
     {
         $this->name = $name;
         $this->options = $options;
+        $this->expressions = $expressions;
     }
 
     /**
@@ -43,6 +51,7 @@ class StackOperation
         return [
             'name' => $this->name,
             'options' => $this->options,
+            'expressions' => $this->expressions,
         ];
     }
 
@@ -55,6 +64,10 @@ class StackOperation
      */
     public static function createFromDecodedJsonResponse($data)
     {
-        return new self($data['name'], $data['options']);
+        if (!isset($data['expressions'])) {
+            $data['expressions'] = [];
+        }
+
+        return new self($data['name'], $data['options'], $data['expressions']);
     }
 }

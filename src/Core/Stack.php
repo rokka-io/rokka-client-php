@@ -70,6 +70,10 @@ class Stack extends AbstractStack
             $stack->setStackOptions($data['stack_options']);
         }
 
+        if (isset($data['stack_variables']) && \is_array($data['stack_variables'])) {
+            $stack->setStackVariables($data['stack_variables']);
+        }
+
         if (isset($data['stack_expressions']) && \is_array($data['stack_expressions'])) {
             $stack_expressions = [];
             foreach ($data['stack_expressions'] as $expression) {
@@ -126,6 +130,9 @@ class Stack extends AbstractStack
 
         if (isset($config['expressions'])) {
             $stack->setStackExpressions($config['expressions']);
+        }
+        if (isset($config['variables'])) {
+            $stack->setStackVariables($config['variables']);
         }
 
         return $stack;
@@ -224,6 +231,7 @@ class Stack extends AbstractStack
             'operations' => $this->getStackOperations(),
             'options' => $this->getStackOptions(),
             'expressions' => $this->getStackExpressions(),
+            'variables' => $this->getStackVariables(),
         ];
     }
 
@@ -232,11 +240,13 @@ class Stack extends AbstractStack
      *
      * @since 1.2.0
      *
+     * @throws \RuntimeException When the stack name could not be parsed correctly
+     *
      * @return string
      */
     public function getDynamicUriString()
     {
-        $stack = new StackUri('dynamic', $this->getStackOperations(), $this->getStackOptions());
+        $stack = new StackUri('dynamic', $this->getStackOperations(), $this->getStackOptions(), $this->getStackVariables());
 
         return $stack->getStackUriString();
     }

@@ -19,14 +19,17 @@ class UriHelper
      *
      * @see UriHelper::addOptionsToUri
      *
-     * @param string       $url     The rokka image render URL
-     * @param array|string $options The options you want to add as string
+     * @param string       $url        The rokka image render URL
+     * @param array|string $options    The options you want to add as string
+     * @param bool         $shortNames if short names (like o for option or v for variables) should be used
+     *
+     * @throws \RuntimeException
      *
      * @return string
      */
-    public static function addOptionsToUriString($url, $options)
+    public static function addOptionsToUriString($url, $options, $shortNames = true)
     {
-        return (string) self::addOptionsToUri(new Uri($url), $options);
+        return (string) self::addOptionsToUri(new Uri($url), $options, $shortNames);
     }
 
     /**
@@ -59,15 +62,18 @@ class UriHelper
      * ```
      *
      *
-     * @param UriInterface $uri     The rokka image render URL
-     * @param array|string $options The options you want to add as string
+     * @param UriInterface $uri        The rokka image render URL
+     * @param array|string $options    The options you want to add as string
+     * @param bool         $shortNames if short names (like o for option or v for variables) should be used
+     *
+     * @throws \RuntimeException
      *
      * @return UriInterface
      */
-    public static function addOptionsToUri(UriInterface $uri, $options)
+    public static function addOptionsToUri(UriInterface $uri, $options, $shortNames = true)
     {
         if (\is_array($options)) {
-            return self::addOptionsToUri($uri, self::getUriStringFromStackConfig($options));
+            return self::addOptionsToUri($uri, self::getUriStringFromStackConfig($options, $shortNames), $shortNames);
         }
         $matches = self::decomposeUri($uri);
         if (empty($matches)) {
@@ -77,7 +83,7 @@ class UriHelper
         $stack = $matches->getStack();
         $stack->addOverridingOptions($options);
 
-        return self::composeUri($matches, $uri);
+        return self::composeUri($matches, $uri, $shortNames);
     }
 
     /**
@@ -96,10 +102,13 @@ class UriHelper
      *
      * @param array|UriComponents $components
      * @param UriInterface        $uri        If this is provided, it will change the path for that object and return
+     * @param bool                $shortNames if short names (like o for option or v for variables) should be used
+     *
+     * @throws \RuntimeException
      *
      * @return UriInterface
      */
-    public static function composeUri($components, UriInterface $uri = null)
+    public static function composeUri($components, UriInterface $uri = null, $shortNames = true)
     {
         if (\is_array($components)) {
             $components = UriComponents::createFromArray($components);
@@ -108,7 +117,7 @@ class UriHelper
         $stackName = $stack->getName();
         $path = '/'.$stackName;
         $stackConfig = $stack->getConfigAsArray();
-        $stackUrl = self::getUriStringFromStackConfig($stackConfig);
+        $stackUrl = self::getUriStringFromStackConfig($stackConfig, $shortNames);
         if (!empty($stackUrl)) {
             $path .= '/'.$stackUrl;
         }
@@ -136,6 +145,8 @@ class UriHelper
      *
      * @param UriInterface $uri
      *
+     * @throws \RuntimeException
+     *
      * @return UriComponents|null
      */
     public static function decomposeUri(UriInterface $uri)
@@ -145,29 +156,32 @@ class UriHelper
         $filenamePattern = '(?<filename>[A-Za-z\-\0-\9]+)';
         $formatPattern = '(?<format>.{3,4})';
         $pathPattern = '(?<hash>-.+-)';
-
+        $path = $uri->getPath();
         // hash with seo-filename
-        if (preg_match('#^/'.$stackPattern.'/'.$hashPattern.'/'.$filenamePattern.'\.'.$formatPattern.'$#', $uri->getPath(), $matches) ||
+        if (preg_match('#^/'.$stackPattern.'/'.$hashPattern.'/'.$filenamePattern.'\.'.$formatPattern.'$#', $path, $matches) ||
             // hash without seo-filename
-            preg_match('#^/'.$stackPattern.'/'.$hashPattern.'.'.$formatPattern.'$#', $uri->getPath(), $matches) ||
+            preg_match('#^/'.$stackPattern.'/'.$hashPattern.'.'.$formatPattern.'$#', $path, $matches) ||
             // remote_path with seo-filename
-            preg_match('#^/'.$stackPattern.'/'.$pathPattern.'/'.$filenamePattern.'\.'.$formatPattern.'$#', $uri->getPath(), $matches) ||
+            preg_match('#^/'.$stackPattern.'/'.$pathPattern.'/'.$filenamePattern.'\.'.$formatPattern.'$#', $path, $matches) ||
             // remote_path without seo-filename
-            preg_match('#^/'.$stackPattern.'/'.$pathPattern.'.'.$formatPattern.'$#', $uri->getPath(), $matches)) {
+            preg_match('#^/'.$stackPattern.'/'.$pathPattern.'.'.$formatPattern.'$#', $path, $matches)) {
             return UriComponents::createFromArray($matches);
         }
     }
 
     /**
-     * @param string      $url    The original rokka render URL to be adjusted
-     * @param string      $size   The size of the image, eg '300w' or '2x'
-     * @param null|string $custom Any rokka options you'd like to add, or are a dpi identifier like '2x'
+     * @param string      $url           The original rokka render URL to be adjusted
+     * @param string      $size          The size of the image, eg '300w' or '2x'
+     * @param null|string $custom        Any rokka options you'd like to add, or are a dpi identifier like '2x'
+     * @param bool        $setWidthInUrl If false, don't set the width as stack operation option, we provide it in $custom, usually as parameter
+     *
+     * @throws \RuntimeException
      *
      * @return UriInterface
      */
-    public static function getSrcSetUrlString($url, $size, $custom = null)
+    public static function getSrcSetUrlString($url, $size, $custom = null, $setWidthInUrl = true)
     {
-        return self::getSrcSetUrl(new Uri($url), $size, $custom);
+        return self::getSrcSetUrl(new Uri($url), $size, $custom, $setWidthInUrl);
     }
 
     /**
@@ -179,44 +193,37 @@ class UriHelper
      * This method will then generate the right rokka URLs to get what you want, see
      * `\Rokka\Client\Tests\UriHelperTest::provideGetSrcSetUrl` for some examples and the expected returns.
      *
-     * @param UriInterface $url    The original rokka render URL to be adjusted
-     * @param string       $size   The size of the image, eg '300w' or '2x'
-     * @param null|string  $custom Any rokka options you'd like to add, or are a dpi identifier like '2x'
+     * @param UriInterface $url           The original rokka render URL to be adjusted
+     * @param string       $size          The size of the image, eg '300w' or '2x'
+     * @param null|string  $custom        Any rokka options you'd like to add, or are a dpi identifier like '2x'
+     * @param bool         $setWidthInUrl If false, don't set the width as stack operation option, we provide it in $custom, usually as parameter
+     *
+     * @throws \RuntimeException
      *
      * @return UriInterface
      */
-    public static function getSrcSetUrl(UriInterface $url, $size, $custom = null)
+    public static function getSrcSetUrl(UriInterface $url, $size, $custom = null, $setWidthInUrl = true)
     {
         $identifier = substr($size, -1, 1);
         $size = substr($size, 0, -1);
-        if ('x' === $identifier) {
-            $uri = self::addOptionsToUri($url, 'options-dpr-'.$size);
-        } elseif ('w' === $identifier) {
-            $uri = self::addOptionsToUri($url, 'resize-width-'.$size);
-        } else {
-            return $url;
-        }
-        if (null !== $custom) {
-            if (preg_match('#^([0-9]+)x$#', $custom, $matches)) {
-                $uri = self::addOptionsToUri($uri, 'options-dpr-'.$matches[1].'--resize-width-'.(int) ceil($size / $matches[1]));
-            } else {
-                $stack = new StackUri();
-                $stack->addOverridingOptions($custom);
-                // if dpr is given in custom option, but not width, calculate correct width
-                $resizeOperations = $stack->getStackOperationsByName('resize');
-                $widthIsNotSet = true;
-                foreach ($resizeOperations as $resizeOperation) {
-                    if (isset($resizeOperation->options['width'])) {
-                        $widthIsNotSet = false;
-                    }
-                }
-                $options = $stack->getStackOptions();
-                if (isset($options['dpr']) && $widthIsNotSet) {
-                    $custom .= '--resize-width-'.(int) ceil($size / $options['dpr']);
+        switch ($identifier) {
+            case 'x':
+                $uri = self::addOptionsToUri($url, 'options-dpr-'.$size);
+
+                break;
+            case 'w':
+                if ($setWidthInUrl) {
+                    $uri = self::addOptionsToUri($url, 'resize-width-'.$size);
+                } else {
+                    $uri = $url;
                 }
 
-                $uri = self::addOptionsToUri($uri, $custom);
-            }
+                break;
+            default:
+                return $url;
+        }
+        if (null !== $custom) {
+            $uri = self::getSrcSetUrlCustom($size, $custom, $setWidthInUrl, $uri);
         }
 
         return $uri;
@@ -224,29 +231,45 @@ class UriHelper
 
     /**
      * @param array $config
+     * @param bool  $shortNames if short names (like o for option or v for variables) should be used
      *
      * @return string
      */
-    private static function getUriStringFromStackConfig(array $config)
+    private static function getUriStringFromStackConfig(array $config, $shortNames = true)
     {
         $newOptions = [];
 
         if (isset($config['operations'])) {
             foreach ($config['operations'] as $values) {
                 if ($values instanceof StackOperation) {
-                    $newOptions[] = self::getStringForOptions($values->name, $values->options);
+                    $newOptions[] = self::getStringForOptions($values->name, $values->options, $values->expressions);
                 } else {
-                    $newOptions[] = self::getStringForOptions($values['name'], $values['options']);
+                    if (!isset($values['expressions'])) {
+                        $values['expressions'] = [];
+                    }
+                    $newOptions[] = self::getStringForOptions($values['name'], $values['options'], $values['expressions']);
                 }
             }
         }
+
         $newStackOptions = null;
+        $nameOptions = $shortNames ? 'o' : 'options';
         if (isset($config['options'])) {
-            $newStackOptions = self::getStringForOptions('options', $config['options']);
+            $newStackOptions = self::getStringForOptions($nameOptions, $config['options']);
         }
         //don't return this, if it's only "options" as string
-        if ('options' !== $newStackOptions) {
+        if (null !== $newStackOptions && $nameOptions !== $newStackOptions) {
             $newOptions[] = $newStackOptions;
+        }
+
+        $newStackVariables = null;
+        $nameVariables = $shortNames ? 'v' : 'variables';
+        if (isset($config['variables'])) {
+            $newStackVariables = self::getStringForOptions($nameVariables, $config['variables']);
+        }
+        //don't return this, if it's only "variables" as string
+        if (null !== $newStackVariables && $nameVariables !== $newStackVariables) {
+            $newOptions[] = $newStackVariables;
         }
         $options = implode('--', $newOptions);
 
@@ -255,15 +278,20 @@ class UriHelper
 
     /**
      * @param string $name
-     * @param array  $values
+     * @param array  $options
+     * @param array  $expressions
      *
      * @return string
      */
-    private static function getStringForOptions($name, $values)
+    private static function getStringForOptions($name, $options, $expressions = [])
     {
         $newOption = $name;
-        ksort($values);
-        foreach ($values as $k => $v) {
+        foreach ($expressions as $key => $value) {
+            $expressions[$key] = '['.$value.']';
+        }
+        $options = array_merge($options, $expressions);
+        ksort($options);
+        foreach ($options as $k => $v) {
             if (false === $v) {
                 $v = 'false';
             } elseif (true === $v) {
@@ -273,5 +301,45 @@ class UriHelper
         }
 
         return $newOption;
+    }
+
+    /**
+     * Adds custom options to the URL.
+     *
+     * @param string       $size
+     * @param string       $custom
+     * @param bool         $setWidthInUrl
+     * @param UriInterface $uri
+     *
+     * @throws \RuntimeException if stack configuration can't be parsed
+     *
+     * @return UriInterface
+     */
+    private static function getSrcSetUrlCustom($size, $custom, $setWidthInUrl, UriInterface $uri)
+    {
+        // if custom is eg '2x', add options-dpr-
+        if (preg_match('#^([0-9]+)x$#', $custom, $matches)) {
+            $uri = self::addOptionsToUri($uri, 'options-dpr-'.$matches[1].
+                ($setWidthInUrl ? '--resize-width-'.(int) ceil($size / $matches[1]) : ''));
+        } else {
+            $stack = new StackUri();
+            $stack->addOverridingOptions($custom);
+            // if dpr is given in custom option, but not width, calculate correct width
+            $resizeOperations = $stack->getStackOperationsByName('resize');
+            $widthIsNotSet = true;
+            foreach ($resizeOperations as $resizeOperation) {
+                if (isset($resizeOperation->options['width'])) {
+                    $widthIsNotSet = false;
+                }
+            }
+            $options = $stack->getStackOptions();
+            if (isset($options['dpr']) && $widthIsNotSet && $setWidthInUrl) {
+                $custom .= '--resize-width-'.(int) ceil($size / $options['dpr']);
+            }
+
+            $uri = self::addOptionsToUri($uri, $custom);
+        }
+
+        return $uri;
     }
 }

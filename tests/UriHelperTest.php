@@ -16,31 +16,44 @@ class UriHelperTest extends \PHPUnit\Framework\TestCase
     public function provideAddOptionsToUri()
     {
         return [
-            ['', 'options-dpr-2', 'options-dpr-2'],
-            ['', ['options' => ['dpr' => 2]], 'options-dpr-2'],
-            ['resize-width-100', ['options' => ['dpr' => 2]], 'resize-width-100--options-dpr-2'],
+            ['', 'options-dpr-2', 'o-dpr-2'],
+            ['', 'o-dpr-2', 'options-dpr-2', false],
+            ['', 'options-dpr-2--v-w-300', 'o-dpr-2--v-w-300'],
+            ['', 'o-dpr-2--variables-w-300', 'options-dpr-2--variables-w-300', false],
+            ['', 'variables-w-300', 'variables-w-300', false],
+            ['', 'v-w-300', 'v-w-300'],
+
+            ['', ['options' => ['dpr' => 2]], 'o-dpr-2'],
+            ['resize-width-100', ['options' => ['dpr' => 2]], 'resize-width-100--o-dpr-2'],
+            ['resize-width-100', ['options' => ['dpr' => 2]], 'resize-width-100--options-dpr-2', false],
 
             ['resize-width-100', ['operations' => [['name' => 'resize', 'options' => ['upscale' => 'false']]]], 'resize-upscale-false-width-100'],
             ['resize-width-100', ['operations' => [['name' => 'resize', 'options' => ['upscale' => false]]]], 'resize-upscale-false-width-100'],
             ['resize-width-100', 'resize-upscale-false', 'resize-upscale-false-width-100'],
 
-            ['resize-width-100', ['options' => ['dpr' => 2], 'operations' => [new StackOperation('resize', ['width' => 200])]], 'resize-width-200--options-dpr-2'],
-            ['resize-width-100', ['options' => ['dpr' => 2], 'operations' => [['name' => 'resize', 'options' => ['width' => 200]]]], 'resize-width-200--options-dpr-2'],
+            ['resize-width-100', ['options' => ['dpr' => 2], 'operations' => [new StackOperation('resize', ['width' => 200])]], 'resize-width-200--o-dpr-2'],
+            ['resize-width-100', ['options' => ['dpr' => 2], 'operations' => [['name' => 'resize', 'options' => ['width' => 200]]]], 'resize-width-200--o-dpr-2'],
 
-            ['resize-width-100/options-dpr-3', 'options-dpr-2', 'resize-width-100--options-dpr-2'],
-            ['resize-width-100/options-dpr-3', ['options' => ['dpr' => 2]], 'resize-width-100--options-dpr-2'],
+            ['resize-width-100/options-dpr-3', 'options-dpr-2', 'resize-width-100--o-dpr-2'],
+            ['resize-width-100/o-dpr-3', 'options-dpr-2', 'resize-width-100--o-dpr-2'],
+            ['resize-width-100/options-dpr-3', ['options' => ['dpr' => 2]], 'resize-width-100--o-dpr-2'],
+            ['resize-width-100/options-dpr-3/variables-w-3', ['options' => ['dpr' => 2]], 'resize-width-100--o-dpr-2--v-w-3'],
+            ['resize-width-100/options-dpr-3/v-w-3', ['options' => ['dpr' => 2]], 'resize-width-100--o-dpr-2--v-w-3'],
 
-            ['resize-width-100/options-dpr-3', '', 'resize-width-100--options-dpr-3'],
+            ['resize-width-100/options-dpr-3', '', 'resize-width-100--o-dpr-3'],
 
             ['resize-width-100--resize-width-200', 'resize-width-300', 'resize-width-300--resize-width-300'],
             ['resize-width-100/resize-width-200', 'resize-width-300', 'resize-width-300'],
-            ['resize-width-100', 'options-dpr-2--resize-width-200', 'resize-width-200--options-dpr-2'],
-            ['resize-width-100--resize-width-200', 'options-dpr-2', 'resize-width-100--resize-width-200--options-dpr-2'],
-            ['resize-width-100--options-autoformat-true-dpr-3', 'options-dpr-2', 'resize-width-100--options-autoformat-true-dpr-2'],
-            ['resize-width-100--resize-width-300--options-autoformat-true-dpr-3', 'resize-height-200', 'resize-height-200-width-100--resize-height-200-width-300--options-autoformat-true-dpr-3'],
-            ['resize-width-100--resize-width-300--options-autoformat-true-dpr-3', 'resize-height-200-width-200', 'resize-height-200-width-200--resize-height-200-width-200--options-autoformat-true-dpr-3'],
-            ['resize-width-100--options-autoformat-true', 'options-dpr-2', 'resize-width-100--options-autoformat-true-dpr-2'],
-            ['resize-width-100--options-autoformat-true-dpr-3', 'options-dpr-2', 'resize-width-100--options-autoformat-true-dpr-2'],
+            ['resize-width-100', 'options-dpr-2--resize-width-200', 'resize-width-200--o-dpr-2'],
+            ['resize-width-100--resize-width-200', 'options-dpr-2', 'resize-width-100--resize-width-200--o-dpr-2'],
+            ['resize-width-100--options-autoformat-true-dpr-3', 'options-dpr-2', 'resize-width-100--o-autoformat-true-dpr-2'],
+            ['resize-width-100--resize-width-300--options-autoformat-true-dpr-3', 'resize-height-200', 'resize-height-200-width-100--resize-height-200-width-300--o-autoformat-true-dpr-3'],
+            ['resize-width-100--resize-width-300--options-autoformat-true-dpr-3', 'resize-height-200-width-200', 'resize-height-200-width-200--resize-height-200-width-200--o-autoformat-true-dpr-3'],
+            ['resize-width-100--options-autoformat-true', 'options-dpr-2', 'resize-width-100--o-autoformat-true-dpr-2'],
+            ['resize-width-100--options-autoformat-true-dpr-3', 'options-dpr-2', 'resize-width-100--o-autoformat-true-dpr-2'],
+            ['resize-width-100--options-autoformat-true-dpr-3', 'o-dpr-2', 'resize-width-100--o-autoformat-true-dpr-2'],
+
+            ['resize-width-100--options-autoformat-true--v-w-300', 'v-w-200', 'resize-width-100--o-autoformat-true--v-w-200'],
         ];
     }
 
@@ -50,17 +63,22 @@ class UriHelperTest extends \PHPUnit\Framework\TestCase
     public function provideGetSrcSetUrl()
     {
         return [
-            ['2x', null, 'https://test.rokka.io/stackname/options-dpr-2/b537639e539efcc3df4459ef87c5963aa5079ca6.jpg'],
-            ['3x', null, 'https://test.rokka.io/stackname/options-dpr-3/b537639e539efcc3df4459ef87c5963aa5079ca6.jpg'],
+            ['2x', null, 'https://test.rokka.io/stackname/o-dpr-2/b537639e539efcc3df4459ef87c5963aa5079ca6.jpg'],
+            ['3x', null, 'https://test.rokka.io/stackname/o-dpr-3/b537639e539efcc3df4459ef87c5963aa5079ca6.jpg'],
             ['300w', null, 'https://test.rokka.io/stackname/resize-width-300/b537639e539efcc3df4459ef87c5963aa5079ca6.jpg'],
-            ['300w', '2x', 'https://test.rokka.io/stackname/resize-width-150--options-dpr-2/b537639e539efcc3df4459ef87c5963aa5079ca6.jpg'],
-            ['300w', '3x', 'https://test.rokka.io/stackname/resize-width-100--options-dpr-3/b537639e539efcc3df4459ef87c5963aa5079ca6.jpg'],
-            ['2x', 'options-jpg.quality-50', 'https://test.rokka.io/stackname/options-dpr-2-jpg.quality-50/b537639e539efcc3df4459ef87c5963aa5079ca6.jpg'],
-            ['300w', 'options-jpg.quality-50', 'https://test.rokka.io/stackname/resize-width-300--options-jpg.quality-50/b537639e539efcc3df4459ef87c5963aa5079ca6.jpg'],
+            ['300w', '2x', 'https://test.rokka.io/stackname/resize-width-150--o-dpr-2/b537639e539efcc3df4459ef87c5963aa5079ca6.jpg'],
+            ['300w', '3x', 'https://test.rokka.io/stackname/resize-width-100--o-dpr-3/b537639e539efcc3df4459ef87c5963aa5079ca6.jpg'],
+            ['2x', 'options-jpg.quality-50', 'https://test.rokka.io/stackname/o-dpr-2-jpg.quality-50/b537639e539efcc3df4459ef87c5963aa5079ca6.jpg'],
+            ['300w', 'options-jpg.quality-50', 'https://test.rokka.io/stackname/resize-width-300--o-jpg.quality-50/b537639e539efcc3df4459ef87c5963aa5079ca6.jpg'],
 
-            ['300w', 'options-jpg.quality-50-dpr-2', 'https://test.rokka.io/stackname/resize-width-150--options-dpr-2-jpg.quality-50/b537639e539efcc3df4459ef87c5963aa5079ca6.jpg'],
-            ['300w', 'options-jpg.quality-50-dpr-2--resize-width-200', 'https://test.rokka.io/stackname/resize-width-200--options-dpr-2-jpg.quality-50/b537639e539efcc3df4459ef87c5963aa5079ca6.jpg'],
-            ['300w', 'options-jpg.quality-50--resize-width-200', 'https://test.rokka.io/stackname/resize-width-200--options-jpg.quality-50/b537639e539efcc3df4459ef87c5963aa5079ca6.jpg'],
+            ['300w', 'options-jpg.quality-50-dpr-2', 'https://test.rokka.io/stackname/resize-width-150--o-dpr-2-jpg.quality-50/b537639e539efcc3df4459ef87c5963aa5079ca6.jpg'],
+            ['300w', 'options-jpg.quality-50-dpr-2--resize-width-200', 'https://test.rokka.io/stackname/resize-width-200--o-dpr-2-jpg.quality-50/b537639e539efcc3df4459ef87c5963aa5079ca6.jpg'],
+            ['300w', 'options-jpg.quality-50--resize-width-200', 'https://test.rokka.io/stackname/resize-width-200--o-jpg.quality-50/b537639e539efcc3df4459ef87c5963aa5079ca6.jpg'],
+
+            ['300w', 'options-jpg.quality-50--resize-width-200', 'https://test.rokka.io/stackname/resize-width-200--o-jpg.quality-50/b537639e539efcc3df4459ef87c5963aa5079ca6.jpg', false],
+
+            ['300w', 'v-w-200--options-jpg.quality-50', 'https://test.rokka.io/stackname/o-jpg.quality-50--v-w-200/b537639e539efcc3df4459ef87c5963aa5079ca6.jpg', false],
+            ['300w', 'v-w-200', 'https://test.rokka.io/stackname/v-w-200/b537639e539efcc3df4459ef87c5963aa5079ca6.jpg', false],
         ];
     }
 
@@ -69,19 +87,19 @@ class UriHelperTest extends \PHPUnit\Framework\TestCase
         return [
             ['', ['optionsUrl' => '', 'optionsArray' => []]],
             ['/', ['optionsUrl' => '', 'optionsArray' => []]],
-            ['options-jpg.quality-90/', ['optionsUrl' => 'options-jpg.quality-90', 'optionsArray' => ['jpg.quality' => '90']]],
-            ['options-jpg.quality-90/options-dpr-2/', ['optionsUrl' => 'options-dpr-2-jpg.quality-90', 'optionsArray' => ['jpg.quality' => '90', 'dpr' => '2']]],
-            ['options-jpg.quality-90/options-jpg.quality-40/', ['optionsUrl' => 'options-jpg.quality-40', 'optionsArray' => ['jpg.quality' => '40']]],
-            ['options-jpg.quality-90--options-jpg.quality-40/', ['optionsUrl' => 'options-jpg.quality-40', 'optionsArray' => ['jpg.quality' => '40']]],
+            ['options-jpg.quality-90/', ['optionsUrl' => 'o-jpg.quality-90', 'optionsArray' => ['jpg.quality' => '90']]],
+            ['options-jpg.quality-90/options-dpr-2/', ['optionsUrl' => 'o-dpr-2-jpg.quality-90', 'optionsArray' => ['jpg.quality' => '90', 'dpr' => '2']]],
+            ['options-jpg.quality-90/options-jpg.quality-40/', ['optionsUrl' => 'o-jpg.quality-40', 'optionsArray' => ['jpg.quality' => '40']]],
+            ['options-jpg.quality-90--options-jpg.quality-40/', ['optionsUrl' => 'o-jpg.quality-40', 'optionsArray' => ['jpg.quality' => '40']]],
             ['resize-width-100//', ['optionsUrl' => 'resize-width-100', 'optionsArray' => []]],
-            ['//options-jpg.quality-90//', ['optionsUrl' => 'options-jpg.quality-90', 'optionsArray' => ['jpg.quality' => '90']]],
-            ['//options-jpg.quality-90/', ['optionsUrl' => 'options-jpg.quality-90', 'optionsArray' => ['jpg.quality' => '90']]],
+            ['//options-jpg.quality-90//', ['optionsUrl' => 'o-jpg.quality-90', 'optionsArray' => ['jpg.quality' => '90']]],
+            ['//options-jpg.quality-90/', ['optionsUrl' => 'o-jpg.quality-90', 'optionsArray' => ['jpg.quality' => '90']]],
             ['--options/', ['optionsUrl' => '', 'optionsArray' => []]],
             ['options--/', ['optionsUrl' => '', 'optionsArray' => []]],
             ['--/', ['optionsUrl' => '', 'optionsArray' => []]],
-            ['resize-width-100--options-dpr-2/', ['optionsUrl' => 'resize-width-100--options-dpr-2', 'optionsArray' => ['dpr' => '2']]],
-            ['resize-width-100--blur--resize-width-200--options-dpr-2/', ['optionsUrl' => 'resize-width-100--blur--resize-width-200--options-dpr-2', 'optionsArray' => ['dpr' => '2']]],
-            ['resize-width-100--blur--resize-width-200--options-dpr-2/resize-width-300/', ['optionsUrl' => 'resize-width-300--blur--resize-width-300--options-dpr-2', 'optionsArray' => ['dpr' => 2]]],
+            ['resize-width-100--options-dpr-2/', ['optionsUrl' => 'resize-width-100--o-dpr-2', 'optionsArray' => ['dpr' => '2']]],
+            ['resize-width-100--blur--resize-width-200--options-dpr-2/', ['optionsUrl' => 'resize-width-100--blur--resize-width-200--o-dpr-2', 'optionsArray' => ['dpr' => '2']]],
+            ['resize-width-100--blur--resize-width-200--options-dpr-2/resize-width-300/', ['optionsUrl' => 'resize-width-300--blur--resize-width-300--o-dpr-2', 'optionsArray' => ['dpr' => 2]]],
         ];
     }
 
@@ -118,10 +136,11 @@ class UriHelperTest extends \PHPUnit\Framework\TestCase
      * @param string       $inputUrl
      * @param string|array $options
      * @param string       $expected
+     * @param mixed        $shortNames
      */
-    public function testAddOptionsToUri($inputUrl, $options, $expected)
+    public function testAddOptionsToUri($inputUrl, $options, $expected, $shortNames = true)
     {
-        $this->assertSame('https://test.rokka.io/stackname/'.$expected.'/b53763.jpg', UriHelper::addOptionsToUriString('https://test.rokka.io/stackname/'.$inputUrl.'/b53763.jpg', $options));
+        $this->assertSame('https://test.rokka.io/stackname/'.$expected.'/b53763.jpg', UriHelper::addOptionsToUriString('https://test.rokka.io/stackname/'.$inputUrl.'/b53763.jpg', $options, $shortNames));
     }
 
     public function testGetDynamicStackFromStackObject()
@@ -131,8 +150,9 @@ class UriHelperTest extends \PHPUnit\Framework\TestCase
         $stack->addStackOperation(new StackOperation('resize', ['width' => 200, 'height' => 200]));
         $stack->addStackOperation(new StackOperation('rotate', ['angle' => 45]));
         $stack->setStackOptions(['jpg.quality' => 80]);
+        $stack->setStackVariables(['w' => 300]);
         $stack->addStackOption('webp.quality', 80);
-        $this->assertEquals('dynamic/resize-height-200-width-200--rotate-angle-45--options-jpg.quality-80-webp.quality-80', $stack->getDynamicUriString());
+        $this->assertEquals('dynamic/resize-height-200-width-200--rotate-angle-45--o-jpg.quality-80-webp.quality-80--v-w-300', $stack->getDynamicUriString());
     }
 
     /**
@@ -141,11 +161,12 @@ class UriHelperTest extends \PHPUnit\Framework\TestCase
      * @param string      $size
      * @param string|null $custom
      * @param string      $expected
+     * @param mixed       $setWidthInUrl
      */
-    public function testGetSrcSetUrl($size, $custom, $expected)
+    public function testGetSrcSetUrl($size, $custom, $expected, $setWidthInUrl = true)
     {
         $inputUrl = 'https://test.rokka.io/stackname/b537639e539efcc3df4459ef87c5963aa5079ca6.jpg';
-        $this->assertSame($expected, (string) UriHelper::getSrcSetUrlString($inputUrl, $size, $custom));
+        $this->assertSame($expected, (string) UriHelper::getSrcSetUrlString($inputUrl, $size, $custom, $setWidthInUrl));
     }
 
     private function twoRoutesTest(array $hashes, $stack, $option, array $expectedOptions)

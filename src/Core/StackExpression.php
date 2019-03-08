@@ -59,7 +59,7 @@ class StackExpression
     }
 
     /**
-     * @return array
+     * @return array<bool|float|int|string>
      */
     public function getOptionsOverrides()
     {
@@ -67,7 +67,7 @@ class StackExpression
     }
 
     /**
-     * @param array $overrides
+     * @param array<bool|float|int|string> $overrides
      *
      * @return self
      */
@@ -81,14 +81,49 @@ class StackExpression
     /**
      * Adds a single option override to the options overrides.
      *
-     * @param string $key
-     * @param mixed  $value
+     * @param string                $key
+     * @param bool|float|int|string $value
      *
      * @return self
      */
     public function addOptionOverride($key, $value)
     {
         $this->overrides['options'][$key] = $value;
+
+        return $this;
+    }
+
+    /**
+     * @return array<bool|float|int|string>
+     */
+    public function getVariablesOverrides()
+    {
+        return $this->overrides['variables'];
+    }
+
+    /**
+     * @param array<bool|float|int|string> $overrides
+     *
+     * @return self
+     */
+    public function setVariablesOverrides(array $overrides)
+    {
+        $this->overrides['variables'] = $overrides;
+
+        return $this;
+    }
+
+    /**
+     * Adds a single variable override to the variables overrides.
+     *
+     * @param string                $key
+     * @param bool|float|int|string $value
+     *
+     * @return self
+     */
+    public function addVariableOverride($key, $value)
+    {
+        $this->overrides['variables'][$key] = $value;
 
         return $this;
     }

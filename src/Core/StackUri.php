@@ -36,14 +36,15 @@ class StackUri extends AbstractStack
      * @param string|null $name
      * @param array       $stackOperations
      * @param array       $stackOptions
+     * @param array       $stackVariables
      * @param string|null $baseUrl
      *
-     * @throws \RuntimeException
+     * @throws \RuntimeException When the stack name could not be parsed correctly
      */
-    public function __construct($name = null, array $stackOperations = [], array $stackOptions = [], $baseUrl = null)
+    public function __construct($name = null, array $stackOperations = [], array $stackOptions = [], array $stackVariables = [], $baseUrl = null)
     {
         $this->baseUrl = $baseUrl;
-        parent::__construct($name, $stackOperations, $stackOptions);
+        parent::__construct($name, $stackOperations, $stackOptions, $stackVariables);
 
         if (null !== $name && false !== strpos($name, '/')) {
             // Some part of a rokka URL can have // in it, but it means nothing, remove them here.
@@ -52,6 +53,7 @@ class StackUri extends AbstractStack
                 throw new \RuntimeException("Couldn't parse stack name");
             }
             list($name, $options) = explode('/', $name, 2);
+
             $this->addOverridingOptions($options);
             $this->setName($name);
         }
@@ -67,6 +69,8 @@ class StackUri extends AbstractStack
      *
      * @since 1.2.0
      *
+     * @throws \RuntimeException
+     *
      * @return UriInterface
      */
     public function getStackUri()
@@ -78,6 +82,8 @@ class StackUri extends AbstractStack
      * Returns the stack url part as it should be with "addOptionsToUrl" calls in 'dynamic' notation.
      *
      * @since 1.2.0
+     *
+     * @throws \RuntimeException
      *
      * @return string
      */
@@ -102,6 +108,7 @@ class StackUri extends AbstractStack
             $config['operations'][] = $operation->toArray();
         }
         $config['options'] = $this->getStackOptions();
+        $config['variables'] = $this->getStackVariables();
 
         return $config;
     }
@@ -146,17 +153,34 @@ class StackUri extends AbstractStack
                     continue;
                 }
                 $parsedOptions = self::parseOptions(\array_slice($stringOperationWithOptions, 1));
-                if ('options' === $stringOperationName) {
+                if ('options' === $stringOperationName || 'o' === $stringOperationName) {
                     $this->setStackOptions(array_merge($this->getStackOptions(), $parsedOptions));
+                } elseif ('variables' === $stringOperationName || 'v' === $stringOperationName) {
+                    $this->setStackVariables(array_merge($this->getStackVariables(), $parsedOptions));
                 } else {
-                    // only add as stack operation everything before the first /
+                    // move options with [] as start and end to expressions
+                    $expressions = [];
+                    foreach ($parsedOptions as $_k => $_v) {
+                        if ('[' === substr($_v, 0, 1) && ']' === substr($_v, -1, 1)) {
+                            $expressions[$_k] = substr($_v, 1, -1);
+                            unset($parsedOptions[$_k]);
+
+                            continue;
+                        }
+                        // it may be urlencoded, try that and decode
+                        if ('%5B' === substr($_v, 0, 3) && '%5D' === substr($_v, -3, 3)) {
+                            $expressions[$_k] = urldecode(substr($_v, 3, -3));
+                            unset($parsedOptions[$_k]);
+                        }
+                        // only add as stack operation everything before the first /
+                    }
                     if (1 === $part) {
-                        $stackOperation = new StackOperation($stringOperationName, $parsedOptions);
+                        $stackOperation = new StackOperation($stringOperationName, $parsedOptions, $expressions);
                         $this->addStackOperation($stackOperation);
                     } else {
                         $stackOperations = $this->getStackOperationsByName($stringOperationName);
                         foreach ($stackOperations as $stackOperation) {
-                            $stackOperation->options = array_merge($stackOperation->options, $parsedOptions);
+                            $stackOperation->options = array_merge($stackOperation->options, $parsedOptions, $expressions);
                         }
                     }
                 }

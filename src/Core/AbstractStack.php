@@ -15,15 +15,21 @@ abstract class AbstractStack
     public $stackOperations;
 
     /**
-     * @var array Array of stack options that this stack has
+     * @var array<bool|float|int|string> Array of stack options that this stack has
      */
     public $stackOptions;
 
-    public function __construct($name = null, array $stackOperations = [], array $stackOptions = [])
+    /**
+     * @var array<bool|float|int|string> Array of stack variables that this stack has
+     */
+    public $stackVariables = [];
+
+    public function __construct($name = null, array $stackOperations = [], array $stackOptions = [], array $stackVariables = [])
     {
         $this->name = $name;
         $this->stackOperations = $stackOperations;
         $this->stackOptions = $stackOptions;
+        $this->stackVariables = $stackVariables;
     }
 
     /**
@@ -113,7 +119,7 @@ abstract class AbstractStack
     }
 
     /**
-     * @return array
+     * @return array<bool|float|int|string>
      */
     public function getStackOptions()
     {
@@ -123,7 +129,7 @@ abstract class AbstractStack
     /**
      * @since 1.1.0
      *
-     * @param array $options
+     * @param array<bool|float|int|string> $options
      *
      * @return self
      */
@@ -135,12 +141,36 @@ abstract class AbstractStack
     }
 
     /**
+     * @since 1.10.0
+     *
+     * @return array<bool|float|int|string>
+     */
+    public function getStackVariables()
+    {
+        return $this->stackVariables;
+    }
+
+    /**
+     * @since 1.10.0
+     *
+     * @param array<bool|float|int|string> $variables
+     *
+     * @return self
+     */
+    public function setStackVariables(array $variables)
+    {
+        $this->stackVariables = $variables;
+
+        return $this;
+    }
+
+    /**
      * Sets a single Stack option to the list of existing Stack options.
      *
      * @since 1.1.0
      *
-     * @param string $key
-     * @param mixed  $value
+     * @param string                $key
+     * @param bool|float|int|string $value
      *
      * @return self
      */
