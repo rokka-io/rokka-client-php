@@ -39,7 +39,7 @@ class StackUri extends AbstractStack
      * @param array       $stackVariables
      * @param string|null $baseUrl
      *
-     * @throws \RuntimeException
+     * @throws \RuntimeException When the stack name could not be parsed correctly
      */
     public function __construct($name = null, array $stackOperations = [], array $stackOptions = [], array $stackVariables = [], $baseUrl = null)
     {
@@ -164,7 +164,11 @@ class StackUri extends AbstractStack
                         if ('[' === substr($_v, 0, 1) && ']' === substr($_v, -1, 1)) {
                             $expressions[$_k] = substr($_v, 1, -1);
                             unset($parsedOptions[$_k]);
-                        } elseif ('%5B' === substr($_v, 0, 3) && '%5D' === substr($_v, -3, 3)) {
+
+                            continue;
+                        }
+                        // it may be urlencoded, try that and decode
+                        if ('%5B' === substr($_v, 0, 3) && '%5D' === substr($_v, -3, 3)) {
                             $expressions[$_k] = urldecode(substr($_v, 3, -3));
                             unset($parsedOptions[$_k]);
                         }

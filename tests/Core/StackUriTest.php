@@ -29,11 +29,11 @@ class StackUriTest extends \PHPUnit\Framework\TestCase
     /**
      * @dataProvider provide__construct
      *
-     * @param mixed      $stackName
-     * @param mixed      $name
-     * @param mixed      $options
-     * @param mixed      $operations
-     * @param null|mixed $expectedUri
+     * @param string      $stackName
+     * @param string      $name
+     * @param array       $options
+     * @param array       $operations
+     * @param null|string $expectedUri
      */
     public function test__construct($stackName, $name, $options, $operations, $expectedUri = null)
     {

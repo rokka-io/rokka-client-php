@@ -206,39 +206,24 @@ class UriHelper
     {
         $identifier = substr($size, -1, 1);
         $size = substr($size, 0, -1);
-        if ('x' === $identifier) {
-            $uri = self::addOptionsToUri($url, 'options-dpr-'.$size);
-        } elseif ('w' === $identifier) {
-            if ($setWidthInUrl) {
-                $uri = self::addOptionsToUri($url, 'resize-width-'.$size);
-            } else {
-                $uri = $url;
-            }
-        } else {
-            return $url;
-        }
-        if (null !== $custom) {
-            if (preg_match('#^([0-9]+)x$#', $custom, $matches)) {
-                $uri = self::addOptionsToUri($uri, 'options-dpr-'.$matches[1].
-                    ($setWidthInUrl ? '--resize-width-'.(int) ceil($size / $matches[1]) : ''));
-            } else {
-                $stack = new StackUri();
-                $stack->addOverridingOptions($custom);
-                // if dpr is given in custom option, but not width, calculate correct width
-                $resizeOperations = $stack->getStackOperationsByName('resize');
-                $widthIsNotSet = true;
-                foreach ($resizeOperations as $resizeOperation) {
-                    if (isset($resizeOperation->options['width'])) {
-                        $widthIsNotSet = false;
-                    }
-                }
-                $options = $stack->getStackOptions();
-                if (isset($options['dpr']) && $widthIsNotSet && $setWidthInUrl) {
-                    $custom .= '--resize-width-'.(int) ceil($size / $options['dpr']);
+        switch ($identifier) {
+            case 'x':
+                $uri = self::addOptionsToUri($url, 'options-dpr-'.$size);
+
+                break;
+            case 'w':
+                if ($setWidthInUrl) {
+                    $uri = self::addOptionsToUri($url, 'resize-width-'.$size);
+                } else {
+                    $uri = $url;
                 }
 
-                $uri = self::addOptionsToUri($uri, $custom);
-            }
+                break;
+            default:
+                return $url;
+        }
+        if (null !== $custom) {
+            $uri = self::getSrcSetUrlCustom($size, $custom, $setWidthInUrl, $uri);
         }
 
         return $uri;
@@ -316,5 +301,45 @@ class UriHelper
         }
 
         return $newOption;
+    }
+
+    /**
+     * Adds custom options to the URL.
+     *
+     * @param string       $size
+     * @param string       $custom
+     * @param bool         $setWidthInUrl
+     * @param UriInterface $uri
+     *
+     * @throws \RuntimeException if stack configuration can't be parsed
+     *
+     * @return UriInterface
+     */
+    private static function getSrcSetUrlCustom($size, $custom, $setWidthInUrl, UriInterface $uri)
+    {
+        // if custom is eg '2x', add options-dpr-
+        if (preg_match('#^([0-9]+)x$#', $custom, $matches)) {
+            $uri = self::addOptionsToUri($uri, 'options-dpr-'.$matches[1].
+                ($setWidthInUrl ? '--resize-width-'.(int) ceil($size / $matches[1]) : ''));
+        } else {
+            $stack = new StackUri();
+            $stack->addOverridingOptions($custom);
+            // if dpr is given in custom option, but not width, calculate correct width
+            $resizeOperations = $stack->getStackOperationsByName('resize');
+            $widthIsNotSet = true;
+            foreach ($resizeOperations as $resizeOperation) {
+                if (isset($resizeOperation->options['width'])) {
+                    $widthIsNotSet = false;
+                }
+            }
+            $options = $stack->getStackOptions();
+            if (isset($options['dpr']) && $widthIsNotSet && $setWidthInUrl) {
+                $custom .= '--resize-width-'.(int) ceil($size / $options['dpr']);
+            }
+
+            $uri = self::addOptionsToUri($uri, $custom);
+        }
+
+        return $uri;
     }
 }

@@ -59,7 +59,7 @@ class StackExpression
     }
 
     /**
-     * @return array
+     * @return array<bool|float|int|string>
      */
     public function getOptionsOverrides()
     {
@@ -67,7 +67,7 @@ class StackExpression
     }
 
     /**
-     * @param array $overrides
+     * @param array<bool|float|int|string> $overrides
      *
      * @return self
      */
@@ -81,8 +81,8 @@ class StackExpression
     /**
      * Adds a single option override to the options overrides.
      *
-     * @param string $key
-     * @param mixed  $value
+     * @param string                $key
+     * @param bool|float|int|string $value
      *
      * @return self
      */
@@ -94,7 +94,7 @@ class StackExpression
     }
 
     /**
-     * @return array
+     * @return array<bool|float|int|string>
      */
     public function getVariablesOverrides()
     {
@@ -102,7 +102,7 @@ class StackExpression
     }
 
     /**
-     * @param array $overrides
+     * @param array<bool|float|int|string> $overrides
      *
      * @return self
      */
@@ -116,8 +116,8 @@ class StackExpression
     /**
      * Adds a single variable override to the variables overrides.
      *
-     * @param string $key
-     * @param mixed  $value
+     * @param string                $key
+     * @param bool|float|int|string $value
      *
      * @return self
      */

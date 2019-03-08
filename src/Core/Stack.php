@@ -240,7 +240,7 @@ class Stack extends AbstractStack
      *
      * @since 1.2.0
      *
-     * @throws \RuntimeException
+     * @throws \RuntimeException When the stack name could not be parsed correctly
      *
      * @return string
      */
