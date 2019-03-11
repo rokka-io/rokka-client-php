@@ -9,7 +9,7 @@ This document mainly describes API changes important to users of this library.
 ## 1.10.0 - 2019-03-11
 
 * removed HHVM support on travis tests, therefore HHVM isn't officially supported anymore.
-* Added stack variables and expressions support. See [the documentation](/documentation/references/stacks.html#expressions) for more details.
+* Added stack variables and expressions support. See [the documentation](https://rokka.io/documentation/references/stacks.html#expressions) for more details.
 * Added optional 3rd boolean parameter to `\Rokka\Client\UriHelper::addOptionsToUriString` and 
   related methods to return short versions for `options` (`o`) and `variables` (`v`)
 * Added optional 3rd boolean parameter to `\Rokka\Client\TemplateHelper::getSrcAttributes` to set
