@@ -6,7 +6,7 @@ This project tries to follow [Semantic Versioning](http://semver.org/) since the
 
 This document mainly describes API changes important to users of this library.
 
-## 1.10.0 - unreleased
+## 1.10.0 - 2019-03-11
 
 * removed HHVM support on travis tests, therefore HHVM isn't officially supported anymore.
 * Added stack variables and expressions support. See [the documentation](/documentation/references/stacks.html#expressions) for more details.
