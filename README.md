@@ -8,6 +8,12 @@ A [PHP](http://php.net/) library to access the API of the [Rokka](https://rokka.
 
 If you are using the Symfony framework, have a look at the [Rokka Symfony Bundle](https://github.com/rokka-io/rokka-client-bundle) which integrates this library into Symfony.
 
+## About
+
+[rokka](https://rokka.io) is digital image processing done right. Store, render and deliver images. Easy and blazingly fast. This library allows to upload and manage your image files to rokka and deliver them in the right format, as light and as fast as possible. And you only pay what you use, no upfront and fixed costs.
+
+Free account plans are available. Just install the plugin, register and use it.
+
 ## Installation
 
 Require the library using composer:
