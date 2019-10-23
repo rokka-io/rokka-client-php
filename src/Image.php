@@ -651,6 +651,23 @@ class Image extends Base
         throw new \LogicException('Something went wrong with the call/response to the rokka API', 0);
     }
 
+    public function addAutolabels($hash, $organization = null)
+    {
+        $path = implode('/', [
+            self::SOURCEIMAGE_RESOURCE,
+            $this->getOrganizationName($organization),
+            $hash,
+            'autolabel',
+        ]);
+        $response = $this->call('POST', $path);
+        if (!($response->getStatusCode() >= 200 && $response->getStatusCode() < 300)) {
+            throw new \LogicException($response->getBody()->getContents(), $response->getStatusCode());
+        }
+        $content = $response->getBody()->getContents();
+
+        return SourceImage::createFromJsonResponse($content);
+    }
+
     /**
      * Delete the given DynamicMetadata from a SourceImage.
      * Returns the new Hash for the SourceImage, it could be the same as the input one if the operation
