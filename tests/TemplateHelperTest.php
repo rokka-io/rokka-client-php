@@ -228,7 +228,7 @@ class TemplateHelperTest extends \PHPUnit\Framework\TestCase
     {
         return [
             ['hello-world.png', '', 'hello-world-png'],
-            ['foo,bar@baz_hello world', '', 'foo-bar-baz-hello-world'],
+            ['foo,bar@baz_hello world', '', 'foo-bar-at-baz-hello-world'],
             ['Etwas mit Ümlàuten', 'latin', 'etwas-mit-umlauten'],
             ['Etwas mit Ümlàüten', 'de', 'etwas-mit-uemlaueten'],
         ];

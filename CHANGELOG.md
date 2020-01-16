@@ -9,7 +9,7 @@ This document mainly describes API changes important to users of this library.
 ## 1.11.0 - 2020-01-16
 
 * Added `\Rokka\Client\TemplateHelper::getSrcSetUrl` for getting a srcset compatible string with responsive urls
-
+* Remove support for PHP 5.6 in composer.json
 
 ## 1.10.0 - 2019-03-11
 
