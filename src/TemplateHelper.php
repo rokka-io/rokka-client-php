@@ -86,8 +86,6 @@ class TemplateHelper
      *
      * @since 1.3.0
      *
-     * @param AbstractLocalImage $image
-     *
      * @throws \GuzzleHttp\Exception\GuzzleException
      * @throws \RuntimeException
      *
@@ -248,27 +246,33 @@ class TemplateHelper
     public static function getSrcAttributes($url, $sizes = ['2x'], $setWidthInUrl = true)
     {
         $attrs = 'src="'.$url.'"';
-        $srcSets = [];
-        foreach ($sizes as $size => $custom) {
-            if (\is_int($size)) {
-                if (\is_int($custom)) {
-                    $size = $custom.'x';
-                } else {
-                    $size = $custom;
-                }
-
-                $custom = null;
-            }
-            $urlx2 = UriHelper::getSrcSetUrlString($url, $size, $custom, $setWidthInUrl);
-            if ($urlx2 != $url) {
-                $srcSets[] = "${urlx2} ${size}";
-            }
-        }
+        $srcSets = self::getSrcSets($url, $sizes, $setWidthInUrl);
         if (\count($srcSets) > 0) {
             $attrs .= ' srcset="'.implode(', ', ($srcSets)).'"';
         }
 
         return $attrs;
+    }
+
+    /**
+     * Returns a srcset compatible url string with the correct rokka render urls
+     * for responsive images.
+     *
+     * @since 1.11.0
+     *
+     * @param string $url           The render URL of the "non-retina" image
+     * @param array  $sizes         For which sizes srcset links should be generated, works with 'x' or 'w' style
+     * @param bool   $setWidthInUrl If false, don't set the width as stack operation option, we provide it in $custom, usually as parameter
+     *
+     * @throws \RuntimeException
+     *
+     * @return string
+     */
+    public static function getSrcSetUrl($url, $sizes = ['1x', '2x'], $setWidthInUrl = true)
+    {
+        $srcSets = self::getSrcSets($url, $sizes, $setWidthInUrl);
+
+        return implode(', ', ($srcSets));
     }
 
     /**
@@ -311,8 +315,6 @@ class TemplateHelper
      * Returns the filename of the image without extension.
      *
      * @since 1.3.0
-     *
-     * @param AbstractLocalImage|null $image
      *
      * @return string
      */
@@ -460,6 +462,35 @@ class TemplateHelper
     }
 
     /**
+     * @param string $url           The render URL of the "non-retina" image
+     * @param array  $sizes         For which sizes srcset links should be generated, works with 'x' or 'w' style
+     * @param bool   $setWidthInUrl If false, don't set the width as stack operation option, we provide it in $custom, usually as parameter
+     *
+     * @throws \RuntimeException
+     */
+    private static function getSrcSets($url, $sizes, $setWidthInUrl): array
+    {
+        $srcSets = [];
+        foreach ($sizes as $size => $custom) {
+            if (\is_int($size)) {
+                if (\is_int($custom)) {
+                    $size = $custom.'x';
+                } else {
+                    $size = $custom;
+                }
+
+                $custom = null;
+            }
+            $urlx2 = UriHelper::getSrcSetUrlString($url, $size, $custom, $setWidthInUrl);
+            if ($urlx2 != $url) {
+                $srcSets[] = "${urlx2} ${size}";
+            }
+        }
+
+        return $srcSets;
+    }
+
+    /**
      * Gets the rokka URL for an image hash and stack and uses the $image info for an seo filename in the URL.
      * Doesn't upload it, if we don't have a local hash for it. Use getStackUrl() for that.
      * If $image is set, uses the filename for seo-ing the URL.
@@ -487,12 +518,10 @@ class TemplateHelper
     }
 
     /**
-     * @param AbstractLocalImage $image
-     *
      * @throws \GuzzleHttp\Exception\GuzzleException
      * @throws \RuntimeException
      *
-     * @return null|SourceImage
+     * @return SourceImage|null
      */
     private function imageUpload(AbstractLocalImage $image)
     {
@@ -523,8 +552,6 @@ class TemplateHelper
     }
 
     /**
-     * @param AbstractLocalImage $image
-     *
      * @return string
      */
     private function getMimeType(AbstractLocalImage $image)
@@ -565,8 +592,6 @@ class TemplateHelper
 
     /**
      * Checks, if a file is svg (needed when xml declaration is missing).
-     *
-     * @param AbstractLocalImage $image
      *
      * @return bool
      */
