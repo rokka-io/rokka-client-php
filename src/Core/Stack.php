@@ -25,7 +25,7 @@ class Stack extends AbstractStack
     /**
      * Constructor.
      *
-     * It's recommended to use one of the helper static methods to create this object instead of the constructor directly
+     * You can also use the Stack::createFromConfig() helper static methods to create this object instead of the constructor directly
      *
      * @see Stack::createFromConfig()
      *
