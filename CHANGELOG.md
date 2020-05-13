@@ -6,6 +6,10 @@ This project tries to follow [Semantic Versioning](http://semver.org/) since the
 
 This document mainly describes API changes important to users of this library.
 
+## 1.11.1 - 2020-05-13
+
+* Fixed validation of search fields for dynamic and static fields
+
 ## 1.11.0 - 2020-01-16
 
 * Added `\Rokka\Client\TemplateHelper::getSrcSetUrl` for getting a srcset compatible string with responsive urls
