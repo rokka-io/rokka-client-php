@@ -71,26 +71,41 @@ class StackCollection implements \Countable, \Iterator
         return new self($stacks);
     }
 
+    /**
+     * @return Stack
+     */
     public function current()
     {
         return $this->stacks[$this->current];
     }
 
+    /**
+     * @return void
+     */
     public function next()
     {
         ++$this->current;
     }
 
+    /**
+     * @return int
+     */
     public function key()
     {
         return $this->current;
     }
 
+    /**
+     * @return bool
+     */
     public function valid()
     {
         return $this->current < \count($this->stacks);
     }
 
+    /**
+     * @return void
+     */
     public function rewind()
     {
         $this->current = 0;

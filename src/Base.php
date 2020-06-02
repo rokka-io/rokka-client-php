@@ -64,6 +64,8 @@ abstract class Base
      * Set the credentials.
      *
      * @param string $key API key
+     *
+     * @return void
      */
     public function setCredentials($key)
     {

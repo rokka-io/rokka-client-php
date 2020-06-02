@@ -51,6 +51,8 @@ class Version implements DynamicMetadataInterface
 
     /**
      * @param string $text
+     *
+     * @return void
      */
     public function setText(string $text)
     {

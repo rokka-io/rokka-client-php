@@ -118,7 +118,7 @@ class Stack extends AbstractStack
      */
     public static function createFromConfig($stackName, array $config, $organization = null)
     {
-        $stack = new static($organization, $stackName);
+        $stack = new self($organization, $stackName);
 
         if (isset($config['operations'])) {
             $stack->setStackOperations($config['operations']);

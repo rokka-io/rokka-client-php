@@ -24,6 +24,9 @@ abstract class AbstractStack
      */
     public $stackVariables = [];
 
+    /**
+     * @param string|null $name
+     */
     public function __construct($name = null, array $stackOperations = [], array $stackOptions = [], array $stackVariables = [])
     {
         $this->name = $name;
