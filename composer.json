@@ -3,30 +3,26 @@
     "type": "library",
     "description": "Rokka.io client library",
     "keywords": [
-      "rokka",
-      "rokka.io",
-      "image",
-      "images",
-      "imagemanipulation"
+        "rokka",
+        "pictures",
+        "images",
+        "optimization",
+        "processing",
+        "transcoding",
+        "cropping",
+        "resize",
+        "CDN"
     ],
-    "homepage": "https://github.com/rokka-io/rokka-client-php",
+    "homepage": "https://rokka.io/",
     "license": "MIT",
     "authors": [
         {
-            "name": "Christian Riesen",
-            "email": "chris.riesen@gmail.com",
-            "homepage": "http://christianriesen.com",
-            "role": "Developer"
-        },
-        {
-            "name": "Matteo De Micheli",
-            "email": "mat.demicheli@gmail.com",
-            "homepage": "http://matteodem.ch",
-            "role": "Developer"
+            "name": "Liip AG",
+            "homepage": "http://www.liip.ch"
         }
     ],
     "require": {
-        "php": "^7.0",
+        "php": ">=7.0",
         "guzzlehttp/guzzle": "^6.0",
         "jbroadway/urlify": "^1.2"
     },
