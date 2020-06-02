@@ -16,6 +16,9 @@ use Rokka\Client\LocalImage\AbstractLocalImage;
  */
 class DefaultCallbacks extends AbstractCallbacks
 {
+    /**
+     * @var string
+     */
     public static $fileExtension = '.rokka.txt';
 
     public function getHash(AbstractLocalImage $image)
@@ -42,12 +45,7 @@ class DefaultCallbacks extends AbstractCallbacks
         return $sourceImage->shortHash;
     }
 
-    /**
-     * @param AbstractLocalImage $image
-     *
-     * @return string
-     */
-    private function getHashFilePath(AbstractLocalImage $image)
+    private function getHashFilePath(AbstractLocalImage $image): string
     {
         $path = $image->getRealpath();
         if (false !== $path) {

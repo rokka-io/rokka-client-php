@@ -17,7 +17,11 @@ class StackExpression
      */
     public $overrides;
 
-    public function __construct($expression, $optionOverrides = [])
+    /**
+     * @param string $expression
+     * @param array<string, bool|float|int|string> $optionOverrides
+     */
+    public function __construct($expression, array $optionOverrides = [])
     {
         $this->expression = $expression;
         $this->overrides = ['options' => $optionOverrides];
@@ -59,7 +63,7 @@ class StackExpression
     }
 
     /**
-     * @return array<bool|float|int|string>
+     * @return array<string, bool|float|int|string>
      */
     public function getOptionsOverrides()
     {
@@ -67,7 +71,7 @@ class StackExpression
     }
 
     /**
-     * @param array<bool|float|int|string> $overrides
+     * @param array<string, bool|float|int|string> $overrides
      *
      * @return self
      */
@@ -102,7 +106,7 @@ class StackExpression
     }
 
     /**
-     * @param array<bool|float|int|string> $overrides
+     * @param array<string, bool|float|int|string> $overrides
      *
      * @return self
      */

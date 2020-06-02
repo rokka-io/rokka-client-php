@@ -651,7 +651,11 @@ class Image extends Base
         throw new \LogicException('Something went wrong with the call/response to the rokka API', 0);
     }
 
-    public function addAutolabels($hash, $organization = null)
+    /**
+     * @param string      $hash
+     * @param string|null $organization
+     */
+    public function addAutolabels($hash, $organization = null): SourceImage
     {
         $path = implode('/', [
             self::SOURCEIMAGE_RESOURCE,
@@ -913,7 +917,7 @@ class Image extends Base
         return true;
     }
 
-    private function applyValueTransformationsToUserMeta(array $fields)
+    private function applyValueTransformationsToUserMeta(array $fields): array
     {
         foreach ($fields as $key => $value) {
             if ($value instanceof \DateTime) {

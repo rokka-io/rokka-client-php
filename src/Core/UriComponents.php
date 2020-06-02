@@ -3,8 +3,6 @@
 namespace Rokka\Client\Core;
 
 /**
- * Class UriComponents.
- *
  * Abstracts the components away of a rokka uri (hash, format, filename, stack, etc)
  *
  * @since 1.2.0
@@ -56,7 +54,7 @@ class UriComponents implements \ArrayAccess
      *
      * @param mixed $config
      */
-    public static function createFromArray($config)
+    public static function createFromArray($config): self
     {
         if (!isset($config['stack'])) {
             throw new \RuntimeException('Stack has to be set');
@@ -82,6 +80,8 @@ class UriComponents implements \ArrayAccess
      * @since 1.2.0
      *
      * @param string|StackUri $stack
+     *
+     * @return void
      *
      * @throws \RuntimeException
      */
@@ -116,6 +116,8 @@ class UriComponents implements \ArrayAccess
      * @since 1.2.0
      *
      * @param null|string $hash
+     *
+     * @return void
      */
     public function setHash($hash)
     {
@@ -136,6 +138,8 @@ class UriComponents implements \ArrayAccess
      * @since 1.2.0
      *
      * @param null|string $format
+     *
+     * @return void
      */
     public function setFormat($format)
     {
@@ -156,22 +160,38 @@ class UriComponents implements \ArrayAccess
      * @since 1.2.0
      *
      * @param null|string $filename
+     *
+     * @return void
      */
     public function setFilename($filename)
     {
         $this->filename = $filename;
     }
 
+    /**
+     * @param string $offset
+     *
+     * @return bool
+     */
     public function offsetExists($offset)
     {
         return property_exists($this, $offset);
     }
 
+    /**
+     * @param string $offset
+     *
+     * @return StackUri|string|null
+     */
     public function offsetGet($offset)
     {
         return $this->$offset;
     }
 
+    /**
+     * @param string $offset
+     * @param StackUri|string|null $value
+     */
     public function offsetSet($offset, $value)
     {
         if (!property_exists($this, $offset)) {
@@ -184,6 +204,11 @@ class UriComponents implements \ArrayAccess
         }
     }
 
+    /**
+     * @param string $offset
+     *
+     * @return void
+     */
     public function offsetUnset($offset)
     {
         $this->$offset = null;

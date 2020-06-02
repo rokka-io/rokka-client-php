@@ -128,26 +128,41 @@ class SourceImageCollection implements \Countable, \Iterator
         return new self($sourceImages, $total, $links, $cursor);
     }
 
+    /**
+     * @return SourceImage
+     */
     public function current()
     {
         return $this->sourceImages[$this->current];
     }
 
+    /**
+     * @return void
+     */
     public function next()
     {
         ++$this->current;
     }
 
+    /**
+     * @return int
+     */
     public function key()
     {
         return $this->current;
     }
 
+    /**
+     * @return bool
+     */
     public function valid()
     {
         return $this->current < \count($this->sourceImages);
     }
 
+    /**
+     * @return void
+     */
     public function rewind()
     {
         $this->current = 0;

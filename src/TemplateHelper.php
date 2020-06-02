@@ -19,16 +19,25 @@ use Rokka\Client\TemplateHelper\DefaultCallbacks;
  */
 class TemplateHelper
 {
-    private $rokkaApiKey = null;
+    /**
+     * @var string
+     */
+    private $rokkaApiKey;
 
-    private $rokkaOrg = null;
+    /**
+     * @var string
+     */
+    private $rokkaOrg;
 
-    private $rokkaDomain = null;
+    /**
+     * @var string
+     */
+    private $rokkaDomain;
 
     /**
      * @var AbstractCallbacks
      */
-    private $callbacks = null;
+    private $callbacks;
 
     /**
      * @var string|array
@@ -551,21 +560,23 @@ class TemplateHelper
         return null;
     }
 
-    /**
-     * @return string
-     */
-    private function getMimeType(AbstractLocalImage $image)
+    private function getMimeType(AbstractLocalImage $image): string
     {
         $mimeType = 'application/not-supported';
         $realpath = $image->getRealpath();
         if (\is_string($realpath)) {
-            $mimeType = finfo_file(finfo_open(FILEINFO_MIME_TYPE), $realpath);
+            $resource = finfo_open(FILEINFO_MIME_TYPE);
+            \assert(\is_resource($resource));
+            $mimeType = finfo_file($resource, $realpath);
         } else {
             $content = $image->getContent();
             if (null !== $content) {
-                $mimeType = finfo_buffer(finfo_open(FILEINFO_MIME_TYPE), $content);
+                $resource = finfo_open(FILEINFO_MIME_TYPE);
+                \assert(\is_resource($resource));
+                $mimeType = finfo_buffer($resource, $content);
             }
         }
+        \assert(\is_string($mimeType));
 
         if ('text/html' == $mimeType || 'text/plain' == $mimeType) {
             if ($this->isSvg($image)) {
@@ -576,7 +587,7 @@ class TemplateHelper
         return $mimeType;
     }
 
-    private function isImage(AbstractLocalImage $image)
+    private function isImage(AbstractLocalImage $image): bool
     {
         $mimeType = $this->getMimeType($image);
         if ('image/' == substr($mimeType, 0, 6)) {
@@ -592,10 +603,8 @@ class TemplateHelper
 
     /**
      * Checks, if a file is svg (needed when xml declaration is missing).
-     *
-     * @return bool
      */
-    private function isSvg(AbstractLocalImage $image)
+    private function isSvg(AbstractLocalImage $image): bool
     {
         $dom = new \DOMDocument();
         $content = $image->getContent();

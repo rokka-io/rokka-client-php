@@ -135,12 +135,8 @@ class SourceImage
 
     /**
      * Create a source image from the decoded  JSON data.
-     *
-     * @param array $data Decoded JSON data
-     *
-     * @return SourceImage
      */
-    public static function createFromDecodedJsonResponse($data)
+    public static function createFromDecodedJsonResponse(array $data): SourceImage
     {
         if (!isset($data['user_metadata'])) {
             $data['user_metadata'] = [];
@@ -187,12 +183,8 @@ class SourceImage
 
     /**
      * Create a source image from the JSON data.
-     *
-     * @param string $data JSON data
-     *
-     * @return SourceImage
      */
-    public static function createFromJsonResponse($data)
+    public static function createFromJsonResponse(string $data): SourceImage
     {
         return self::createFromDecodedJsonResponse(json_decode($data, true));
     }

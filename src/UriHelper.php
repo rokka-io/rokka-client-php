@@ -167,6 +167,8 @@ class UriHelper
             preg_match('#^/'.$stackPattern.'/'.$pathPattern.'.'.$formatPattern.'$#', $path, $matches)) {
             return UriComponents::createFromArray($matches);
         }
+
+        return null;
     }
 
     /**

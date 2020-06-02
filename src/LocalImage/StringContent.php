@@ -23,6 +23,11 @@ class StringContent extends AbstractLocalImage
      */
     private $content = null;
 
+    /**
+     * @param string|null $image
+     * @param string|null $identifier
+     * @param mixed|null  $context
+     */
     public function __construct($image, $identifier = null, $context = null)
     {
         parent::__construct($identifier);
