@@ -47,25 +47,16 @@ abstract class Base
         'key' => '',
     ];
 
-    /**
-     * Constructor.
-     *
-     * @param ClientInterface $client              Client instance
-     * @param string|null     $defaultOrganization
-     */
-    public function __construct(ClientInterface $client, $defaultOrganization)
+    public function __construct(ClientInterface $client, ?string $defaultOrganization)
     {
-        $this->defaultOrganization = $defaultOrganization;
-
         $this->client = $client;
+        $this->defaultOrganization = $defaultOrganization;
     }
 
     /**
-     * Set the credentials.
-     *
-     * @param string $key API key
+     * Set the API key as credentials.
      */
-    public function setCredentials($key)
+    public function setCredentials(string $key)
     {
         $this->credentials = ['key' => $key];
     }
@@ -73,16 +64,9 @@ abstract class Base
     /**
      * Call the API rokka endpoint.
      *
-     * @param string $method           HTTP method to use
-     * @param string $path             Path on the API
-     * @param array  $options          Request options
-     * @param bool   $needsCredentials True if credentials are needed
-     *
      * @throws GuzzleException
-     *
-     * @return ResponseInterface
      */
-    protected function call($method, $path, array $options = [], $needsCredentials = true)
+    protected function call(string $method, string $path, array $options = [], bool $needsCredentials = true): ResponseInterface
     {
         $options['headers'][self::API_VERSION_HEADER] = $this->apiVersion;
 
@@ -96,15 +80,11 @@ abstract class Base
     /**
      * Return the organization or the default if empty.
      *
-     * @param string|null $organization Organization
-     *
      * @throws \RuntimeException
-     *
-     * @return string
      */
-    protected function getOrganizationName($organization = null)
+    protected function getOrganizationName(?string $organization = null): string
     {
-        $org = (empty($organization)) ? $this->defaultOrganization : $organization;
+        $org = $organization ?: $this->defaultOrganization;
         if (null === $org) {
             throw new \RuntimeException('Organization is empty');
         }
