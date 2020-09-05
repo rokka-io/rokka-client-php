@@ -19,7 +19,7 @@ install:
 script:
     - ./vendor/bin/phpunit ${PHPUNIT_FLAGS}
     - if [[ ${TRAVIS_PHP_VERSION:0:3} == "7.1" ]]; then composer require phpstan/phpstan; ./vendor/bin/phpstan analyze -c phpstan.neon -l 7 src/; fi
-    - if [[ ( ${TRAVIS_PHP_VERSION:0:3} == "7.2" ) && ( $TRAVIS_BRANCH == "master" ) ]]; then ./scripts/run_sami_docs_on_travis.sh; fi
+    - if [[ ( ${TRAVIS_PHP_VERSION:0:3} == "7.2" ) && ( $TRAVIS_BRANCH == "master" ) ]]; then ./scripts/run_doctum_docs_on_travis.sh; fi
 
 deploy:
   # How to deploy to S3: https://docs.travis-ci.com/user/deployment/s3/
@@ -33,7 +33,7 @@ deploy:
     bucket: "rokka-io"
     region: "eu-central-1"
     skip_cleanup: true
-    local_dir: sami-output/build/
+    local_dir: doctum-output/build/
     on:
       branch: master
       php: "7.2"
