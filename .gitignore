@@ -9,5 +9,5 @@
 
 # PHP Storm
 /.idea
-/sami-output
+/doctum-output
 /.php_cs.cache
