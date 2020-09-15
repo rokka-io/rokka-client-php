@@ -6,6 +6,12 @@ This project tries to follow [Semantic Versioning](http://semver.org/) since the
 
 This document mainly describes API changes important to users of this library.
 
+## 1.12.0 - 2020-09-15
+
+* Add percentage parameter to subject area (thanks to @mms-uret)
+* Fix some phpstan warnings (thanks to @Tobion)
+* Replace Sami by Doctum (thanks to @williamdes )
+
 ## 1.11.1 - 2020-05-13
 
 * Fixed validation of search fields for dynamic and static fields
