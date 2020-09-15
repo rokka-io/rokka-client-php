@@ -25,18 +25,24 @@ class SubjectArea implements DynamicMetadataInterface
     public $y;
 
     /**
+     * @var bool
+     */
+    public $percentage;
+
+    /**
      * SubjectArea constructor.
      *
      * The SubjectArea can also be defined as a point, by setting both "width" and "height" to 1.
      *
-     * @param int $x      X-point of the subject area, 0-based
-     * @param int $y      Y-point of the subject area, 0-based
-     * @param int $width  The width of the subject area box, default to 1px
-     * @param int $height The height of the subject area box, default to 1px
+     * @param int  $x          X-point of the subject area, 0-based
+     * @param int  $y          Y-point of the subject area, 0-based
+     * @param int  $width      The width of the subject area box, default to 1px
+     * @param int  $height     The height of the subject area box, default to 1px
+     * @param bool $percentage If the parameters above are in percentage instead of pixels
      *
      * @throws \InvalidArgumentException if the provided values are not valid
      */
-    public function __construct($x, $y, $width = 1, $height = 1)
+    public function __construct($x, $y, $width = 1, $height = 1, $percentage = false)
     {
         if ($x < 0 || $y < 0) {
             throw new \InvalidArgumentException('Invalid position, "x" and "y" values must be positive integers');
@@ -50,6 +56,7 @@ class SubjectArea implements DynamicMetadataInterface
         }
         $this->width = $width;
         $this->height = $height;
+        $this->percentage = $percentage;
     }
 
     /**
@@ -62,13 +69,14 @@ class SubjectArea implements DynamicMetadataInterface
     public static function createFromDecodedJsonResponse($data)
     {
         // Make sure to build the SubjectArea with correct defaults in case of missing attributes.
-        $data = array_merge(['x' => 0, 'y' => 0, 'width' => 1, 'height' => 1], $data);
+        $data = array_merge(['x' => 0, 'y' => 0, 'width' => 1, 'height' => 1, 'percentage' => false], $data);
 
         return new self(
             max(0, $data['x']),
             max(0, $data['y']),
             max(1, $data['width']),
-            max(1, $data['height'])
+            max(1, $data['height']),
+            $data['percentage']
         );
     }
 
