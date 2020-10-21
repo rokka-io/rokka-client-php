@@ -169,6 +169,30 @@ class UriHelperTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($expected, (string) UriHelper::getSrcSetUrlString($inputUrl, $size, $custom, $setWidthInUrl));
     }
 
+    public function testSignUrl() {
+        $this->assertEquals("/dynamic/abcdef.jpg?sig=c819798233635f29", (string)UriHelper::signUrl('/dynamic/abcdef.jpg', "abcdef"));
+        //without leading slash, should return the same sig
+        $this->assertEquals("dynamic/abcdef.jpg?sig=c819798233635f29", (string)UriHelper::signUrl('dynamic/abcdef.jpg', "abcdef"));
+
+        // time limited signature
+        $this->assertEquals(
+            "dynamic/abcdef.jpg?sigopts=IntcInVudGlsXCI6XCIyMDUwLTAyLTA4VDA4OjA1OjAwKzAwOjAwXCJ9Ig%3D%3D&sig=d438a4ff962e311c",
+            (string)UriHelper::signUrl('dynamic/abcdef.jpg', "abcdef", new \DateTime("2050-02-08T08:03:00"))
+        );
+        // time limited signature a minute later should return the same
+        $this->assertEquals(
+            "dynamic/abcdef.jpg?sigopts=IntcInVudGlsXCI6XCIyMDUwLTAyLTA4VDA4OjA1OjAwKzAwOjAwXCJ9Ig%3D%3D&sig=d438a4ff962e311c",
+            (string)UriHelper::signUrl('dynamic/abcdef.jpg', "abcdef", new \DateTime("2050-02-08T08:04:00"))
+        );
+        // but 2 minutes later again different
+        $this->assertEquals(
+            "dynamic/abcdef.jpg?sigopts=IntcInVudGlsXCI6XCIyMDUwLTAyLTA4VDA4OjEwOjAwKzAwOjAwXCJ9Ig%3D%3D&sig=24626a9a07f116a7",
+            (string)UriHelper::signUrl('dynamic/abcdef.jpg', "abcdef", new \DateTime("2050-02-08T08:06:00"))
+        );
+
+    }
+
+
     private function twoRoutesTest(array $hashes, $stack, $option, array $expectedOptions)
     {
         foreach ($hashes as $hash) {
@@ -206,4 +230,5 @@ class UriHelperTest extends \PHPUnit\Framework\TestCase
         }
         $this->assertEquals('https://test.rokka.io/'.$stack.'/'.$expectedOptions['optionsUrl'].$hash.$filename.'.jpeg', (string) UriHelper::composeUri($components, $testUri));
     }
+
 }

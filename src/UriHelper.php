@@ -61,7 +61,6 @@ class UriHelper
      *
      * ```
      *
-     *
      * @param UriInterface $uri        The rokka image render URL
      * @param array|string $options    The options you want to add as string
      * @param bool         $shortNames if short names (like o for option or v for variables) should be used
@@ -143,8 +142,6 @@ class UriHelper
      *
      * @since 1.2.0
      *
-     * @param UriInterface $uri
-     *
      * @throws \RuntimeException
      *
      * @return UriComponents|null
@@ -174,7 +171,7 @@ class UriHelper
     /**
      * @param string      $url           The original rokka render URL to be adjusted
      * @param string      $size          The size of the image, eg '300w' or '2x'
-     * @param null|string $custom        Any rokka options you'd like to add, or are a dpi identifier like '2x'
+     * @param string|null $custom        Any rokka options you'd like to add, or are a dpi identifier like '2x'
      * @param bool        $setWidthInUrl If false, don't set the width as stack operation option, we provide it in $custom, usually as parameter
      *
      * @throws \RuntimeException
@@ -197,7 +194,7 @@ class UriHelper
      *
      * @param UriInterface $url           The original rokka render URL to be adjusted
      * @param string       $size          The size of the image, eg '300w' or '2x'
-     * @param null|string  $custom        Any rokka options you'd like to add, or are a dpi identifier like '2x'
+     * @param string|null  $custom        Any rokka options you'd like to add, or are a dpi identifier like '2x'
      * @param bool         $setWidthInUrl If false, don't set the width as stack operation option, we provide it in $custom, usually as parameter
      *
      * @throws \RuntimeException
@@ -232,8 +229,75 @@ class UriHelper
     }
 
     /**
-     * @param array $config
-     * @param bool  $shortNames if short names (like o for option or v for variables) should be used
+     * Signs a Rokka URL with an option valid until date.
+     *
+     * It also rounds up the date to the next 5 minutes (300 seconds) to
+     * improve CDN caching, can be changed
+     *
+     * @param string|UriInterface $url
+     * @param string              $signKey
+     * @param ?\DateTimeInterface $until         Until when is it valid
+     * @param int                 $roundDateUpTo To which seconds the date should be rounded up
+     *
+     * @throws \Exception
+     *
+     * @return string
+     */
+    public static function signUrl($url, $signKey, $until = null, $roundDateUpTo = 300)
+    {
+        $options = null;
+
+        if (null !== $until) {
+            if ($roundDateUpTo > 1) {
+                $until = (new \DateTime())->setTimestamp((int) ceil($until->getTimestamp() / $roundDateUpTo) * $roundDateUpTo);
+            }
+            $options = ['until' => $until->format('c')];
+        }
+
+        return self::signUrlWithOptions($url, $signKey, $options);
+    }
+
+    /**
+     * Signs a rokka URL with a sign key and optional signature options.
+     *
+     * @since 1.12.0
+     *
+     * @param string|UriInterface $url
+     * @param string              $signKey
+     * @param array|null          $options
+     *
+     * @throws \Exception
+     *
+     * @return UriInterface
+     */
+    public static function signUrlWithOptions($url, $signKey, $options = null)
+    {
+        if (\is_string($url)) {
+            $url = new Uri($url);
+        }
+
+        if (null !== $options) {
+            $json = json_encode(json_encode($options));
+            if (false !== $json) {
+                $options = base64_encode($json);
+            } else {
+                throw new \Exception('Could not encode options input');
+            }
+        }
+        $urlPath = $url->getPath();
+        // if urlPath doesn't start with a /, add one to be sure it's there
+        if ('/' !== substr($urlPath, 0, 1)) {
+            $urlPath = '/'.$urlPath;
+        }
+        $sigString = $urlPath.':'.($options ?? '').':'.$signKey;
+
+        return $url->withQuery((null !== $options ? 'sigopts='.urlencode($options).'&' : '').'sig='.urlencode(
+                substr(hash('sha256', $sigString), 0, 16
+                )));
+    }
+
+    /**
+     * @param bool $shortNames if short names (like o for option or v for variables) should be used
      *
      * @return string
      */
@@ -308,10 +372,9 @@ class UriHelper
     /**
      * Adds custom options to the URL.
      *
-     * @param string       $size
-     * @param string       $custom
-     * @param bool         $setWidthInUrl
-     * @param UriInterface $uri
+     * @param string $size
+     * @param string $custom
+     * @param bool   $setWidthInUrl
      *
      * @throws \RuntimeException if stack configuration can't be parsed
      *
