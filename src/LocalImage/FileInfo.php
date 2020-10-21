@@ -32,12 +32,12 @@ class FileInfo extends AbstractLocalImage
     private $image;
 
     /**
-     * @var null|string
+     * @var string|null
      */
     private $content = null;
 
     /**
-     * @var null|string
+     * @var string|null
      */
     private $filename = null;
 

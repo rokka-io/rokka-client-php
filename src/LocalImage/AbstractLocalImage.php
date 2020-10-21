@@ -92,7 +92,7 @@ abstract class AbstractLocalImage
      *
      * @since 1.3.0
      *
-     * @return null|string
+     * @return string|null
      */
     public function getIdentifier()
     {
@@ -146,7 +146,7 @@ abstract class AbstractLocalImage
      *
      * @since 1.3.0
      *
-     * @return null|string
+     * @return string|null
      */
     public function getRokkaHash()
     {

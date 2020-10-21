@@ -19,7 +19,7 @@ namespace Rokka\Client\LocalImage;
 class StringContent extends AbstractLocalImage
 {
     /**
-     * @var null|string
+     * @var string|null
      */
     private $content = null;
 

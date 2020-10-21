@@ -311,8 +311,8 @@ class Image extends Base
      * @deprecated 2.0.0 Use Image::searchSourceImages()
      * @see Image::searchSourceImages()
      *
-     * @param null|int        $limit        Optional limit
-     * @param null|int|string $offset       Optional offset, either integer or the "Cursor" value
+     * @param int|null        $limit        Optional limit
+     * @param int|string|null $offset       Optional offset, either integer or the "Cursor" value
      * @param string          $organization Optional organization name
      *
      * @throws GuzzleException
@@ -517,8 +517,8 @@ class Image extends Base
      * }
      * ```
      *
-     * @param null|int $limit        Optional limit
-     * @param null|int $offset       Optional offset
+     * @param int|null $limit        Optional limit
+     * @param int|null $offset       Optional offset
      * @param string   $organization Optional organization name
      *
      * @throws GuzzleException

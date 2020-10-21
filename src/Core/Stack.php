@@ -111,7 +111,6 @@ class Stack extends AbstractStack
      * @since 1.1.0
      *
      * @param string      $stackName
-     * @param array       $config
      * @param string|null $organization
      *
      * @return self
@@ -151,7 +150,7 @@ class Stack extends AbstractStack
     /**
      * @since 1.1.0
      *
-     * @param null|string $organization
+     * @param string|null $organization
      *
      * @return self
      */
@@ -165,7 +164,7 @@ class Stack extends AbstractStack
     /**
      * Get date of creation for this stack.
      *
-     * @return null|\DateTime
+     * @return \DateTime|null
      */
     public function getCreated()
     {
@@ -193,8 +192,6 @@ class Stack extends AbstractStack
      * Adds a Stack Expression to the list of existing Stack Expression.
      *
      * @since 1.1.0
-     *
-     * @param StackExpression $stackExpression
      *
      * @return self
      */

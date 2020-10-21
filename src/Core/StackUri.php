@@ -34,9 +34,6 @@ class StackUri extends AbstractStack
      * StackUri constructor.
      *
      * @param string|null $name
-     * @param array       $stackOperations
-     * @param array       $stackOptions
-     * @param array       $stackVariables
      * @param string|null $baseUrl
      *
      * @throws \RuntimeException When the stack name could not be parsed correctly
@@ -191,8 +188,6 @@ class StackUri extends AbstractStack
     }
 
     /**
-     * @param array $options
-     *
      * @throws \InvalidArgumentException
      *
      * @return array

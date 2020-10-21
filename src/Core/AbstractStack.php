@@ -38,7 +38,7 @@ abstract class AbstractStack
     /**
      * Get name of stack for url.
      *
-     * @return null|string
+     * @return string|null
      */
     public function getName()
     {
@@ -109,8 +109,6 @@ abstract class AbstractStack
      * Adds a StackOperation to the list of existing Stack Operations.
      *
      * @since 1.1.0
-     *
-     * @param StackOperation $stackOperation
      *
      * @return self
      */

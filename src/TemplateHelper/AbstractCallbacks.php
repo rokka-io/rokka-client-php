@@ -23,9 +23,7 @@ abstract class AbstractCallbacks
      *
      * @since 1.3.0
      *
-     * @param AbstractLocalImage $image
-     *
-     * @return null|string
+     * @return string|null
      */
     abstract public function getHash(AbstractLocalImage $image);
 
@@ -50,8 +48,6 @@ abstract class AbstractCallbacks
      *
      * If you want to send special metadata to the rokka server for later searching, you can return them here.
      * Will be called, before an image is uploaded to rokka.
-     *
-     * @param AbstractLocalImage $image
      *
      * @return array
      */

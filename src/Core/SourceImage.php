@@ -93,7 +93,6 @@ class SourceImage
      * @param int       $height          Height in pixels
      * @param array     $userMetadata    User metadata
      * @param array     $dynamicMetadata Dynamic metadata
-     * @param array     $staticMetadata
      * @param \DateTime $created         Created at date
      * @param string    $link            Link to the image
      * @param string    $shortHash       The short hash
@@ -136,7 +135,7 @@ class SourceImage
     /**
      * Create a source image from the decoded  JSON data.
      */
-    public static function createFromDecodedJsonResponse(array $data): SourceImage
+    public static function createFromDecodedJsonResponse(array $data): self
     {
         if (!isset($data['user_metadata'])) {
             $data['user_metadata'] = [];
@@ -184,7 +183,7 @@ class SourceImage
     /**
      * Create a source image from the JSON data.
      */
-    public static function createFromJsonResponse(string $data): SourceImage
+    public static function createFromJsonResponse(string $data): self
     {
         return self::createFromDecodedJsonResponse(json_decode($data, true));
     }

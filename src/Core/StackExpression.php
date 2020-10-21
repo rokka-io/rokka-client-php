@@ -18,7 +18,7 @@ class StackExpression
     public $overrides;
 
     /**
-     * @param string $expression
+     * @param string                               $expression
      * @param array<string, bool|float|int|string> $optionOverrides
      */
     public function __construct($expression, array $optionOverrides = [])

@@ -11,7 +11,6 @@ use Rokka\Client\LocalImage\AbstractLocalImage;
  * It stores the hash to an image on the filesystem as json. Either next to the image, if it's on the filesystem,
  * otherwise in the sys_get_temp_dir().
  *
- *
  * @since 1.3.0
  */
 class DefaultCallbacks extends AbstractCallbacks

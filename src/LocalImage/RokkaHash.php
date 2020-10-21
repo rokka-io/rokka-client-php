@@ -17,13 +17,12 @@ use Rokka\Client\TemplateHelper;
  * If you want to get the source image content by getContent(), you need to inject a TemplateHelper object
  * into the constructor
  *
- *
  * @since 1.3.0
  */
 class RokkaHash extends AbstractLocalImage
 {
     /**
-     * @var null|string
+     * @var string|null
      */
     private $content = null;
 
@@ -63,7 +62,7 @@ class RokkaHash extends AbstractLocalImage
      *
      * @throws \GuzzleHttp\Exception\GuzzleException
      *
-     * @return null|string
+     * @return string|null
      */
     public function getContent()
     {
