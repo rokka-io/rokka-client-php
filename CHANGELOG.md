@@ -6,6 +6,12 @@ This project tries to follow [Semantic Versioning](http://semver.org/) since the
 
 This document mainly describes API changes important to users of this library.
 
+## 1.13.0 - unreleased
+
+* Add `\Rokka\Client\UriHelper::signUrl($url, $key, $until, $roundDateUpTo)` for easy signing of
+  private images (upcoming feature).
+* Add `\Rokka\Client\Core\Organization::getOptions()` and `\Rokka\Client\Core\Organization::getSigningKeys()`
+
 ## 1.12.1 - 2020-10-12
 
 * Add support for Guzzle 7 and Symfony Var_Dumper 5
