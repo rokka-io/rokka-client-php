@@ -42,19 +42,33 @@ class Organization
     public $billingEmail;
 
     /**
+     * @var array
+     */
+    private $options = [];
+
+    /**
+     * @var array
+     */
+    private $signing_keys = [];
+
+    /**
      * Constructor.
      *
      * @param string $id           Id
      * @param string $name         Name, used in urls etc
      * @param string $displayName  Display name
      * @param string $billingEmail Email
+     * @param array  $options
+     * @param array  $signing_keys
      */
-    public function __construct($id, $name, $displayName, $billingEmail)
+    public function __construct($id, $name, $displayName, $billingEmail, $signing_keys = [], $options = [])
     {
         $this->id = $id;
         $this->displayName = $displayName;
         $this->name = $name;
         $this->billingEmail = $billingEmail;
+        $this->options = $options;
+        $this->signing_keys = $signing_keys;
     }
 
     /**
@@ -68,7 +82,13 @@ class Organization
     {
         $data = json_decode($jsonString, true);
 
-        return new self($data['id'], $data['name'], $data['display_name'], $data['billing_email']);
+        return new self(
+            $data['id'],
+            $data['name'],
+            $data['display_name'],
+            $data['billing_email'],
+            isset($data['signing_keys']) ? $data['signing_keys'] : [],
+            isset($data['options']) ? $data['options'] : []);
     }
 
     /**
@@ -109,5 +129,21 @@ class Organization
     public function getBillingEmail()
     {
         return $this->billingEmail;
+    }
+
+    /**
+     * Get organization options.
+     */
+    public function getOptions(): array
+    {
+        return $this->options;
+    }
+
+    /**
+     * @return array
+     */
+    public function getSigningKeys()
+    {
+        return $this->signing_keys;
     }
 }
