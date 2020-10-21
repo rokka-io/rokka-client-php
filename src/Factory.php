@@ -4,7 +4,7 @@ namespace Rokka\Client;
 
 use GuzzleHttp\Client as GuzzleClient;
 use GuzzleHttp\Exception\ConnectException;
-use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\Exception\TransferException;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Middleware;
 use GuzzleHttp\Psr7\Request;
@@ -64,7 +64,7 @@ class Factory
     /**
      * Return a user client.
      *
-     * @param string|null|array $organization
+     * @param string|array|null $organization
      * @param string|null       $apiKey       API key
      * @param array             $options      Options like api_base_url or proxy
      *
@@ -129,7 +129,7 @@ class Factory
             $retries,
             Request $request,
             Response $response = null,
-            RequestException $exception = null
+            TransferException $exception = null
         ) {
             // Limit the number of retries to 10
             if ($retries >= 10) {

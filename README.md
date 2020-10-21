@@ -89,4 +89,8 @@ curl https://cs.symfony.com/download/php-cs-fixer-v2.phar > /tmp/php-cs-fixer.ph
 php /tmp/php-cs-fixer.phar  fix -v --diff --using-cache=yes src/
 ```
 
+## Running phpstan
+
+```
+./vendor/bin/phpstan.phar analyze -c phpstan.neon -l 8 src/
 ```

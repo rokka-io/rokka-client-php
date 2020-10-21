@@ -3,7 +3,7 @@
 namespace Rokka\Client\Core;
 
 /**
- * Abstracts the components away of a rokka uri (hash, format, filename, stack, etc)
+ * Abstracts the components away of a rokka uri (hash, format, filename, stack, etc).
  *
  * @since 1.2.0
  */
@@ -81,9 +81,9 @@ class UriComponents implements \ArrayAccess
      *
      * @param string|StackUri $stack
      *
-     * @return void
-     *
      * @throws \RuntimeException
+     *
+     * @return void
      */
     public function setStack($stack)
     {
@@ -105,7 +105,7 @@ class UriComponents implements \ArrayAccess
     /**
      * @since 1.2.0
      *
-     * @return null|string
+     * @return string|null
      */
     public function getHash()
     {
@@ -115,7 +115,7 @@ class UriComponents implements \ArrayAccess
     /**
      * @since 1.2.0
      *
-     * @param null|string $hash
+     * @param string|null $hash
      *
      * @return void
      */
@@ -127,7 +127,7 @@ class UriComponents implements \ArrayAccess
     /**
      * @since 1.2.0
      *
-     * @return null|string
+     * @return string|null
      */
     public function getFormat()
     {
@@ -137,7 +137,7 @@ class UriComponents implements \ArrayAccess
     /**
      * @since 1.2.0
      *
-     * @param null|string $format
+     * @param string|null $format
      *
      * @return void
      */
@@ -149,7 +149,7 @@ class UriComponents implements \ArrayAccess
     /**
      * @since 1.2.0
      *
-     * @return null|string
+     * @return string|null
      */
     public function getFilename()
     {
@@ -159,7 +159,7 @@ class UriComponents implements \ArrayAccess
     /**
      * @since 1.2.0
      *
-     * @param null|string $filename
+     * @param string|null $filename
      *
      * @return void
      */
@@ -189,8 +189,8 @@ class UriComponents implements \ArrayAccess
     }
 
     /**
-     * @param string $offset
-     * @param StackUri|string|null $value
+     * @param string          $offset
+     * @param StackUri|string $value
      */
     public function offsetSet($offset, $value)
     {
