@@ -54,6 +54,13 @@ class UriHelperTest extends \PHPUnit\Framework\TestCase
             ['resize-width-100--options-autoformat-true-dpr-3', 'o-dpr-2', 'resize-width-100--o-autoformat-true-dpr-2'],
 
             ['resize-width-100--options-autoformat-true--v-w-300', 'v-w-200', 'resize-width-100--o-autoformat-true--v-w-200'],
+
+            // with v in query parameter
+            ['',  ['variables' => ['dpr' => '?d', 'a' => 'b']], 'v-a-b', true,'','?v=%7B%22dpr%22:%22?d%22%7D'],
+            ['v-text-lala',  ['variables' => ['text' => 'Lala#', 'a' => 'b']], 'v-a-b', true, '', '?v=%7B%22text%22:%22Lala%23%22%7D'],
+            ['v-text-lala',  ['variables' => ['text' => 'Lala', 'a' => 'b']], 'v-a-b-text-Lala', true],
+            ['v-text-lala',  ['variables' => ['text' => 'Lala?']], '', true,'','?v=%7B%22text%22:%22Lala?%22%7D'],
+            ['',  ['variables' => ['text' => 'Lala', 'a' => 'b']], 'v-a-b-text-Lala', true, '?v=%7B%22text%22:%22Lala?%22%7D',''],
         ];
     }
 
@@ -138,9 +145,9 @@ class UriHelperTest extends \PHPUnit\Framework\TestCase
      * @param string       $expected
      * @param mixed        $shortNames
      */
-    public function testAddOptionsToUri($inputUrl, $options, $expected, $shortNames = true)
+    public function testAddOptionsToUri($inputUrl, $options, $expected, $shortNames = true, $requestQuery = '', $queryString = '')
     {
-        $this->assertSame('https://test.rokka.io/stackname/'.$expected.'/b53763.jpg', UriHelper::addOptionsToUriString('https://test.rokka.io/stackname/'.$inputUrl.'/b53763.jpg', $options, $shortNames));
+        $this->assertSame('https://test.rokka.io/stackname/'.($expected ? $expected . '/' : '').'b53763.jpg'. $queryString, UriHelper::addOptionsToUriString('https://test.rokka.io/stackname/'.$inputUrl.'/b53763.jpg'.$requestQuery, $options, $shortNames));
     }
 
     public function testGetDynamicStackFromStackObject()

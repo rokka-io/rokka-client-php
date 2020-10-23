@@ -2,6 +2,7 @@
 
 namespace Rokka\Client;
 
+use GuzzleHttp\Psr7\Query;
 use GuzzleHttp\Psr7\Uri;
 use Psr\Http\Message\UriInterface;
 use Rokka\Client\Core\Stack;
@@ -72,7 +73,9 @@ class UriHelper
     public static function addOptionsToUri(UriInterface $uri, $options, $shortNames = true)
     {
         if (\is_array($options)) {
-            return self::addOptionsToUri($uri, self::getUriStringFromStackConfig($options, $shortNames), $shortNames);
+            list($stackUrl, $query) = self::getUriStringFromStackConfig($options, $shortNames, $uri);
+
+            return self::addOptionsToUri($uri->withQuery($query), $stackUrl, $shortNames);
         }
         $matches = self::decomposeUri($uri);
         if (empty($matches)) {
@@ -116,7 +119,7 @@ class UriHelper
         $stackName = $stack->getName();
         $path = '/'.$stackName;
         $stackConfig = $stack->getConfigAsArray();
-        $stackUrl = self::getUriStringFromStackConfig($stackConfig, $shortNames);
+        list($stackUrl, $query) = self::getUriStringFromStackConfig($stackConfig, $shortNames, $uri);
         if (!empty($stackUrl)) {
             $path .= '/'.$stackUrl;
         }
@@ -131,10 +134,10 @@ class UriHelper
         }
 
         if (null !== $uri) {
-            return  $uri->withPath($path);
+            return  $uri->withPath($path)->withQuery($query);
         }
 
-        return new Uri($path);
+        return (new Uri($path))->withQuery($query);
     }
 
     /**
@@ -162,7 +165,18 @@ class UriHelper
             preg_match('#^/'.$stackPattern.'/'.$pathPattern.'/'.$filenamePattern.'\.'.$formatPattern.'$#', $path, $matches) ||
             // remote_path without seo-filename
             preg_match('#^/'.$stackPattern.'/'.$pathPattern.'.'.$formatPattern.'$#', $path, $matches)) {
-            return UriComponents::createFromArray($matches);
+            $uriComponents = UriComponents::createFromArray($matches);
+
+            $inQuery = Query::parse($uri->getQuery());
+
+            if (isset($inQuery['v'])) {
+                $vQuery = json_decode($inQuery['v'], true);
+
+                $newVariables = array_merge($uriComponents->getStack()->getStackVariables(), $vQuery);
+                $uriComponents->getStack()->setStackVariables($newVariables);
+            }
+
+            return $uriComponents;
         }
 
         return null;
@@ -308,9 +322,9 @@ class UriHelper
     /**
      * @param bool $shortNames if short names (like o for option or v for variables) should be used
      *
-     * @return string
+     * @return array<string>
      */
-    private static function getUriStringFromStackConfig(array $config, $shortNames = true)
+    private static function getUriStringFromStackConfig(array $config, $shortNames = true, UriInterface $uri = null)
     {
         $newOptions = [];
 
@@ -339,16 +353,20 @@ class UriHelper
 
         $newStackVariables = null;
         $nameVariables = $shortNames ? 'v' : 'variables';
+        $query = null;
         if (isset($config['variables'])) {
+            list($uri, $config['variables']) = self::addSpecialVariables($uri ? $uri : new Uri(), $config['variables']);
+            $query = $uri->getQuery();
             $newStackVariables = self::getStringForOptions($nameVariables, $config['variables']);
         }
         //don't return this, if it's only "variables" as string
         if (null !== $newStackVariables && $nameVariables !== $newStackVariables) {
             $newOptions[] = $newStackVariables;
         }
+
         $options = implode('--', $newOptions);
 
-        return $options;
+        return [$options, $query ? $query : ''];
     }
 
     /**
@@ -415,5 +433,37 @@ class UriHelper
         }
 
         return $uri;
+    }
+
+    /**
+     * @return array
+     */
+    private static function addSpecialVariables(UriInterface $uri, array $variables)
+    {
+        $vQuery = [];
+        $inQuery = Query::parse($uri->getQuery());
+        // if we have a v in the query, take those values as well
+        if (isset($inQuery['v'])) {
+            $vQuery = json_decode($inQuery['v'], true);
+        }
+        foreach ($variables as $key => $value) {
+            // if the value has a special char, but it into the v query parameter
+            if (preg_match('#[$/\-\#%&?]#', $value, $m) > 0) {
+                $vQuery[$key] = $value;
+                unset($variables[$key]);
+            } else {
+                // otherwise remove it from the vquery (it's already in variables
+                if (isset($vQuery[$key])) {
+                    unset($vQuery[$key]);
+                }
+            }
+        }
+        if (\count($vQuery) > 0) {
+            $uri = $uri->withQuery('v='.json_encode($vQuery));
+        } else {
+            $uri = $uri->withQuery('');
+        }
+
+        return [$uri, $variables];
     }
 }
