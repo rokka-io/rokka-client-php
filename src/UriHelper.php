@@ -285,15 +285,24 @@ class UriHelper
             }
         }
         $urlPath = $url->getPath();
+        $urlQuery = $url->getQuery();
+        // add query string
+        if ($urlQuery) {
+            $urlPath .= '?'.$urlQuery;
+        }
         // if urlPath doesn't start with a /, add one to be sure it's there
         if ('/' !== substr($urlPath, 0, 1)) {
             $urlPath = '/'.$urlPath;
         }
         $sigString = $urlPath.':'.($options ?? '').':'.$signKey;
 
-        return $url->withQuery((null !== $options ? 'sigopts='.urlencode($options).'&' : '').'sig='.urlencode(
-                substr(hash('sha256', $sigString), 0, 16
-                )));
+        return $url->withQuery(
+            ($urlQuery ? $urlQuery.'&' : '')
+            .(null !== $options ? 'sigopts='.urlencode($options).'&' : '')
+            .'sig='.urlencode(
+                substr(hash('sha256', $sigString), 0, 16)
+            )
+        );
     }
 
     /**
