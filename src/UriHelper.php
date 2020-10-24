@@ -299,6 +299,9 @@ class UriHelper
             }
         }
         $urlPath = $url->getPath();
+        // remove sig and sigopts values, if they exists for some reason
+        $url = Uri::withoutQueryValue($url, 'sig');
+        $url = Uri::withoutQueryValue($url, 'sigopts');
         $urlQuery = $url->getQuery();
         // add query string
         if ($urlQuery) {
@@ -310,13 +313,11 @@ class UriHelper
         }
         $sigString = $urlPath.':'.($options ?? '').':'.$signKey;
 
-        return $url->withQuery(
-            ($urlQuery ? $urlQuery.'&' : '')
-            .(null !== $options ? 'sigopts='.urlencode($options).'&' : '')
-            .'sig='.urlencode(
-                substr(hash('sha256', $sigString), 0, 16)
-            )
-        );
+        if (null !== $options) {
+            $url = Uri::withQueryValue($url, 'sigopts', urlencode($options));
+        }
+
+        return Uri::withQueryValue($url, 'sig', urlencode(substr(hash('sha256', $sigString), 0, 16)));
     }
 
     /**
@@ -459,9 +460,10 @@ class UriHelper
             }
         }
         if (\count($vQuery) > 0) {
-            $uri = $uri->withQuery('v='.json_encode($vQuery));
+            $value = json_encode($vQuery);
+            $uri = Uri::withQueryValue($uri, 'v', $value ? $value : '{}');
         } else {
-            $uri = $uri->withQuery('');
+            $uri = Uri::withoutQueryValue($uri, 'v');
         }
 
         return [$uri, $variables];
