@@ -92,7 +92,7 @@ php /tmp/php-cs-fixer.phar  fix -v --diff --using-cache=yes src/
 ## Running phpstan
 
 ```
-wget  -O vendor/bin/phpstan.phar https://github.com/phpstan/phpstan/releases/download/0.12.50/phpstan.phar
+wget  -O vendor/bin/phpstan.phar https://github.com/phpstan/phpstan/releases/download/0.12.51/phpstan.phar
 chmod a+x ./vendor/bin/phpstan.phar  
 ./vendor/bin/phpstan.phar analyze -c phpstan.neon -l 8 src/
 ```

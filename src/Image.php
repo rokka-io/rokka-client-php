@@ -881,9 +881,6 @@ class Image extends Base
 
         // Returning just the HASH part for "api.rokka.io/organization/sourceimages/{HASH}"
         $return = array_pop($parts);
-        if (null === $return) {
-            return false;
-        }
 
         return $return;
     }
