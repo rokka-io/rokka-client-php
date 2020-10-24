@@ -47,7 +47,7 @@ class Organization
     private $options = [];
 
     /**
-     * @var array
+     * @var array<array{key:string, created: string, accessed: string}>
      */
     private $signing_keys = [];
 
@@ -140,10 +140,12 @@ class Organization
     }
 
     /**
-     * @return array
+     * @return array<string>
      */
     public function getSigningKeys()
     {
-        return $this->signing_keys;
+        return array_map(function ($key) {
+            return $key['key'];
+        }, $this->signing_keys);
     }
 }
