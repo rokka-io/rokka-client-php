@@ -10,6 +10,7 @@ use Rokka\Client\Core\StackOperation;
 use Rokka\Client\Core\StackUri;
 use Rokka\Client\Core\UriComponents;
 use Rokka\Utils\SignUrl;
+use Rokka\Utils\StackVariables;
 
 class UriHelper
 {
@@ -392,7 +393,7 @@ class UriHelper
         }
         foreach ($variables as $key => $value) {
             // if the value has a special char, but it into the v query parameter
-            if (preg_match('#[$/\-\#%&?]#', $value, $m) > 0) {
+            if (StackVariables::hasSpecialChars($value)) {
                 $vQuery[$key] = $value;
                 unset($variables[$key]);
             } else {

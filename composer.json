@@ -26,7 +26,8 @@
         "guzzlehttp/guzzle": "^6.0|^7.0",
         "jbroadway/urlify": "^1.2",
         "guzzlehttp/psr7": "^1.7",
-        "rokka/utils": "^0.8"
+        "rokka/utils": "dev-main as 0.8.1-dev",
+        "ext-json": "*"
     },
     "require-dev": {
         "phpunit/phpunit": "^5.7.27",
