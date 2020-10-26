@@ -176,26 +176,30 @@ class UriHelperTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($expected, (string) UriHelper::getSrcSetUrlString($inputUrl, $size, $custom, $setWidthInUrl));
     }
 
-    public function testSignUrl() {
-        $this->assertEquals("/dynamic/abcdef.jpg?sig=c819798233635f29", (string)UriHelper::signUrl('/dynamic/abcdef.jpg', "abcdef"));
-        //without leading slash, should return the same sig
-        $this->assertEquals("dynamic/abcdef.jpg?sig=c819798233635f29", (string)UriHelper::signUrl('dynamic/abcdef.jpg', "abcdef"));
+    public function testKeepQueryString()
+    {
+        // keep existing query strings
+        $inputUrl = 'https://test.rokka.io/stackname/b537639e539efcc3df4459ef87c5963aa5079ca6.jpg?foo=bar&baz';
+        $result = (string) \Rokka\Client\UriHelper::addOptionsToUriString($inputUrl, ['variables' => ['text' => 'Lal$a', 'foo' => 'bar']]);
+        $exptected = 'https://test.rokka.io/stackname/v-foo-bar/b537639e539efcc3df4459ef87c5963aa5079ca6.jpg?foo=bar&baz&v=%7B%22text%22:%22Lal$a%22%7D';
+        $this->assertSame($exptected, $result);
+        // without adding to v query
+        $result = (string) \Rokka\Client\UriHelper::addOptionsToUriString($inputUrl, ['variables' => ['text' => 'Lala', 'foo' => 'bar']]);
+        $exptected = 'https://test.rokka.io/stackname/v-foo-bar-text-Lala/b537639e539efcc3df4459ef87c5963aa5079ca6.jpg?foo=bar&baz';
+        $this->assertSame($exptected, $result);
 
-        // time limited signature
-        $this->assertEquals(
-            "dynamic/abcdef.jpg?sigopts=IntcInVudGlsXCI6XCIyMDUwLTAyLTA4VDA4OjA1OjAwKzAwOjAwXCJ9Ig%3D%3D&sig=d438a4ff962e311c",
-            (string)UriHelper::signUrl('dynamic/abcdef.jpg', "abcdef", new \DateTime("2050-02-08T08:03:00"))
-        );
-        // time limited signature a minute later should return the same
-        $this->assertEquals(
-            "dynamic/abcdef.jpg?sigopts=IntcInVudGlsXCI6XCIyMDUwLTAyLTA4VDA4OjA1OjAwKzAwOjAwXCJ9Ig%3D%3D&sig=d438a4ff962e311c",
-            (string)UriHelper::signUrl('dynamic/abcdef.jpg', "abcdef", new \DateTime("2050-02-08T08:04:00"))
-        );
-        // but 2 minutes later again different
-        $this->assertEquals(
-            "dynamic/abcdef.jpg?sigopts=IntcInVudGlsXCI6XCIyMDUwLTAyLTA4VDA4OjEwOjAwKzAwOjAwXCJ9Ig%3D%3D&sig=24626a9a07f116a7",
-            (string)UriHelper::signUrl('dynamic/abcdef.jpg', "abcdef", new \DateTime("2050-02-08T08:06:00"))
-        );
+        // with string as options
+        $result = (string) \Rokka\Client\UriHelper::addOptionsToUriString($inputUrl, 'v-a-b');
+        $exptected = 'https://test.rokka.io/stackname/v-a-b/b537639e539efcc3df4459ef87c5963aa5079ca6.jpg?foo=bar&baz';
+        $this->assertSame($exptected, $result);
+
+        // with existing v query string
+        $inputUrl = 'https://test.rokka.io/stackname/b537639e539efcc3df4459ef87c5963aa5079ca6.jpg?foo=bar&baz&v={"foo": "b%at"}';
+        $result = (string) \Rokka\Client\UriHelper::addOptionsToUriString($inputUrl, ['variables' => ['text' => 'La#la', 'foo' => 'ba%r']]);
+        $exptected = 'https://test.rokka.io/stackname/b537639e539efcc3df4459ef87c5963aa5079ca6.jpg?foo=bar&baz&v=%7B%22foo%22:%22ba%25r%22,%22text%22:%22La%23la%22%7D';
+        $this->assertSame($exptected, $result);
+
+
 
     }
 
@@ -237,5 +241,7 @@ class UriHelperTest extends \PHPUnit\Framework\TestCase
         }
         $this->assertEquals('https://test.rokka.io/'.$stack.'/'.$expectedOptions['optionsUrl'].$hash.$filename.'.jpeg', (string) UriHelper::composeUri($components, $testUri));
     }
+
+
 
 }

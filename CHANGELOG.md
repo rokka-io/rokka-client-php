@@ -8,19 +8,21 @@ This document mainly describes API changes important to users of this library.
 
 ## 1.13.0 - unreleased
 
-* Add `\Rokka\Client\UriHelper::signUrl($url, $key, $until, $roundDateUpTo)` for easy signing of
+* Added `\Rokka\Client\UriHelper::signUrl($url, $key, $until, $roundDateUpTo)` for easy signing of
   private images (upcoming feature).
-* Add `\Rokka\Client\Core\Organization::getOptions()` and `\Rokka\Client\Core\Organization::getSigningKeys()`
+* Added `\Rokka\Client\Core\Organization::getOptions()` and `\Rokka\Client\Core\Organization::getSigningKeys()`
+* Added support for adding variables with non-url-supported characters. URLs then contain a `v` query parameter. 
+* Upgraded `guzzlehttp/psr7` minimum requirement to 1.7
 
 ## 1.12.1 - 2020-10-12
 
-* Add support for Guzzle 7 and Symfony Var_Dumper 5
+* Added support for Guzzle 7 and Symfony Var_Dumper 5
 
 ## 1.12.0 - 2020-09-15
 
-* Add percentage parameter to subject area (thanks to @mms-uret)
-* Fix some phpstan warnings (thanks to @Tobion)
-* Replace Sami by Doctum (thanks to @williamdes )
+* Added percentage parameter to subject area (thanks to @mms-uret)
+* Fixed some phpstan warnings (thanks to @Tobion)
+* Replaced Sami by Doctum (thanks to @williamdes )
 
 ## 1.11.1 - 2020-05-13
 
