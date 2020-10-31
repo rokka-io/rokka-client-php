@@ -16,17 +16,17 @@ class SignUrlsTest extends \PHPUnit\Framework\TestCase
                 'infinite' => ['', '?sig=62e7a9ccd3dea053', null],
                 'time limited' => [
                     '',
-                    '?sigopts=eyJ1bnRpbCI6IjIwNTAtMDItMDhUMDg6MDU6MDArMDA6MDAifQ%3D%3D&sig=fd5e7e92fbefbf2f',
+                    '?sigopts=%7B%22until%22%3A%222050-02-08T08%3A05%3A00%2B00%3A00%22%7D&sig=24f7a7b07122c063',
                     new \DateTime('2050-02-08T08:03:00'),
                 ],
                 'same sig a minute later' => [
                     '',
-                    '?sigopts=eyJ1bnRpbCI6IjIwNTAtMDItMDhUMDg6MDU6MDArMDA6MDAifQ%3D%3D&sig=fd5e7e92fbefbf2f',
+                    '?sigopts=%7B%22until%22%3A%222050-02-08T08%3A05%3A00%2B00%3A00%22%7D&sig=24f7a7b07122c063',
                     new \DateTime('2050-02-08T08:04:00'),
                 ],
                 'different sig 2 minutes later' => [
                     '',
-                    '?sigopts=eyJ1bnRpbCI6IjIwNTAtMDItMDhUMDg6MTA6MDArMDA6MDAifQ%3D%3D&sig=6c0c7c68a6c92a76',
+                    '?sigopts=%7B%22until%22%3A%222050-02-08T08%3A10%3A00%2B00%3A00%22%7D&sig=fa95fb5de8a284df',
                     new \DateTime('2050-02-08T08:07:00'),
                 ],
                 'keep v query' => [
@@ -47,7 +47,7 @@ class SignUrlsTest extends \PHPUnit\Framework\TestCase
                 ],
                 'remove existing sigopts & sig with date' => [
                     '?foo=bar&lala=hello&soso&sig=lala&sigopts=84989',
-                    '?foo=bar&lala=hello&soso&sigopts=eyJ1bnRpbCI6IjIwNTAtMDItMDhUMDg6MDU6MDArMDA6MDAifQ%3D%3D&sig=ba28068013bb821f',
+                    '?foo=bar&lala=hello&soso&sigopts=%7B%22until%22%3A%222050-02-08T08%3A05%3A00%2B00%3A00%22%7D&sig=c444f72eb623e5c9',
                     new \DateTime('2050-02-08T08:03:00'),
                 ],
             ];
