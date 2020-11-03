@@ -652,6 +652,56 @@ class Image extends Base
     }
 
     /**
+     * (Un)sets protected status to a SourceImage.
+     * Returns the new Hash for the SourceImage, it could be the same as the input one if the operation
+     * did not change the protected status.
+     *
+     * The only option currently can be
+     * ['deletePrevious' => true]
+     *
+     * which deletes the previous image from rokka (but not the binary, since that's still used)
+     * If not set, the original image is kept in rokka.
+     *
+     * @param bool   $protected    set the image to protected or no
+     *                             Or an array with more than one of those
+     * @param string $hash         The Image hash
+     * @param string $organization Optional organization name
+     * @param array  $options      Optional options
+     *
+     * @throws GuzzleException
+     * @throws \RuntimeException
+     *
+     * @return string|false
+     */
+    public function setProtected($protected, $hash, $organization = '', $options = [])
+    {
+        $count = 0;
+        $response = null;
+        $callOptions = [];
+        $callOptions['json'] = $protected;
+
+        $path = implode('/', [
+                self::SOURCEIMAGE_RESOURCE,
+                $this->getOrganizationName($organization),
+                $hash,
+                'options',
+                'protected',
+            ]);
+
+        // delete the previous, if we're not on the first one anymore, or if we want to delete it.
+        if (isset($options['deletePrevious']) && $options['deletePrevious']) {
+            $callOptions['query'] = ['deletePrevious' => 'true'];
+        }
+
+        $response = $this->call('PUT', $path, $callOptions);
+        if (!($response->getStatusCode() >= 200 && $response->getStatusCode() < 300)) {
+            throw new \LogicException($response->getBody()->getContents(), $response->getStatusCode());
+        }
+
+        return $this->extractHashFromLocationHeader($response->getHeader('Location'));
+    }
+
+    /**
      * @param string      $hash
      * @param string|null $organization
      */
@@ -942,6 +992,13 @@ class Image extends Base
             $requestOptions[] = [
                 'name' => 'meta_user[0]',
                 'contents' => json_encode($options['meta_user']),
+            ];
+        }
+
+        if (isset($options['options'])) {
+            $requestOptions[] = [
+                'name' => 'options[0]',
+                'contents' => json_encode($options['options']),
             ];
         }
 

@@ -81,6 +81,11 @@ class SourceImage
     public $link;
 
     /**
+     * @var bool
+     */
+    public $protected;
+
+    /**
      * Constructor.
      *
      * @param string    $organization    Organization
@@ -96,6 +101,7 @@ class SourceImage
      * @param \DateTime $created         Created at date
      * @param string    $link            Link to the image
      * @param string    $shortHash       The short hash
+     * @param bool      $protected       Is image protected
      */
     public function __construct(
         $organization,
@@ -111,7 +117,8 @@ class SourceImage
         array $staticMetadata,
         \DateTime $created,
         $link,
-        $shortHash = null
+        $shortHash = null,
+        $protected = false
     ) {
         $this->organization = $organization;
         $this->binaryHash = $binaryHash;
@@ -130,6 +137,7 @@ class SourceImage
             $shortHash = $hash;
         }
         $this->shortHash = $shortHash;
+        $this->protected = $protected;
     }
 
     /**
@@ -176,7 +184,8 @@ class SourceImage
             $data['static_metadata'],
             new \DateTime($data['created']),
             $data['link'],
-            $data['short_hash']
+            $data['short_hash'],
+            $data['protected']
         );
     }
 

@@ -11,6 +11,7 @@ This document mainly describes API changes important to users of this library.
 * Added `\Rokka\Client\UriHelper::signUrl($url, $key, $until, $roundDateUpTo)` for easy signing of
   private images (upcoming feature).
 * Added `\Rokka\Client\Core\Organization::getOptions()` and `\Rokka\Client\Core\Organization::getSigningKeys()`
+* Added support for making SourceImages protected (via `\Rokka\Client\Image::uploadSourceImage()` or `\Rokka\Client\Image::setProtected()`)
 * Added support for adding variables with non-url-supported characters. URLs then contain a `v` query parameter. 
 * Upgraded `guzzlehttp/psr7` minimum requirement to 1.7
 

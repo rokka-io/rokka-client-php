@@ -85,8 +85,8 @@ Run `vendor/bin/phpunit` in the project root.
 ## Running PHP-CS-Fixer
 
 ```
-curl https://cs.symfony.com/download/php-cs-fixer-v2.phar > /tmp/php-cs-fixer.phar
-php /tmp/php-cs-fixer.phar  fix -v --diff --using-cache=yes src/
+curl https://cs.symfony.com/download/php-cs-fixer-v2.phar > ./vendor/bin/php-cs-fixer.phar
+php ./vendor/bin/php-cs-fixer.phar  fix -v --diff --using-cache=yes src/
 ```
 
 ## Running phpstan
