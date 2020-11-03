@@ -25,6 +25,7 @@ class SourceImageTest extends \PHPUnit\Framework\TestCase
                 'dynamic_metadata' => [],
                 'created' => $image->created->format("Y-m-d\TH:i:s.uP"),
                 'link' => $image->link,
+                'protected' => $image->protected
             ];
 
             foreach ($image->dynamicMetadata as $name => $meta) {
