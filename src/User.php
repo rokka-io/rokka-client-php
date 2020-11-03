@@ -19,6 +19,8 @@ class User extends Base
 
     const ORGANIZATION_RESOURCE = 'organizations';
 
+    const ORGANIZATION_OPTION_PROTECT_DYNAMIC_STACK = 'protect_dynamic_stack';
+
     /**
      * Constructor.
      *
@@ -110,6 +112,34 @@ class User extends Base
 
         return Organization::createFromJsonResponse($contents);
     }
+
+    /**
+     * Create an organization.
+     *
+     * @since 1.13.0
+     *
+     * @param string $organization        Organization name
+     * @param string $name Option name
+     * @param string $value Option Value
+     *
+     * @throws GuzzleException
+     * @throws \RuntimeException
+     *
+     * @return Organization
+     */
+    public function setOrganizationOption($organization, $name, $value)
+    {
+        $options = ['json' => $value];
+
+        $contents = $this
+            ->call('PUT', self::ORGANIZATION_RESOURCE.'/'.$this->getOrganizationName($organization).'/options/'.$name, $options)
+            ->getBody()
+            ->getContents()
+        ;
+
+        return Organization::createFromJsonResponse($contents);
+    }
+
 
     /**
      * Return an organization.
