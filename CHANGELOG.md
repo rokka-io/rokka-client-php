@@ -6,6 +6,10 @@ This project tries to follow [Semantic Versioning](http://semver.org/) since the
 
 This document mainly describes API changes important to users of this library.
 
+## 1.x.y  - unreleased
+
+* Drop PHP 7.0 support. It's ancient.
+
 ## 1.13.1 - 2020-11-09
 
 * Fix dependency on rokka/utils and make it use "^1.0" 
