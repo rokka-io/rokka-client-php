@@ -6,6 +6,10 @@ This project tries to follow [Semantic Versioning](http://semver.org/) since the
 
 This document mainly describes API changes important to users of this library.
 
+## 1.13.1 - 2020-11-09
+
+* Fix dependency on rokka/utils and make it use "^1.0" 
+
 ## 1.13.0 - 2020-11-08
 
 * Added `\Rokka\Client\UriHelper::signUrl($url, $key, $until, $roundDateUpTo)` for easy signing of
