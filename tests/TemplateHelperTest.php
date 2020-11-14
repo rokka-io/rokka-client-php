@@ -21,7 +21,7 @@ class TemplateHelperTest extends \PHPUnit\Framework\TestCase
 
     private $testImages = ['small' => ['path' => __DIR__.'/Fixtures/Images/small-bratpfanne.jpg', 'hash' => '71775293697709c1a1ce66f05d7c011a6982a6a9']];
 
-    public function setUp()
+    public function setUp():void
     {
         $this->rokka = new TemplateHelper('testorg', 'key', new TestCallbacks());
         parent::setUp();

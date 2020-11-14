@@ -22,12 +22,12 @@
         }
     ],
     "require": {
-        "php": ">=7.1",
+        "php": "^7.1|^8.0",
         "guzzlehttp/guzzle": "^6.0|^7.0",
         "jbroadway/urlify": "^1.2",
         "guzzlehttp/psr7": "^1.7",
-        "rokka/utils": "^1.0",
         "ext-json": "*"
+        "rokka/utils": "^1.0.1",
     },
     "require-dev": {
         "phpunit/phpunit": "^7.5.20",
