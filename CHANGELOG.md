@@ -8,9 +8,12 @@ This document mainly describes API changes important to users of this library.
 
 ## 1.14.0  - 2020-12-11
 
+* Enable MP4 video uploads in TemplateHelper
+
+## 1.13.2  - 2020-11-13
+
 * Drop PHP 7.0 support. It's ancient.
 * Allow deletedDate as search field (some special case here):
-* Enable MP4 video uploads in TemplateHelper
 
 ## 1.13.1 - 2020-11-09
 
