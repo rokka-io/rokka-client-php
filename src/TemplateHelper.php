@@ -598,6 +598,10 @@ class TemplateHelper
             return true;
         }
 
+        if ('video/mp4' == $mimeType) {
+            return true;
+        }
+
         return false;
     }
 
