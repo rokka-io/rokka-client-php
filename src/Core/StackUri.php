@@ -194,12 +194,12 @@ class StackUri extends AbstractStack
      */
     private static function parseOptions(array $options)
     {
-        $optionValues = array_filter($options, function ($key) {
-            return $key % 2;
+        $optionValues = array_filter($options, function ($key): bool {
+            return 1 === $key % 2;
         }, ARRAY_FILTER_USE_KEY);
 
-        $optionKeys = array_filter($options, function ($key) {
-            return !($key % 2);
+        $optionKeys = array_filter($options, function ($key): bool {
+            return 0 === ($key % 2);
         }, ARRAY_FILTER_USE_KEY);
 
         if (\count($optionKeys) !== \count($optionValues)) {
