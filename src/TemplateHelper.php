@@ -459,7 +459,8 @@ class TemplateHelper
         }
         if ($input instanceof \SplFileInfo) {
             return new FileInfo($input, $identifier, $context);
-        } elseif (\is_string($input)) {
+        }
+        if (\is_string($input)) {
             if (preg_match('/^[0-9a-f]{6,40}$/', $input)) {
                 return new RokkaHash($input, $identifier, $context, $this);
             }
@@ -467,7 +468,11 @@ class TemplateHelper
             return new FileInfo(new \SplFileInfo($input), $identifier, $context);
         }
 
-        throw new \RuntimeException('getImageObject: Input could not be converted to a LocalImageAbstract object');
+        // we can't trust callers to only provide $input in one of the supported types
+        // @phpstan-ignore-next-line
+        $inputType = is_object($input) ? get_class($input) : gettype($input);
+
+        throw new \RuntimeException('Can not create a source image from input of type '.$inputType);
     }
 
     /**
