@@ -37,6 +37,11 @@ class Image extends Base
     const OPERATIONS_RESOURCE = 'operations';
 
     /**
+     * @var string|null the render base url like foo-org.rokka.io
+     */
+    private $renderBaseUrl = null;
+
+    /**
      * Constructor.
      *
      * @param ClientInterface $client              Client instance
@@ -891,19 +896,24 @@ class Image extends Base
      */
     public function getSourceImageUri($hash, $stack, $format = 'jpg', $name = null, $organization = null)
     {
-        $apiUri = new Uri($this->client->getConfig('base_uri'));
+        if ($this->renderBaseUrl) {
+            $apiUri = new Uri($this->renderBaseUrl);
+            $host = $apiUri->getHost();
+        } else {
+            $apiUri = new Uri($this->client->getConfig('base_uri'));
+            // Removing the 'api.' part (third domain level)
+            $parts = explode('.', $apiUri->getHost(), 2);
+            $baseHost = array_pop($parts);
+            $host = $this->getOrganizationName($organization).'.'.$baseHost;
+        }
+
         $format = strtolower($format);
-
-        // Removing the 'api.' part (third domain level)
-        $parts = explode('.', $apiUri->getHost(), 2);
-        $baseHost = array_pop($parts);
-
         $path = UriHelper::composeUri(['stack' => $stack, 'hash' => $hash, 'format' => $format, 'filename' => $name]);
         // Building the URI as "{scheme}://{organization}.{baseHost}[:{port}]/{stackName}/{hash}[/{name}].{format}"
         $parts = [
             'scheme' => $apiUri->getScheme(),
             'port' => $apiUri->getPort(),
-            'host' => $this->getOrganizationName($organization).'.'.$baseHost,
+            'host' => $host,
             'path' => $path->getPath(),
         ];
 
@@ -1028,5 +1038,21 @@ class Image extends Base
             ->getContents();
 
         return SourceImageCollection::createFromJsonResponse($contents);
+    }
+
+    /**
+     * @param string|null $renderBaseUrl
+     *
+     * @return void
+     */
+    public function setRenderBaseUrl($renderBaseUrl) {
+        $this->renderBaseUrl = $renderBaseUrl;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getRenderBaseUrl(): ?string {
+        return $this->renderBaseUrl;
     }
 }

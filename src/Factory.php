@@ -20,6 +20,8 @@ class Factory
 {
     const API_BASE_URL = 'api_base_url';
 
+    const RENDER_BASE_URL = 'render_base_url';
+
     const PROXY = 'proxy';
 
     const GUZZLE_OPTIONS = 'guzzle_options';
@@ -38,6 +40,7 @@ class Factory
     public static function getImageClient($organization, $apiKey, $options = [])
     {
         $baseUrl = BaseClient::DEFAULT_API_BASE_URL;
+        $renderBaseUrl = null;
         if (!\is_array($options)) { // $options was introduced later, if that is an array, we're on the new sig, nothing to change
             if (\func_num_args() > 3) { // if more than 3 args, the 4th is the baseUrl
                 $baseUrl = func_get_arg(3);
@@ -54,11 +57,19 @@ class Factory
             if (isset($options[self::API_BASE_URL])) {
                 $baseUrl = $options[self::API_BASE_URL];
             }
+            if (isset($options[self::RENDER_BASE_URL])) {
+                $renderBaseUrl = $options[self::RENDER_BASE_URL];
+            }
         }
 
         $client = self::getGuzzleClient($baseUrl, $options);
 
-        return new ImageClient($client, $organization, $apiKey);
+        $imageClient = new ImageClient($client, $organization, $apiKey);
+        if ($renderBaseUrl) {
+            $imageClient->setRenderBaseUrl($renderBaseUrl);
+        }
+
+        return $imageClient;
     }
 
     /**

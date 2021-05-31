@@ -6,6 +6,10 @@ This project tries to follow [Semantic Versioning](http://semver.org/) since the
 
 This document mainly describes API changes important to users of this library.
 
+## 1.15.0  - unreleased
+
+* Added `render_base_url` config option to `\Rokka\Client\Factory::getImageClient`
+
 ## 1.14.0  - 2020-12-11
 
 * Enable MP4 video uploads in TemplateHelper
