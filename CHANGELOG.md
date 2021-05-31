@@ -6,7 +6,7 @@ This project tries to follow [Semantic Versioning](http://semver.org/) since the
 
 This document mainly describes API changes important to users of this library.
 
-## 1.15.0  - unreleased
+## 1.15.0  - 2021-05-31
 
 * Added `render_base_url` config option to `\Rokka\Client\Factory::getImageClient`
 

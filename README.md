@@ -64,6 +64,7 @@ It takes the following format:
 ```
 [ 
    Factory::API_BASE_URL => 'https://some-other-api.rokka.io',
+   Factory::RENDER_BASE_URL => 'https://myimages.example.com', // you you want/have another render base url
    Factory::PROXY => 'http://proxy:8888', // if you need to use a proxy
    Factory::GUZZLE_OPTIONS => ['verify' => false] // any guzzle option you need/want
 ]
