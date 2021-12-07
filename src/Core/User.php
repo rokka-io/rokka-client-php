@@ -17,29 +17,39 @@ class User
     /**
      * Email of user.
      *
-     * @var string
+     * @var string|null
      */
     public $email;
 
     /**
-     * Key.
+     * Api Key.
      *
-     * @var string
+     * @var string|null
      */
     public $apiKey;
 
     /**
+     * The Api Keys for this user.
+     *
+     * @var array
+     */
+    private $apiKeys;
+
+    /**
      * Constructor.
      *
-     * @param string $id     Id
-     * @param string $email  Email
-     * @param string $apiKey API key
+     * @param string                               $id      Id
+     * @param string|null                          $email   Email
+     * @param string|null                          $apiKey  API keys
+     * @param array<\Rokka\Client\Core\UserApiKey> $apiKeys API keys
      */
-    public function __construct($id, $email, $apiKey)
+    public function __construct($id, $email, $apiKey, $apiKeys = [])
     {
         $this->id = $id;
         $this->email = $email;
+
         $this->apiKey = $apiKey;
+        $this->apiKeys = $apiKeys;
     }
 
     /**
@@ -53,7 +63,17 @@ class User
     {
         $data = json_decode($jsonString, true);
 
-        return new self($data['id'], $data['email'], $data['api_key']);
+        $id = isset($data['id']) ? $data['id'] : $data['user_id'];
+        $apiKey = isset($data['api_key']) ? $data['api_key'] : null;
+        $email = isset($data['email']) ? $data['email'] : null;
+        $apiKeys = [];
+        if (isset($data['api_keys'])) {
+            $apiKeys = array_map(function ($key) {
+                return UserApiKey::createFromArray($key);
+            }, $data['api_keys']);
+        }
+
+        return new self($id, $email, $apiKey, $apiKeys);
     }
 
     /**
@@ -69,7 +89,7 @@ class User
     /**
      * Get Email.
      *
-     * @return string
+     * @return string|null
      */
     public function getEmail()
     {
@@ -79,10 +99,18 @@ class User
     /**
      * Get Api Key.
      *
-     * @return string
+     * @return string|null
      */
     public function getApiKey()
     {
         return $this->apiKey;
+    }
+
+    /**
+     * @return array<UserApiKey>
+     */
+    public function getApiKeys(): array
+    {
+        return $this->apiKeys;
     }
 }

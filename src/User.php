@@ -7,19 +7,22 @@ use GuzzleHttp\Exception\GuzzleException;
 use Rokka\Client\Core\Membership;
 use Rokka\Client\Core\Organization;
 use Rokka\Client\Core\User as UserModel;
+use Rokka\Client\Core\UserApiKey;
 
 /**
  * User management client for the rokka.io service.
  */
 class User extends Base
 {
-    const USERS_RESOURCE = 'users';
+    public const USERS_RESOURCE = 'users';
 
-    const USER_RESOURCE = 'user';
+    public const USER_RESOURCE = 'user';
 
-    const ORGANIZATION_RESOURCE = 'organizations';
+    public const USER_API_KEYS_RESOURCE = 'user/apikeys';
 
-    const ORGANIZATION_OPTION_PROTECT_DYNAMIC_STACK = 'protect_dynamic_stack';
+    public const ORGANIZATION_RESOURCE = 'organizations';
+
+    public const ORGANIZATION_OPTION_PROTECT_DYNAMIC_STACK = 'protect_dynamic_stack';
 
     /**
      * Constructor.
@@ -61,7 +64,7 @@ class User extends Base
     }
 
     /**
-     * Get current user.
+     * Get current userID.
      *
      * @since 1.7.0
      *
@@ -80,6 +83,73 @@ class User extends Base
         $json = json_decode($contents, true);
 
         return $json['user_id'];
+    }
+
+    /**
+     * Add an Api Key to the current user.
+     *
+     * @since 1.16.0
+     *
+     * @param string|null $comment Optional comment
+     *
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function addUserApiKey(string $comment = null): UserApiKey
+    {
+        $contents = $this
+            ->call('POST', self::USER_API_KEYS_RESOURCE, ['json' => [
+                'comment' => $comment,
+            ]])
+            ->getBody()
+            ->getContents()
+        ;
+
+        $data = json_decode($contents, true);
+
+        return UserApiKey::createFromArray($data);
+    }
+
+    /**
+     * Gets info about the currently used Api Key.
+     *
+     * @since 1.16.0
+     *
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function getCurrentApiKey(): UserApiKey
+    {
+        $contents = $this
+            ->call('GET', self::USER_API_KEYS_RESOURCE.'/current')
+            ->getBody()
+            ->getContents();
+        $data = json_decode($contents, true);
+
+        return UserApiKey::createFromArray($data);
+    }
+
+    /**
+     * Deletes an Api Key for the current user.
+     *
+     * @since 1.16.0
+     *
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     *
+     * @return bool returns false, if key didn't exist, true if operation succeeded
+     */
+    public function deleteUserApiKey(string $id): bool
+    {
+        try {
+            $response = $this
+            ->call('DELETE', self::USER_API_KEYS_RESOURCE.'/'.$id);
+        } catch (GuzzleException $e) {
+            if (404 == $e->getCode()) {
+                return false;
+            }
+
+            throw $e;
+        }
+
+        return '204' == $response->getStatusCode();
     }
 
     /**
@@ -159,7 +229,6 @@ class User extends Base
 
         return Organization::createFromJsonResponse($contents);
     }
-
 
     /**
      * Return an organization.
