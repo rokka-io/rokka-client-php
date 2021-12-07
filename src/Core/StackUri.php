@@ -196,11 +196,11 @@ class StackUri extends AbstractStack
     {
         $optionValues = array_filter($options, function ($key): bool {
             return 1 === $key % 2;
-        }, ARRAY_FILTER_USE_KEY);
+        }, \ARRAY_FILTER_USE_KEY);
 
         $optionKeys = array_filter($options, function ($key): bool {
             return 0 === ($key % 2);
-        }, ARRAY_FILTER_USE_KEY);
+        }, \ARRAY_FILTER_USE_KEY);
 
         if (\count($optionKeys) !== \count($optionValues)) {
             throw new \InvalidArgumentException('The options given has to be an even array with key and value.');

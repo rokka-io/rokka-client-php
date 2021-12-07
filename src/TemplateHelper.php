@@ -74,7 +74,7 @@ class TemplateHelper
         $this->rokkaClientOptions = $options;
 
         if ($publicRokkaDomain) {
-            $scheme = parse_url($publicRokkaDomain, PHP_URL_SCHEME);
+            $scheme = parse_url($publicRokkaDomain, \PHP_URL_SCHEME);
             if (null === $scheme) {
                 $this->rokkaDomain = 'https://'.$publicRokkaDomain;
             } else {
@@ -336,7 +336,7 @@ class TemplateHelper
             return '';
         }
 
-        return pathinfo($image->getFilename(), PATHINFO_FILENAME);
+        return pathinfo($image->getFilename(), \PATHINFO_FILENAME);
     }
 
     /**
@@ -470,7 +470,7 @@ class TemplateHelper
 
         // we can't trust callers to only provide $input in one of the supported types
         // @phpstan-ignore-next-line
-        $inputType = is_object($input) ? get_class($input) : gettype($input);
+        $inputType = \is_object($input) ? \get_class($input) : \gettype($input);
 
         throw new \RuntimeException('Can not create a source image from input of type '.$inputType);
     }
@@ -570,13 +570,13 @@ class TemplateHelper
         $mimeType = 'application/not-supported';
         $realpath = $image->getRealpath();
         if (\is_string($realpath)) {
-            $resource = finfo_open(FILEINFO_MIME_TYPE);
+            $resource = finfo_open(\FILEINFO_MIME_TYPE);
             \assert(\is_resource($resource));
             $mimeType = finfo_file($resource, $realpath);
         } else {
             $content = $image->getContent();
             if (null !== $content) {
-                $resource = finfo_open(FILEINFO_MIME_TYPE);
+                $resource = finfo_open(\FILEINFO_MIME_TYPE);
                 \assert(\is_resource($resource));
                 $mimeType = finfo_buffer($resource, $content);
             }

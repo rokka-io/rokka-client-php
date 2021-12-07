@@ -192,7 +192,7 @@ class Image extends Base
         }
         $statusCode = $response->getStatusCode();
 
-        return  $statusCode >= 200 && $statusCode < 300;
+        return $statusCode >= 200 && $statusCode < 300;
     }
 
     /**
@@ -921,6 +921,21 @@ class Image extends Base
     }
 
     /**
+     * @param string|null $renderBaseUrl
+     *
+     * @return void
+     */
+    public function setRenderBaseUrl($renderBaseUrl)
+    {
+        $this->renderBaseUrl = $renderBaseUrl;
+    }
+
+    public function getRenderBaseUrl(): ?string
+    {
+        return $this->renderBaseUrl;
+    }
+
+    /**
      * Helper function to extract from a Location header the image hash, only the first Location is used.
      *
      * @param array $headers The collection of Location headers
@@ -1014,7 +1029,7 @@ class Image extends Base
 
         if (isset($options['meta_dynamic'])) {
             foreach ($options['meta_dynamic'] as $key => $value) {
-                if ($value instanceof  DynamicMetadataInterface) {
+                if ($value instanceof DynamicMetadataInterface) {
                     $key = $value::getName();
                     $value = $value->getForJson();
                 }
@@ -1038,21 +1053,5 @@ class Image extends Base
             ->getContents();
 
         return SourceImageCollection::createFromJsonResponse($contents);
-    }
-
-    /**
-     * @param string|null $renderBaseUrl
-     *
-     * @return void
-     */
-    public function setRenderBaseUrl($renderBaseUrl) {
-        $this->renderBaseUrl = $renderBaseUrl;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getRenderBaseUrl(): ?string {
-        return $this->renderBaseUrl;
     }
 }

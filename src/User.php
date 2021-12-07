@@ -83,6 +83,26 @@ class User extends Base
     }
 
     /**
+     * Get current user.
+     *
+     * @since 1.16.0
+     *
+     * @throws GuzzleException
+     * @throws \RuntimeException
+     *
+     * @return UserModel
+     */
+    public function getCurrentUser()
+    {
+        $contents = $this
+            ->call('GET', self::USER_RESOURCE)
+            ->getBody()
+            ->getContents();
+
+        return UserModel::createFromJsonResponse($contents);
+    }
+
+    /**
      * Create an organization.
      *
      * @param string $name        Organization name
@@ -118,9 +138,9 @@ class User extends Base
      *
      * @since 1.13.0
      *
-     * @param string $organization        Organization name
-     * @param string $name Option name
-     * @param string $value Option Value
+     * @param string $organization Organization name
+     * @param string $name         Option name
+     * @param string $value        Option Value
      *
      * @throws GuzzleException
      * @throws \RuntimeException

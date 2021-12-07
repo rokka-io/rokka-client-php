@@ -136,7 +136,7 @@ class UriHelper
         }
 
         if (null !== $uri) {
-            return  $uri->withPath($path)->withQuery($query);
+            return $uri->withPath($path)->withQuery($query);
         }
 
         return (new Uri($path))->withQuery($query);

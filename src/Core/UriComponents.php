@@ -170,8 +170,6 @@ class UriComponents implements \ArrayAccess
 
     /**
      * @param string $offset
-     *
-     * @return bool
      */
     public function offsetExists($offset): bool
     {
@@ -208,9 +206,6 @@ class UriComponents implements \ArrayAccess
 
     /**
      * @param string $offset
-     *
-     * @return void
-     *
      */
     public function offsetUnset($offset): void
     {
