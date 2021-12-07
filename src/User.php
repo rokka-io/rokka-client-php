@@ -116,7 +116,7 @@ class User extends Base
      *
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function getCurrentApiKey(): UserApiKey
+    public function getCurrentUserApiKey(): UserApiKey
     {
         $contents = $this
             ->call('GET', self::USER_API_KEYS_RESOURCE.'/current')

@@ -9,6 +9,7 @@ This document mainly describes API changes important to users of this library.
 ## 1.16.0 - 2021-12-07
 
 * Add support for adding/deleting Api Keys of the current User
+  See [the Rotate your Api Key Chapter](https://rokka.io/documentation/references/users-and-memberships.html#rotate-your-api-key)
 
 ## 1.15.1  - 2021-11-29
 
