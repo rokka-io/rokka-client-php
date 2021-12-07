@@ -173,7 +173,7 @@ class UriComponents implements \ArrayAccess
      *
      * @return bool
      */
-    public function offsetExists($offset)
+    public function offsetExists($offset): bool
     {
         return property_exists($this, $offset);
     }
@@ -183,6 +183,7 @@ class UriComponents implements \ArrayAccess
      *
      * @return StackUri|string|null
      */
+    #[\ReturnTypeWillChange] // PHP 8 complains other and with < 8.0 there's no mixed return type
     public function offsetGet($offset)
     {
         return $this->$offset;
@@ -192,6 +193,7 @@ class UriComponents implements \ArrayAccess
      * @param string          $offset
      * @param StackUri|string $value
      */
+    #[\ReturnTypeWillChange] // PHP 8 complains other and with < 8.0 there's no mixed return type
     public function offsetSet($offset, $value)
     {
         if (!property_exists($this, $offset)) {
@@ -208,8 +210,9 @@ class UriComponents implements \ArrayAccess
      * @param string $offset
      *
      * @return void
+     *
      */
-    public function offsetUnset($offset)
+    public function offsetUnset($offset): void
     {
         $this->$offset = null;
     }

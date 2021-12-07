@@ -35,7 +35,7 @@ use Rokka\Client\Factory;
 
 $apiKey = 'myKey';
 
-$userClient = Factory::getUserClient();
+$userClient = Factory::getUserClient($organization = null, $apiKey =null, $options = []);
 $userClient->setCredentials($apiKey);
 ```
 
