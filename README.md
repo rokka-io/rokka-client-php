@@ -22,15 +22,18 @@ Require the library using composer:
 
 ## Bootstrapping
 
+You will need to register for a Rokka.io account and use the API key you receive.
+The recommended way to do so is by using the [rokka-cli](https://github.com/rokka-io/rokka-client-php-cli/releases).
+
 The `Rokka\Client\Factory` is the entry point for creating the API client.
 
-You will need to register for a Rokka account and use the api key you receive.
+You then need to set the credentials you created with the cli command.
 
 ### User Client
 
 The user client is used for user and organization management.
 
-```
+```php
 use Rokka\Client\Factory;
 
 $apiKey = 'myKey';
@@ -43,9 +46,9 @@ There is an optional parameter to specify the base URL of the Rokka API. This us
 
 ### Image Client
 
-The image client is used to upload images into an organization and manage output stacks.
+The image client is used to upload images into an organization and manage rendering stacks.
 
-```
+```php
 use Rokka\Client\Factory;
 
 $organization = 'testorganization';
@@ -54,28 +57,28 @@ $apiKey = 'myKey';
 $imageClient = Factory::getImageClient($organization, $apiKey);
 ```
 
-There is an optional fourth parameter to specify the base URL of the Rokka API. This usually does not need to be adjusted.
+There is an optional parameter to specify the base URL of the Rokka API.
+This usually does not need to be adjusted.
 
 ### Options for clients
 
-You can add an options array as 1st or 3rd parameter to Factory::getUserClient` or `Factory::getImageClient`.
+You can add an options array as last parameter to Factory::getUserClient` or `Factory::getImageClient`.
 It takes the following format:
 
-```
+```php
 [ 
    Factory::API_BASE_URL => 'https://some-other-api.rokka.io',
    Factory::RENDER_BASE_URL => 'https://myimages.example.com', // you you want/have another render base url
    Factory::PROXY => 'http://proxy:8888', // if you need to use a proxy
    Factory::GUZZLE_OPTIONS => ['verify' => false] // any guzzle option you need/want
 ]
-
 ```
 
 ## Usage
 
-See the [official documentation](https://rokka.io/documentation) on how to use the Rokka API.
+Read the [Getting Started](https://rokka.io/documentation/guides/get-started.html) guide of the [rokka.io documentation](https://rokka.io/documentation) to learn about the basic concepts of rokka.
 
-## API Docs
+The image and user clients provide the operations described in the API Reference section of the rokka documentation.
 
 See als the [API Docs](https://rokka.io/client-php-api/master/) for further information.
 
