@@ -371,7 +371,7 @@ class UriHelper
             }
             $options = $stack->getStackOptions();
             if (isset($options['dpr']) && $widthIsNotSet && $setWidthInUrl) {
-                $custom .= '--resize-width-'.(int) ceil($size / $options['dpr']);
+                $custom .= '--resize-width-'.(int) ceil((float) $size / (float) $options['dpr']);
             }
 
             $uri = self::addOptionsToUri($uri, $custom);

@@ -1,10 +1,10 @@
 # Rokka PHP Client
 
-[![Build Status](https://travis-ci.org/rokka-io/rokka-client-php.svg?branch=master)](https://travis-ci.org/rokka-io/rokka-client-php)
-[![StyleCI](https://styleci.io/repos/54187640/shield)](https://styleci.io/repos/54187640)
+[![Build Status](https://github.com/rokka-io/rokka-client-php/actions/workflows/ci.yml/badge.svg)](https://github.com/rokka-io/rokka-client-php/actions/workflows/ci.yml)
+[![Static analysis](https://github.com/rokka-io/rokka-client-php/actions/workflows/static.yml/badge.svg)](https://github.com/rokka-io/rokka-client-php/actions/workflows/static.yml)
 [![Latest Stable Version](https://poser.pugx.org/rokka/client/version.png)](https://packagist.org/packages/rokka/client)
 
-A [PHP](http://php.net/) library to access the API of the [Rokka](https://rokka.io/) image service.
+A [PHP](https://www.php.net/) library to access the API of the [Rokka](https://rokka.io/) image service.
 
 If you are using the Symfony framework, have a look at the [Rokka Symfony Bundle](https://github.com/rokka-io/rokka-client-bundle) which integrates this library into Symfony.
 

@@ -12,8 +12,8 @@ if [ ! -f /tmp/doctum.phar ]; then
     curl -s -o /tmp/doctum.phar.sha256 https://doctum.long-term.support/releases/5/doctum.phar.sha256
     sha256sum --strict --check /tmp/doctum.phar.sha256
     rm -f /tmp/doctum.phar.sha256
-    # You can fetch the latest (5.1.x) version code here:
-    # https://doctum.long-term.support/releases/5.1/VERSION
+    # You can fetch the latest version code here:
+    # https://doctum.long-term.support/releases/5/VERSION
 fi
 
 mkdir -p ./doctum-output/build/client-php-api/

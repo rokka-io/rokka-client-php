@@ -52,10 +52,6 @@ class SearchHelper
             $sorting[] = $sortField.('desc' === $direction ? ' '.$direction : '');
         }
 
-        if (empty($sorting)) {
-            return '';
-        }
-
         return implode(',', $sorting);
     }
 }

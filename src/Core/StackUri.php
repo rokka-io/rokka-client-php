@@ -26,21 +26,14 @@ use Rokka\Client\UriHelper;
 class StackUri extends AbstractStack
 {
     /**
-     * @var string|null
-     */
-    private $baseUrl;
-
-    /**
      * StackUri constructor.
      *
      * @param string|null $name
-     * @param string|null $baseUrl
      *
      * @throws \RuntimeException When the stack name could not be parsed correctly
      */
-    public function __construct($name = null, array $stackOperations = [], array $stackOptions = [], array $stackVariables = [], $baseUrl = null)
+    public function __construct($name = null, array $stackOperations = [], array $stackOptions = [], array $stackVariables = [])
     {
-        $this->baseUrl = $baseUrl;
         parent::__construct($name, $stackOperations, $stackOptions, $stackVariables);
 
         if (null !== $name && false !== strpos($name, '/')) {
@@ -205,13 +198,7 @@ class StackUri extends AbstractStack
         if (\count($optionKeys) !== \count($optionValues)) {
             throw new \InvalidArgumentException('The options given has to be an even array with key and value.');
         }
-        $combined = array_combine($optionKeys, $optionValues);
-        if (false === $combined) {
-            // returns false, if both are empty (or not equal length, but that's handled above)
-            // phpstan complained
-            return [];
-        }
 
-        return $combined;
+        return array_combine($optionKeys, $optionValues);
     }
 }
