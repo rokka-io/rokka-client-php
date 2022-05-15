@@ -6,6 +6,10 @@ This project tries to follow [Semantic Versioning](http://semver.org/) since the
 
 This document mainly describes API changes important to users of this library.
 
+## 1.17.0 - unreleased
+
+* Add support for API Tokens. See to be written docs ;)
+
 ## 1.16.0 - 2021-12-07
 
 * Add support for adding/deleting Api Keys of the current User

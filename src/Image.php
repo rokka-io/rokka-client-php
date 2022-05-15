@@ -26,15 +26,15 @@ use Rokka\Client\Core\StackUri;
  */
 class Image extends Base
 {
-    const SOURCEIMAGE_RESOURCE = 'sourceimages';
+    private const SOURCEIMAGE_RESOURCE = 'sourceimages';
 
-    const DYNAMIC_META_RESOURCE = 'meta/dynamic';
+    private const DYNAMIC_META_RESOURCE = 'meta/dynamic';
 
-    const USER_META_RESOURCE = 'meta/user';
+    private const USER_META_RESOURCE = 'meta/user';
 
-    const STACK_RESOURCE = 'stacks';
+    private const STACK_RESOURCE = 'stacks';
 
-    const OPERATIONS_RESOURCE = 'operations';
+    private const OPERATIONS_RESOURCE = 'operations';
 
     /**
      * @var string|null the render base url like foo-org.rokka.io
@@ -47,12 +47,19 @@ class Image extends Base
      * @param ClientInterface $client              Client instance
      * @param string          $defaultOrganization Default organization
      * @param string          $apiKey              API key
+     * @param string|null     $apiToken            API Token
      */
-    public function __construct(ClientInterface $client, $defaultOrganization, $apiKey)
+    public function __construct(ClientInterface $client, $defaultOrganization, $apiKey, $apiToken = null)
     {
         parent::__construct($client, $defaultOrganization);
 
-        $this->setCredentials($apiKey);
+        if (null !== $apiKey) {
+            $this->setCredentials($apiKey);
+        }
+
+        if (null !== $apiToken) {
+            $this->setToken($apiToken);
+        }
     }
 
     /**

@@ -2,12 +2,14 @@
 
 namespace Rokka\Client;
 
+use Firebase\JWT\JWT;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\GuzzleException;
 use Rokka\Client\Core\Membership;
 use Rokka\Client\Core\Organization;
 use Rokka\Client\Core\User as UserModel;
 use Rokka\Client\Core\UserApiKey;
+use Rokka\Client\Core\UserApiToken;
 
 /**
  * User management client for the rokka.io service.
@@ -30,13 +32,18 @@ class User extends Base
      * @param ClientInterface $client              Client instance
      * @param string|null     $defaultOrganization
      * @param string|null     $apiKey              API key
+     * @param string|null     $apiToken            API Token
      */
-    public function __construct(ClientInterface $client, $defaultOrganization, $apiKey)
+    public function __construct(ClientInterface $client, $defaultOrganization, $apiKey, $apiToken = null)
     {
         parent::__construct($client, $defaultOrganization);
 
         if (null !== $apiKey) {
             $this->setCredentials($apiKey);
+        }
+
+        if (null !== $apiToken) {
+            $this->setToken($apiToken);
         }
     }
 
@@ -170,6 +177,32 @@ class User extends Base
             ->getContents();
 
         return UserModel::createFromJsonResponse($contents);
+    }
+
+    /**
+     * Gets a new API JWT Token with an $apiKey.
+     *
+     * @param string|null $apiKey     The api key, if different from the base one
+     * @param array       $parameters The /user/apikeys/token query parameters
+     *
+     * @see  https://api.rokka.io/doc/#/admin/getUserToken
+     *
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     *
+     * @return UserApiToken
+     *
+     * @since 1.17.0
+     */
+    public function getNewToken($apiKey = null, $parameters = [])
+    {
+        $contents = $this
+            ->call('GET', implode('/', [self::USER_API_KEYS_RESOURCE, 'token']), ['query' => $parameters], true, ['key' => $apiKey])
+            ->getBody()
+            ->getContents();
+
+        $data = json_decode($contents, true);
+
+        return UserApiToken::createFromArray($data);
     }
 
     /**

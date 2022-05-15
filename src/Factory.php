@@ -18,13 +18,15 @@ use Rokka\Client\User as UserClient;
  */
 class Factory
 {
-    const API_BASE_URL = 'api_base_url';
+    public const API_BASE_URL = 'api_base_url';
 
-    const RENDER_BASE_URL = 'render_base_url';
+    public const RENDER_BASE_URL = 'render_base_url';
 
-    const PROXY = 'proxy';
+    public const PROXY = 'proxy';
 
-    const GUZZLE_OPTIONS = 'guzzle_options';
+    public const GUZZLE_OPTIONS = 'guzzle_options';
+
+    public const API_TOKEN = 'api_token';
 
     /**
      * Return an image client.
@@ -64,7 +66,12 @@ class Factory
 
         $client = self::getGuzzleClient($baseUrl, $options);
 
-        $imageClient = new ImageClient($client, $organization, $apiKey);
+        if (isset($options[self::API_TOKEN])) {
+            $apiToken = $options[self::API_TOKEN];
+        } else {
+            $apiToken = null;
+        }
+        $imageClient = new ImageClient($client, $organization, $apiKey, $apiToken);
         if ($renderBaseUrl) {
             $imageClient->setRenderBaseUrl($renderBaseUrl);
         }
@@ -97,9 +104,15 @@ class Factory
             $baseUrl = $options[self::API_BASE_URL];
         }
 
+        if (isset($options[self::API_TOKEN])) {
+            $apiToken = $options[self::API_TOKEN];
+        } else {
+            $apiToken = null;
+        }
+
         $client = self::getGuzzleClient($baseUrl, $options);
 
-        return new UserClient($client, $organization, $apiKey);
+        return new UserClient($client, $organization, $apiKey, $apiToken);
     }
 
     /**
