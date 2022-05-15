@@ -21,7 +21,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Build documentation with doctum
-        run: ./scripts/run_doctum_docs_on_github.sh
+        run: sudo ./scripts/run_doctum_docs_on_github.sh
 
       - name: Deploy
         uses: reggionick/s3-deploy@v3
