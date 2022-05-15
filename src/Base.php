@@ -111,6 +111,13 @@ abstract class Base
         return $this->getUnvalidatedPayload($token);
     }
 
+    /**
+     * Returns for how many seconds a token is valid for.
+     *
+     * Doesn't check for other validity (like ip restrictions)
+     *
+     * Returns -1 if there's no token
+     */
     public function getTokenIsValidFor(?string $token = null): int
     {
         $payload = $this->getTokenPayload($token);
@@ -172,6 +179,9 @@ abstract class Base
         return $org;
     }
 
+    /**
+     * Gets the payload of an API JWT Token (not validated against the signature).
+     */
     protected function getUnvalidatedPayload(string $token): ?array
     {
         // try to get the user id from the token without actually validating it, because the key is in the userApiKey
