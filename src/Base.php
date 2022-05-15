@@ -79,6 +79,8 @@ abstract class Base
     /**
      * Set the API Token.
      *
+     * @since 1.17.0
+     *
      * @param string|null $token API token
      *
      * @return void
@@ -90,6 +92,8 @@ abstract class Base
 
     /**
      * Get the API Token.
+     *
+     * @since 1.17.0
      */
     public function getToken(): ?string
     {
@@ -98,6 +102,8 @@ abstract class Base
 
     /**
      * Get the API Token Payload (unverified).
+     *
+     * @since 1.17.0
      */
     public function getTokenPayload(?string $token = null): ?array
     {
@@ -117,6 +123,8 @@ abstract class Base
      * Doesn't check for other validity (like ip restrictions)
      *
      * Returns -1 if there's no token
+     *
+     * @since 1.17.0
      */
     public function getTokenIsValidFor(?string $token = null): int
     {

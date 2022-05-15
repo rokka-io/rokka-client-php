@@ -182,16 +182,15 @@ class User extends Base
     /**
      * Gets a new API JWT Token with an $apiKey.
      *
+     * @since 1.17.0
+     * @see  https://api.rokka.io/doc/#/admin/getUserToken
+     *
      * @param string|null $apiKey     The api key, if different from the base one
      * @param array       $parameters The /user/apikeys/token query parameters
-     *
-     * @see  https://api.rokka.io/doc/#/admin/getUserToken
      *
      * @throws \GuzzleHttp\Exception\GuzzleException
      *
      * @return UserApiToken
-     *
-     * @since 1.17.0
      */
     public function getNewToken($apiKey = null, $parameters = [])
     {
