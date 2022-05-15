@@ -25,6 +25,8 @@ jobs:
 
       - name: build doctum docs
         uses: sudo-bot/action-doctum@v5
+        env:
+          _DOCTUM_TEMPLATE_DIR: ./template/
         with:
           config-file: ./scripts/doctum-config.php
           # parse, render or update
