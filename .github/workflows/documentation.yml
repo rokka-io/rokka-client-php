@@ -35,7 +35,7 @@ jobs:
       - name: Deploy
         uses: reggionick/s3-deploy@v3
         with:
-          folder: /tmp/doctum-output/build/
+          folder: doctum-output/build/
           bucket: rokka-io
           bucket-region: eu-central-1
           dist-id: ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }}
