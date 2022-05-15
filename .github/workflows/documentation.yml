@@ -20,8 +20,17 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v2
 
-      - name: Build documentation with doctum
-        run: sudo ./scripts/run_doctum_docs_on_github.sh
+      - name: Prepate documentation with doctum
+        run: ./scripts/prepare_doctum_docs_on_github.sh
+
+      - name: build doctum docs
+        uses: sudo-bot/action-doctum@v5
+        with:
+          config-file: ./scripts/doctum-config.php
+          # parse, render or update
+          method: "update"
+          # (optional) defaults to '--output-format=github --no-ansi --no-progress -v'
+          cli-args: "--output-format=github --no-ansi --no-progress -v"
 
       - name: Deploy
         uses: reggionick/s3-deploy@v3

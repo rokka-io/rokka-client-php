@@ -22,7 +22,7 @@ if (!empty(getenv('_DOCTUM_BRANCH'))) {
 if (!empty(getenv('_DOCTUM_TEMPLATE_DIR'))) {
     $templatedir = getenv('_DOCTUM_TEMPLATE_DIR');
 } else {
-    $templatedir = $dir;
+    $templatedir = $dir.'/scripts';
 }
 
 return new Doctum($iterator, [
