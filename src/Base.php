@@ -67,7 +67,7 @@ abstract class Base
     /**
      * Set the credentials.
      *
-     * @param string $key API key
+     * @param string|null $key API key
      *
      * @return void
      */
@@ -157,11 +157,12 @@ abstract class Base
         $options['headers'][self::API_VERSION_HEADER] = $this->apiVersion;
 
         if ($needsCredentials) {
-            $token = $credentials['token'] ?? $this->credentials['token'];
-            if (\is_string($token)) {
-                $options['headers'][self::API_AUTHORIZATION_HEADER] = 'Bearer '.$token;
-            } else {
+            $key = $credentials['key'] ?? $this->credentials['key'];
+            if (\is_string($key) && '' !== $key) {
                 $options['headers'][self::API_KEY_HEADER] = $credentials['key'] ?? $this->credentials['key'];
+            } else {
+                $token = $credentials['token'] ?? $this->credentials['token'];
+                $options['headers'][self::API_AUTHORIZATION_HEADER] = 'Bearer '.$token;
             }
         }
 
