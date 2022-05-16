@@ -8,7 +8,8 @@ This document mainly describes API changes important to users of this library.
 
 ## 1.17.0 - unreleased
 
-* Add support for API Tokens. See to be written docs ;)
+* Add support for API Tokens. 
+  See [the Authentication Guide](https://rokka.io/documentation/guides/authentication.html#using-rokka-with-a-jwt-token) for details
 
 ## 1.16.0 - 2021-12-07
 

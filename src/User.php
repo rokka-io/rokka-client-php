@@ -183,6 +183,7 @@ class User extends Base
      * Gets a new API JWT Token with an $apiKey.
      *
      * @since 1.17.0
+     * @see  https://rokka.io/documentation/guides/authentication.html#using-rokka-with-a-jwt-token
      * @see  https://api.rokka.io/doc/#/admin/getUserToken
      *
      * @param string|null $apiKey     The api key, if different from the base one
