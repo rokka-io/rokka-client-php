@@ -571,14 +571,20 @@ class TemplateHelper
         $realpath = $image->getRealpath();
         if (\is_string($realpath)) {
             $resource = finfo_open(\FILEINFO_MIME_TYPE);
-            \assert(\is_resource($resource));
-            $mimeType = finfo_file($resource, $realpath);
+            if (false !== $resource) {
+                $mimeType = finfo_file($resource, $realpath);
+            } else {
+                throw new \RuntimeException('finfo_open returned false.');
+            }
         } else {
             $content = $image->getContent();
             if (null !== $content) {
                 $resource = finfo_open(\FILEINFO_MIME_TYPE);
-                \assert(\is_resource($resource));
-                $mimeType = finfo_buffer($resource, $content);
+                if (false !== $resource) {
+                    $mimeType = finfo_buffer($resource, $content);
+                } else {
+                    throw new \RuntimeException('finfo_open returned false.');
+                }
             }
         }
         \assert(\is_string($mimeType));
