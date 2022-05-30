@@ -20,6 +20,6 @@ jobs:
           composer update --prefer-dist --no-interaction --no-progress --no-ansi
 
       - name: PHPStan
-        uses: docker://oskarstark/phpstan-ga
+        uses: docker://oskarstark/phpstan-ga:1.4.6
         with:
           args: analyze --no-progress
