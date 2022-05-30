@@ -6,6 +6,11 @@ This project tries to follow [Semantic Versioning](http://semver.org/) since the
 
 This document mainly describes API changes important to users of this library.
 
+# 1.18.0 - 2022-06-xx/unreleased
+
+- Remove support for PHP 7.1
+- Add support for PHP 8.1
+
 ## 1.17.0 - 2022-05-24
 
 * Add support for API Tokens. 
