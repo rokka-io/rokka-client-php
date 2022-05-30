@@ -25,7 +25,7 @@ class SourceImageTest extends \PHPUnit\Framework\TestCase
                 'dynamic_metadata' => [],
                 'created' => $image->created->format("Y-m-d\TH:i:s.uP"),
                 'link' => $image->link,
-                'protected' => $image->protected
+                'protected' => $image->protected,
             ];
 
             foreach ($image->dynamicMetadata as $name => $meta) {
@@ -70,8 +70,9 @@ class SourceImageTest extends \PHPUnit\Framework\TestCase
      * @dataProvider createFromJsonDataProvider
      *
      * @param $expected
-     * @param $data
-     * @param bool $isArray
+     * @param $datat
+     * @param bool  $isArray
+     * @param mixed $data
      */
     public function testCreateFromJson($expected, $data, $isArray = false)
     {
@@ -81,5 +82,22 @@ class SourceImageTest extends \PHPUnit\Framework\TestCase
             $sourceImage = SourceImage::createFromJsonResponse($data);
         }
         $this->assertEquals($expected, $sourceImage);
+    }
+
+    /**
+     * @dataProvider createFromJsonDataProvider
+     *
+     * @param $expected
+     * @param $data
+     * @param bool $isArray
+     */
+    public function testCollectionCreateFromJson($expected, $data, $isArray = false)
+    {
+        if ($isArray) {
+            $data = json_encode($data);
+        }
+        $json = '{"items": ['.$data.'], "offset": 0}';
+        $sourceImages = \Rokka\Client\Core\SourceImageCollection::createFromJsonResponse($json);
+        $this->assertEquals($expected, $sourceImages->current());
     }
 }
