@@ -12,6 +12,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.1
+          tools: composer:v2
+          coverage: none
+
       - name: Checkout code
         uses: actions/checkout@v2
 
@@ -20,6 +27,6 @@ jobs:
           composer update --prefer-dist --no-interaction --no-progress --no-ansi
 
       - name: PHPStan
-        uses: docker://oskarstark/phpstan-ga:1.4.6
+        uses: docker://oskarstark/phpstan-ga
         with:
           args: analyze --no-progress
