@@ -7,13 +7,13 @@ namespace Rokka\Client\Core;
  */
 class Membership
 {
-    const ROLE_ADMIN = 'admin';
+    public const ROLE_ADMIN = 'admin';
 
-    const ROLE_WRITE = 'write';
+    public const ROLE_WRITE = 'write';
 
-    const ROLE_READ = 'read';
+    public const ROLE_READ = 'read';
 
-    const ROLE_UPLOAD = 'upload';
+    public const ROLE_UPLOAD = 'upload';
 
     /**
      * UUID v4 of user.

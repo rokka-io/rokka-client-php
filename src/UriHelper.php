@@ -81,7 +81,7 @@ class UriHelper
         }
         $matches = self::decomposeUri($uri);
         if (empty($matches)) {
-            //if nothing matches, it's not a proper rokka URL, just return the original uri
+            // if nothing matches, it's not a proper rokka URL, just return the original uri
             return $uri;
         }
         $stack = $matches->getStack();
@@ -291,7 +291,7 @@ class UriHelper
         if (isset($config['options'])) {
             $newStackOptions = self::getStringForOptions($nameOptions, $config['options']);
         }
-        //don't return this, if it's only "options" as string
+        // don't return this, if it's only "options" as string
         if (null !== $newStackOptions && $nameOptions !== $newStackOptions) {
             $newOptions[] = $newStackOptions;
         }
@@ -304,7 +304,7 @@ class UriHelper
             $query = $uri->getQuery();
             $newStackVariables = self::getStringForOptions($nameVariables, $config['variables']);
         }
-        //don't return this, if it's only "variables" as string
+        // don't return this, if it's only "variables" as string
         if (null !== $newStackVariables && $nameVariables !== $newStackVariables) {
             $newOptions[] = $newStackVariables;
         }

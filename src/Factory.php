@@ -47,7 +47,7 @@ class Factory
             if (\func_num_args() > 3) { // if more than 3 args, the 4th is the baseUrl
                 $baseUrl = func_get_arg(3);
             } elseif (3 === \func_num_args()) { // if exactly 3 args
-                //if $baseUrl doesn't start with http, it may be a secret from the old signature, remove that, it's not used anymore
+                // if $baseUrl doesn't start with http, it may be a secret from the old signature, remove that, it's not used anymore
                 if ('http' !== substr($options, 0, 4)) {
                     $baseUrl = BaseClient::DEFAULT_API_BASE_URL;
                 } else {
@@ -94,7 +94,7 @@ class Factory
     {
         $baseUrl = BaseClient::DEFAULT_API_BASE_URL;
 
-        //bc compability, when first param was $options
+        // bc compability, when first param was $options
         if (\is_array($organization)) {
             $options = $organization;
             $organization = null;
