@@ -27,7 +27,7 @@
         "jbroadway/urlify": "^1.2",
         "guzzlehttp/psr7": "^1.7|^2.1",
         "ext-json": "*",
-        "rokka/utils": "^1.0.1",
+        "rokka/utils": "^1.0",
         "firebase/php-jwt": "^6.2"
     },
     "require-dev": {

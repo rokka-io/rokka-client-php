@@ -2,6 +2,7 @@
 
 use Rokka\Client\Core\DynamicMetadata\SubjectArea;
 use Rokka\Client\Core\SourceImage;
+use Rokka\Client\Core\SourceImageCollection;
 
 class SourceImageTest extends \PHPUnit\Framework\TestCase
 {
@@ -97,7 +98,7 @@ class SourceImageTest extends \PHPUnit\Framework\TestCase
             $data = json_encode($data);
         }
         $json = '{"items": ['.$data.'], "offset": 0}';
-        $sourceImages = \Rokka\Client\Core\SourceImageCollection::createFromJsonResponse($json);
+        $sourceImages = SourceImageCollection::createFromJsonResponse($json);
         $this->assertEquals($expected, $sourceImages->current());
     }
 }

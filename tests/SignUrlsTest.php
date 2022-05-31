@@ -17,17 +17,17 @@ class SignUrlsTest extends \PHPUnit\Framework\TestCase
                 'time limited' => [
                     '',
                     '?sigopts=%7B%22until%22%3A%222050-02-08T08%3A05%3A00%2B00%3A00%22%7D&sig=24f7a7b07122c063',
-                    new \DateTime('2050-02-08T08:03:00'),
+                    new \DateTime('2050-02-08T08:03:00+00:00'),
                 ],
                 'same sig a minute later' => [
                     '',
                     '?sigopts=%7B%22until%22%3A%222050-02-08T08%3A05%3A00%2B00%3A00%22%7D&sig=24f7a7b07122c063',
-                    new \DateTime('2050-02-08T08:04:00'),
+                    new \DateTime('2050-02-08T08:04:00+00:00'),
                 ],
                 'different sig 2 minutes later' => [
                     '',
                     '?sigopts=%7B%22until%22%3A%222050-02-08T08%3A10%3A00%2B00%3A00%22%7D&sig=fa95fb5de8a284df',
-                    new \DateTime('2050-02-08T08:07:00'),
+                    (new \DateTime('2050-02-08T08:07:00+00:00')),
                 ],
                 'keep v query' => [
                     '?v={"a":"b"}',
@@ -48,7 +48,7 @@ class SignUrlsTest extends \PHPUnit\Framework\TestCase
                 'remove existing sigopts & sig with date' => [
                     '?foo=bar&lala=hello&soso&sig=lala&sigopts=84989',
                     '?foo=bar&lala=hello&soso&sigopts=%7B%22until%22%3A%222050-02-08T08%3A05%3A00%2B00%3A00%22%7D&sig=c444f72eb623e5c9',
-                    new \DateTime('2050-02-08T08:03:00'),
+                    new \DateTime('2050-02-08T08:03:00+00:00'),
                 ],
             ];
     }
