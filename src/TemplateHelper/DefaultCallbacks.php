@@ -38,7 +38,7 @@ class DefaultCallbacks extends AbstractCallbacks
 
     public function saveHash(AbstractLocalImage $image, SourceImage $sourceImage)
     {
-        //save the metadata file as json, so that in the future we may add more info, if needed
+        // save the metadata file as json, so that in the future we may add more info, if needed
         file_put_contents($this->getHashFilePath($image), json_encode(['hash' => $sourceImage->shortHash]));
 
         return $sourceImage->shortHash;

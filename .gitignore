@@ -10,5 +10,5 @@
 # PHP Storm
 /.idea
 /doctum-output
-/.php_cs.cache
 /.phpunit.result.cache
+/.php-cs-fixer.cache

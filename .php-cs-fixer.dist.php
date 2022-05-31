@@ -4,6 +4,7 @@ $finder = PhpCsFixer\Finder::create()
     ->notPath('src/AppBundle/Command/TestCommand.php')
     ->exclude('tests/*/Fixtures')
     ->exclude('var')
+    ->exclude('doctum-output')
     ->in(__DIR__);
 
 $config = new PhpCsFixer\Config();

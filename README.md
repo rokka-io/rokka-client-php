@@ -86,12 +86,11 @@ Run `vendor/bin/phpunit` in the project root.
 ## Running PHP-CS-Fixer
 
 ```
-curl https://cs.symfony.com/download/php-cs-fixer-v2.phar > ./vendor/bin/php-cs-fixer.phar
-php ./vendor/bin/php-cs-fixer.phar  fix -v --diff --using-cache=yes src/
+composer run lint:fix
 ```
 
 ## Running phpstan
 
 ```
-./vendor/bin/phpstan.phar analyze -c phpstan.neon -l 8 src/
+composer run phpstan
 ```
