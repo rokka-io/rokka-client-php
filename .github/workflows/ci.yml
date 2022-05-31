@@ -14,22 +14,10 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - php: '7.2'
-            env:
-              SYMFONY_REQUIRE: "*"
-              COMPOSER_FLAGS: "--prefer-lowest"
           - php: '7.3'
-            env:
-              SYMFONY_REQUIRE: "*"
           - php: '7.4'
-            env:
-              SYMFONY_REQUIRE: "*"
           - php: '8.0'
-            env:
-              SYMFONY_REQUIRE: "*"
           - php: '8.1'
-            env:
-              SYMFONY_REQUIRE: "*"
           - php: '7.2'
             env:
               COMPOSER_FLAGS: "--prefer-lowest"
@@ -37,6 +25,8 @@ jobs:
             env:
               COMPOSER_FLAGS: "--prefer-lowest"
 
+    env:
+      COMPOSER_FLAGS: ${{ matrix.env.COMPOSER_FLAGS }}
     steps:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
