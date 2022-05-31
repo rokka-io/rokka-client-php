@@ -8,7 +8,7 @@ on:
 
 jobs:
   phpunit:
-    name: PHP ${{ matrix.php }} ${{ matrix.env.COMPOSER_FLAGS }}
+    name: PHP ${{ matrix.php }} ${{ matrix.env.COMPOSER_FLAGS }} ${{ matrix.env.SYMFONY_REQUIRE }}
     runs-on: ubuntu-20.04
     strategy:
       fail-fast: false
@@ -37,6 +37,9 @@ jobs:
             env:
               COMPOSER_FLAGS: "--prefer-lowest"
 
+    env:
+      SYMFONY_REQUIRE: ${{ matrix.env.SYMFONY_REQUIRE }}
+      COMPOSER_FLAGS: ${{ matrix.env.COMPOSER_FLAGS }}
     steps:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
