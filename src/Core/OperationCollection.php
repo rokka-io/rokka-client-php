@@ -31,10 +31,8 @@ class OperationCollection implements \Countable, \Iterator
 
     /**
      * Return number of operations.
-     *
-     * @return int
      */
-    public function count()
+    public function count(): int
     {
         return \count($this->operations);
     }
@@ -74,39 +72,28 @@ class OperationCollection implements \Countable, \Iterator
     /**
      * @return Operation
      */
+    #[\ReturnTypeWillChange]
     public function current()
     {
         return $this->operations[$this->current];
     }
 
-    /**
-     * @return void
-     */
-    public function next()
+    public function next(): void
     {
         ++$this->current;
     }
 
-    /**
-     * @return int
-     */
-    public function key()
+    public function key(): int
     {
         return $this->current;
     }
 
-    /**
-     * @return bool
-     */
-    public function valid()
+    public function valid(): bool
     {
         return $this->current < \count($this->operations);
     }
 
-    /**
-     * @return void
-     */
-    public function rewind()
+    public function rewind(): void
     {
         $this->current = 0;
     }
