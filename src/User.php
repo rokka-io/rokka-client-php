@@ -2,7 +2,6 @@
 
 namespace Rokka\Client;
 
-use Firebase\JWT\JWT;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\GuzzleException;
 use Rokka\Client\Core\Membership;

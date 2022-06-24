@@ -132,6 +132,7 @@ class SourceImage
         $this->hash = $hash;
         $this->name = $name;
         $this->format = $format;
+        $this->mimetype = $mimetype;
         $this->size = $size;
         $this->width = $width;
         $this->height = $height;

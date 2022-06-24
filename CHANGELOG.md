@@ -6,10 +6,13 @@ This project tries to follow [Semantic Versioning](http://semver.org/) since the
 
 This document mainly describes API changes important to users of this library.
 
+# 1.18.2 - 2022-06-24
+
+* Allow firebase/php-jwt 5.0 
+
 # 1.18.1 - 2022-06-24
 
 * Add mimetype attribute to SourceImage object.
-
 
 # 1.18.0 - 2022-05-31
 
