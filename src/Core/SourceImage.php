@@ -41,6 +41,11 @@ class SourceImage
     public $format;
 
     /**
+     * @var string Original mimetype when it was uploaded
+     */
+    public $mimetype;
+
+    /**
      * @var int Size of image in bytes
      */
     public $size;
@@ -102,6 +107,7 @@ class SourceImage
      * @param string    $link            Link to the image
      * @param string    $shortHash       The short hash
      * @param bool      $protected       Is image protected
+     * @param mixed     $mimetype
      */
     public function __construct(
         $organization,
@@ -109,6 +115,7 @@ class SourceImage
         $hash,
         $name,
         $format,
+        $mimetype,
         $size,
         $width,
         $height,
@@ -176,6 +183,7 @@ class SourceImage
             $data['hash'],
             $data['name'],
             $data['format'],
+            $data['mimetype'],
             $data['size'],
             $data['width'],
             $data['height'],

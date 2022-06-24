@@ -19,6 +19,7 @@ class SourceImageTest extends \PHPUnit\Framework\TestCase
                 'hash' => $image->hash,
                 'name' => $image->name,
                 'format' => $image->format,
+                'mimetype' => $image->mimetype,
                 'size' => $image->size,
                 'width' => $image->width,
                 'height' => $image->height,
@@ -42,24 +43,24 @@ class SourceImageTest extends \PHPUnit\Framework\TestCase
 
         $testData = [];
 
-        $image = new SourceImage('organization', 'binaryHash', 'verylonghash', 'name', 'format', 'size', 'width', 'height', [], [], [], new DateTime(), 'link', 'shorthash');
+        $image = new SourceImage('organization', 'binaryHash', 'verylonghash', 'name', 'format', 'mimetype','size', 'width', 'height', [], [], [], new DateTime(), 'link', 'shorthash');
         $testData['base-image'] = [
             $image, $imageReverser($image), true,
         ];
 
-        $image = new SourceImage('organization', 'binaryHash', 'verylonghash', 'name', 'format', 'size', 'width', 'height', [], [], [], new DateTime(), 'link', 'shorthash');
+        $image = new SourceImage('organization', 'binaryHash', 'verylonghash', 'name', 'format', 'mimetype','size', 'width', 'height', [], [], [], new DateTime(), 'link', 'shorthash');
         $testData['base-image-json'] = [
             $image, json_encode($imageReverser($image)),
         ];
 
         $subjectAres = new SubjectArea(10, 10, 100, 100);
-        $image = new SourceImage('organization', 'binaryHash', 'verylonghash', 'name', 'format', 'size', 'width', 'height', [], ['subject_area' => $subjectAres], [], new DateTime(), 'link', 'shorthash');
+        $image = new SourceImage('organization', 'binaryHash', 'verylonghash', 'name', 'format', 'mimetype', 'size', 'width', 'height', [], ['subject_area' => $subjectAres], [], new DateTime(), 'link', 'shorthash');
         $testData['image-subject-area'] = [
             $image, $imageReverser($image), true,
         ];
 
         $subjectAres = new SubjectArea(10, 10, 100, 100);
-        $image = new SourceImage('organization', 'binaryHash', 'verylonghash', 'name', 'format', 'size', 'width', 'height', [], ['subject_area' => $subjectAres], [], new DateTime(), 'link', 'shorthash');
+        $image = new SourceImage('organization', 'binaryHash', 'verylonghash', 'name', 'format', 'mimetype','size', 'width', 'height', [], ['subject_area' => $subjectAres], [], new DateTime(), 'link', 'shorthash');
         $testData['image-json-subject-area'] = [
             $image, json_encode($imageReverser($image)),
         ];
