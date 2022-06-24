@@ -6,11 +6,15 @@ This project tries to follow [Semantic Versioning](http://semver.org/) since the
 
 This document mainly describes API changes important to users of this library.
 
-# 1.18.0 - 2022-06-24
+# 1.18.1 - 2022-06-24
 
-- Add mimetype attribute to SourceImage object.
-- Remove support for PHP 7.1
-- Add support for PHP 8.1
+* Add mimetype attribute to SourceImage object.
+
+
+# 1.18.0 - 2022-05-31
+
+* Remove support for PHP 7.1
+* Add support for PHP 8.1
 
 ## 1.17.0 - 2022-05-24
 
