@@ -91,6 +91,11 @@ class SourceImage
     public $protected;
 
     /**
+     * @var bool
+     */
+    public $locked;
+
+    /**
      * Constructor.
      *
      * @param string    $organization    Organization
@@ -107,6 +112,7 @@ class SourceImage
      * @param string    $link            Link to the image
      * @param string    $shortHash       The short hash
      * @param bool      $protected       Is image protected
+     * @param bool      $locked          Is image locked
      * @param mixed     $mimetype
      */
     public function __construct(
@@ -125,7 +131,8 @@ class SourceImage
         \DateTime $created,
         $link,
         $shortHash = null,
-        $protected = false
+        $protected = false,
+        $locked = false
     ) {
         $this->organization = $organization;
         $this->binaryHash = $binaryHash;
@@ -146,6 +153,7 @@ class SourceImage
         }
         $this->shortHash = $shortHash;
         $this->protected = $protected;
+        $this->locked = $locked;
     }
 
     /**
@@ -194,7 +202,8 @@ class SourceImage
             new \DateTime($data['created']),
             $data['link'],
             $data['short_hash'],
-            $data['protected']
+            $data['protected'],
+            $data['locked']
         );
     }
 

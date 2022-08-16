@@ -687,8 +687,6 @@ class Image extends Base
      */
     public function setProtected($protected, $hash, $organization = '', $options = [])
     {
-        $count = 0;
-        $response = null;
         $callOptions = [];
         $callOptions['json'] = $protected;
 
@@ -711,6 +709,39 @@ class Image extends Base
         }
 
         return $this->extractHashFromLocationHeader($response->getHeader('Location'));
+    }
+
+    /**
+     * (Un)sets locked status to a SourceImage.
+     *
+     * @param bool   $locked       set the image to locked or no
+     *                             Or an array with more than one of those
+     * @param string $hash         The Image hash
+     * @param string $organization Optional organization name
+     *
+     * @throws GuzzleException
+     * @throws \RuntimeException
+     */
+    public function setLocked($locked, $hash, $organization = ''): SourceImage
+    {
+        $callOptions = [];
+        $callOptions['json'] = $locked;
+
+        $path = implode('/', [
+            self::SOURCEIMAGE_RESOURCE,
+            $this->getOrganizationName($organization),
+            $hash,
+            'options',
+            'locked',
+        ]);
+
+        $response = $this->call('PUT', $path, $callOptions);
+        if (!($response->getStatusCode() >= 200 && $response->getStatusCode() < 300)) {
+            throw new \LogicException($response->getBody()->getContents(), $response->getStatusCode());
+        }
+        $content = $response->getBody()->getContents();
+
+        return SourceImage::createFromJsonResponse($content);
     }
 
     /**

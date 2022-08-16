@@ -6,15 +6,20 @@ This project tries to follow [Semantic Versioning](http://semver.org/) since the
 
 This document mainly describes API changes important to users of this library.
 
-# 1.18.2 - 2022-06-24
+## 1.19.0 - 2022-08-16
+
+* Add support for locked sourceimages via `\Rokka\Client\Image::setProtected`.
+  See [the API Docs](https://api.rokka.io/doc/#/sourceimages/putSourceImageOptionsLocked) for details
+
+## 1.18.2 - 2022-06-24
 
 * Allow firebase/php-jwt 5.0 
 
-# 1.18.1 - 2022-06-24
+## 1.18.1 - 2022-06-24
 
 * Add mimetype attribute to SourceImage object.
 
-# 1.18.0 - 2022-05-31
+## 1.18.0 - 2022-05-31
 
 * Remove support for PHP 7.1
 * Add support for PHP 8.1
