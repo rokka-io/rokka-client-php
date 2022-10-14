@@ -257,7 +257,7 @@ class TemplateHelper
         $attrs = 'src="'.$url.'"';
         $srcSets = self::getSrcSets($url, $sizes, $setWidthInUrl);
         if (\count($srcSets) > 0) {
-            $attrs .= ' srcset="'.implode(', ', ($srcSets)).'"';
+            $attrs .= ' srcset="'.implode(', ', $srcSets).'"';
         }
 
         return $attrs;
@@ -281,7 +281,7 @@ class TemplateHelper
     {
         $srcSets = self::getSrcSets($url, $sizes, $setWidthInUrl);
 
-        return implode(', ', ($srcSets));
+        return implode(', ', $srcSets);
     }
 
     /**
@@ -310,7 +310,7 @@ class TemplateHelper
             }
             $urlx2 = UriHelper::getSrcSetUrlString($url, $size, $custom);
             if ($urlx2 != $url) {
-                $srcSets[] = "url('${urlx2}') ${size}";
+                $srcSets[] = "url('{$urlx2}') {$size}";
             }
         }
         if (\count($srcSets) > 0) {
@@ -497,7 +497,7 @@ class TemplateHelper
             }
             $urlx2 = UriHelper::getSrcSetUrlString($url, $size, $custom, $setWidthInUrl);
             if ($urlx2 != $url) {
-                $srcSets[] = "${urlx2} ${size}";
+                $srcSets[] = "{$urlx2} {$size}";
             }
         }
 

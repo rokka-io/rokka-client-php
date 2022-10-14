@@ -89,8 +89,6 @@ class Membership
 
     /**
      * @param array $data
-     *
-     * @return Membership
      */
     private static function getObjectFromArray($data): self
     {
