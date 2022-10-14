@@ -6,6 +6,10 @@ This project tries to follow [Semantic Versioning](http://semver.org/) since the
 
 This document mainly describes API changes important to users of this library.
 
+## 1.20.0 - unreleased
+
+* Remove support for PHP 7.2
+
 ## 1.19.0 - 2022-08-16
 
 * Add support for locked sourceimages via `\Rokka\Client\Image::setProtected`.
