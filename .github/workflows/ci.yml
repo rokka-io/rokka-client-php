@@ -47,3 +47,6 @@ jobs:
         run: |
           composer validate --strict --no-check-lock
           vendor/bin/phpunit
+
+      - name: composer audit
+        run: composer audit
