@@ -18,7 +18,7 @@ jobs:
           php-version: '8.1'
 
       - name: Checkout Code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Prepate documentation with doctum
         run: ./scripts/prepare_doctum_docs_on_github.sh
