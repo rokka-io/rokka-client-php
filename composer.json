@@ -52,7 +52,8 @@
     "scripts": {
         "phpunit": "phpunit",
         "phpstan": "phpstan analyze -c phpstan.neon -l 8 src/",
-        "lint:fix": "php-cs-fixer fix -v --diff --using-cache=yes src/"
+        "lint:fix": "php-cs-fixer fix -v --diff --using-cache=yes src/",
+        "lint": "php-cs-fixer fix -v --dry-run --diff --using-cache=yes src/"
     },
 
     "extra": {
