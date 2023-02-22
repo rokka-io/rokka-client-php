@@ -6,9 +6,10 @@ This project tries to follow [Semantic Versioning](http://semver.org/) since the
 
 This document mainly describes API changes important to users of this library.
 
-## 1.20.0 - unreleased
+## 1.20.0 - 2023-02-22
 
 * Remove support for PHP 7.2
+* Add `\Rokka\Client\Core\StackCollection::getCursor()` to get the cursor of a stack collection for paging
 
 ## 1.19.0 - 2022-08-16
 

@@ -18,17 +18,23 @@ class StackCollection implements \Countable, \Iterator
     private $current = 0;
 
     /**
+     * @var string|null
+     */
+    private $cursor;
+
+    /**
      * Constructor.
      *
      * @param array $stacks Array of stacks
      */
-    public function __construct(array $stacks)
+    public function __construct(array $stacks, string $cursor = null)
     {
         foreach ($stacks as $stack) {
             if (!($stack instanceof Stack)) {
                 throw new \LogicException('You can only use Stack inside StackCollection');
             }
         }
+        $this->cursor = $cursor;
 
         $this->stacks = $stacks;
     }
@@ -52,6 +58,14 @@ class StackCollection implements \Countable, \Iterator
     }
 
     /**
+     * @return string|null
+     */
+    public function getCursor()
+    {
+        return $this->cursor;
+    }
+
+    /**
      * Create a stack from the JSON data returned by the rokka.io API.
      *
      * @param string $data JSON data
@@ -66,7 +80,9 @@ class StackCollection implements \Countable, \Iterator
             return Stack::createFromDecodedJsonResponse($stack);
         }, $data['items']);
 
-        return new self($stacks);
+        $cursor = $data['cursor'] ?? null;
+
+        return new self($stacks, $cursor);
     }
 
     /**
