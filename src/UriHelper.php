@@ -357,7 +357,7 @@ class UriHelper
         // if custom is eg '2x', add options-dpr-
         if (preg_match('#^([0-9]+)x$#', $custom, $matches)) {
             $uri = self::addOptionsToUri($uri, 'options-dpr-'.$matches[1].
-                ($setWidthInUrl ? '--resize-width-'.(int) ceil($size / $matches[1]) : ''));
+                ($setWidthInUrl ? '--resize-width-'.(int) ceil((int) $size / (int) $matches[1]) : ''));
         } else {
             $stack = new StackUri();
             $stack->addOverridingOptions($custom);
