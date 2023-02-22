@@ -6,6 +6,10 @@ This project tries to follow [Semantic Versioning](http://semver.org/) since the
 
 This document mainly describes API changes important to users of this library.
 
+## unreleased
+
+* Remove support for firebase/php-jwt 5.x due to [CVE-2021-46743](https://github.com/advisories/GHSA-8xf4-w7qw-pjjw)
+
 ## 1.20.0 - 2023-02-22
 
 * Remove support for PHP 7.2
