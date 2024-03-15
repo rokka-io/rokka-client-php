@@ -31,7 +31,7 @@ class UserApiToken
      *
      * @param array $resonse
      *
-     * @return \Rokka\Client\Core\UserApiToken
+     * @return UserApiToken
      */
     public static function createFromArray($resonse)
     {

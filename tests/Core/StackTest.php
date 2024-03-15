@@ -63,9 +63,6 @@ class StackTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @dataProvider createFromJsonDataProvider
-     *
-     * @param $expected
-     * @param $data
      */
     public function testCreateFromJson($expected, $data)
     {
@@ -76,13 +73,10 @@ class StackTest extends \PHPUnit\Framework\TestCase
     /**
      * @dataProvider createFromJsonDataProvider
      *
-     * @param $expected
-     * @param $data
      * @param bool $isArray
      */
     public function testCollectionCreateFromJson($expected, $data, $isArray = false)
     {
-
         $json = '{"items": ['.$data.'], "offset": 0}';
         $stacks = StackCollection::createFromJsonResponse($json);
         $this->assertEquals($expected, $stacks->current());

@@ -21,7 +21,7 @@ class TemplateHelperTest extends \PHPUnit\Framework\TestCase
 
     private $testImages = ['small' => ['path' => __DIR__.'/Fixtures/Images/small-bratpfanne.jpg', 'hash' => '71775293697709c1a1ce66f05d7c011a6982a6a9']];
 
-    public function setUp():void
+    protected function setUp(): void
     {
         $this->rokka = new TemplateHelper('testorg', 'key', new TestCallbacks());
         parent::setUp();
@@ -55,10 +55,6 @@ class TemplateHelperTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @dataProvider provideStackUrl
-     *
-     * @param $image
-     * @param $seo
-     * @param $url
      *
      * @throws \GuzzleHttp\Exception\GuzzleException
      */

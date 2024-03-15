@@ -37,7 +37,7 @@ class Factory
      *
      * @throws \RuntimeException
      *
-     * @return Image
+     * @return ImageClient
      */
     public static function getImageClient($organization, $apiKey, $options = [])
     {
@@ -152,8 +152,8 @@ class Factory
         return function (
             $retries,
             Request $request,
-            Response $response = null,
-            TransferException $exception = null
+            ?Response $response = null,
+            ?TransferException $exception = null
         ) {
             // Limit the number of retries to 10
             if ($retries >= 10) {

@@ -1,7 +1,7 @@
 <?php
 
-use Doctum\RemoteRepository\GitHubRemoteRepository;
 use Doctum\Doctum;
+use Doctum\RemoteRepository\GitHubRemoteRepository;
 use Doctum\Version\GitVersionCollection;
 use Symfony\Component\Finder\Finder;
 

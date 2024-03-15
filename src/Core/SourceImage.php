@@ -113,7 +113,6 @@ class SourceImage
      * @param string    $shortHash       The short hash
      * @param bool      $protected       Is image protected
      * @param bool      $locked          Is image locked
-     * @param mixed     $mimetype
      */
     public function __construct(
         $organization,
@@ -165,7 +164,7 @@ class SourceImage
             $data['user_metadata'] = [];
         } else {
             foreach ($data['user_metadata'] as $key => $value) {
-                if (0 === strpos($key, 'date:')) {
+                if (str_starts_with($key, 'date:')) {
                     $data['user_metadata'][$key] = new \DateTime($value);
                 }
             }
