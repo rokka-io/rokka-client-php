@@ -1058,6 +1058,15 @@ class Image extends Base
             ];
         }
 
+        dump($options);
+        if (isset($options['meta_static'])) {
+            $options['meta_static'] = $this->applyValueTransformationsToUserMeta($options['meta_static']);
+            $requestOptions[] = [
+                'name' => 'meta_static[0]',
+                'contents' => json_encode($options['meta_static']),
+            ];
+        }
+
         if (isset($options['options'])) {
             $requestOptions[] = [
                 'name' => 'options[0]',
