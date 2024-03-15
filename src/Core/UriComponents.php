@@ -92,13 +92,7 @@ class UriComponents implements \ArrayAccess
         } elseif (\is_string($stack)) {
             $this->stack = new StackUri($stack);
         } else {
-            if ('object' == \gettype($stack)) {
-                $given = \get_class($stack);
-            } else {
-                $given = \gettype($stack);
-            }
-
-            throw new \RuntimeException('Stack needs to be StackUri or string. '.$given.' given.');
+            throw new \RuntimeException('Stack needs to be StackUri or string.');
         }
     }
 
