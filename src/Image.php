@@ -766,6 +766,30 @@ class Image extends Base
     }
 
     /**
+     * @param string[]    $languages
+     * @param string      $hash
+     * @param string|null $organization
+     * @param array       $options, for example ['force' => true] to recreate
+     */
+    public function addAutodescription($languages, $hash, $organization = null, array $options = []): SourceImage
+    {
+        $path = implode('/', [
+            self::SOURCEIMAGE_RESOURCE,
+            $this->getOrganizationName($organization),
+            $hash,
+            'autodescription',
+        ]);
+        $force = isset($options['force']) && $options['force'] ? true : false;
+        $response = $this->call('POST', $path, ['json' => ['languages' => $languages, 'force' => $force]]);
+        if (!($response->getStatusCode() >= 200 && $response->getStatusCode() < 300)) {
+            throw new \LogicException($response->getBody()->getContents(), $response->getStatusCode());
+        }
+        $content = $response->getBody()->getContents();
+
+        return SourceImage::createFromJsonResponse($content);
+    }
+
+    /**
      * Delete the given DynamicMetadata from a SourceImage.
      * Returns the new Hash for the SourceImage, it could be the same as the input one if the operation
      * did not change it.
