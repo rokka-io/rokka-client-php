@@ -24,7 +24,7 @@ interface DynamicMetadataInterface
     /**
      * Get the data, which should be json-fied later.
      *
-     * @return mixed
+     * @return mixed The data that will be encoded to JSON
      */
     public function getForJson();
 }

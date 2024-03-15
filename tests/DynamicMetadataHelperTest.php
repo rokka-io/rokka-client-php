@@ -22,9 +22,6 @@ class DynamicMetadataHelperTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @dataProvider provideGetDynamicMetadataClassNameData
-     *
-     * @param $expected
-     * @param $name
      */
     public function testGetDynamicMetadataClassName($expected, $name)
     {

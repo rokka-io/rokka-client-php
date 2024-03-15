@@ -9,9 +9,9 @@ namespace Rokka\Client\LocalImage;
  *
  * See some implementation of the abstract class for examples.
  *
- * @see \Rokka\Client\LocalImage\FileInfo
- * @see \Rokka\Client\LocalImage\RokkaHash
- * @see \Rokka\Client\LocalImage\StringContent
+ * @see FileInfo
+ * @see RokkaHash
+ * @see StringContent
  * @since 1.3.0
  */
 abstract class AbstractLocalImage
@@ -21,14 +21,14 @@ abstract class AbstractLocalImage
      *
      * @var mixed|null
      */
-    protected $context = null;
+    protected $context;
 
     /**
      * The rokka hash from the rokka API.
      *
      * @var string|null
      */
-    protected $rokkaHash = null;
+    protected $rokkaHash;
 
     /**
      * A unique identifier for this image, can be any string.
@@ -37,7 +37,7 @@ abstract class AbstractLocalImage
      *
      * @var string|null
      */
-    protected $identifier = null;
+    protected $identifier;
 
     /**
      * @since 1.3.0

@@ -35,7 +35,7 @@ class Stack extends AbstractStack
      * @param array       $stackOptions    Collection of stack options
      * @param \DateTime   $created         Created at
      */
-    public function __construct($organization = null, $name = null, array $stackOperations = [], array $stackOptions = [], \DateTime $created = null)
+    public function __construct($organization = null, $name = null, array $stackOperations = [], array $stackOptions = [], ?\DateTime $created = null)
     {
         parent::__construct($name, $stackOperations, $stackOptions);
         $this->organization = $organization;

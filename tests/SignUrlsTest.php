@@ -27,7 +27,7 @@ class SignUrlsTest extends \PHPUnit\Framework\TestCase
                 'different sig 2 minutes later' => [
                     '',
                     '?sigopts=%7B%22until%22%3A%222050-02-08T08%3A10%3A00%2B00%3A00%22%7D&sig=fa95fb5de8a284df',
-                    (new \DateTime('2050-02-08T08:07:00+00:00')),
+                    new \DateTime('2050-02-08T08:07:00+00:00'),
                 ],
                 'keep v query' => [
                     '?v={"a":"b"}',
@@ -62,7 +62,7 @@ class SignUrlsTest extends \PHPUnit\Framework\TestCase
      * @throws \PHPUnit_Framework_Exception
      * @throws \PHPUnit_Framework_ExpectationFailedException
      */
-    public function testCheckSignature($inputQuery = '', $expectedQuery = '', \DateTime $until = null)
+    public function testCheckSignature($inputQuery = '', $expectedQuery = '', ?\DateTime $until = null)
     {
         $key = 'OCOuisGe30QyocYkQN1SPErGGKunyuhZ';
         $path = 'http://test.rokka.test/dynamic/c1b110.jpg';
@@ -73,9 +73,9 @@ class SignUrlsTest extends \PHPUnit\Framework\TestCase
 
     public function testSlashSignature()
     {
-        //with leading slash
+        // with leading slash
         $this->assertEquals('/dynamic/abcdef.jpg?sig=b7789b71b470e458', (string) UriHelper::signUrl('/dynamic/abcdef.jpg', 'abcdef'));
-        //without leading slash, should return the same sig
+        // without leading slash, should return the same sig
         $this->assertEquals('dynamic/abcdef.jpg?sig=b7789b71b470e458', (string) UriHelper::signUrl('dynamic/abcdef.jpg', 'abcdef'));
         // different path leads to different sig
         $this->assertEquals('/dynamic/resize-width-100/abcdef.jpg?sig=6a7233a3c5bd2374', (string) UriHelper::signUrl('/dynamic/resize-width-100/abcdef.jpg', 'abcdef'));

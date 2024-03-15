@@ -13,7 +13,7 @@ namespace Rokka\Client\LocalImage;
  * $image = new StringContent($content, $identifier, $context);
  * ```
  *
- * @see \Rokka\Client\LocalImage\FileInfo
+ * @see FileInfo
  * @since 1.3.0
  */
 class StringContent extends AbstractLocalImage
@@ -21,7 +21,7 @@ class StringContent extends AbstractLocalImage
     /**
      * @var string|null
      */
-    private $content = null;
+    private $content;
 
     /**
      * @param string|null $image

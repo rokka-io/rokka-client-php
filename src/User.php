@@ -98,9 +98,9 @@ class User extends Base
      *
      * @param string|null $comment Optional comment
      *
-     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws GuzzleException
      */
-    public function addUserApiKey(string $comment = null): UserApiKey
+    public function addUserApiKey(?string $comment = null): UserApiKey
     {
         $contents = $this
             ->call('POST', self::USER_API_KEYS_RESOURCE, ['json' => [
@@ -120,7 +120,7 @@ class User extends Base
      *
      * @since 1.16.0
      *
-     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws GuzzleException
      */
     public function getCurrentUserApiKey(): UserApiKey
     {
@@ -138,7 +138,7 @@ class User extends Base
      *
      * @since 1.16.0
      *
-     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws GuzzleException
      *
      * @return bool returns false, if key didn't exist, true if operation succeeded
      */
@@ -188,7 +188,7 @@ class User extends Base
      * @param string|null $apiKey     The api key, if different from the base one
      * @param array       $parameters The /user/apikeys/token query parameters
      *
-     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws GuzzleException
      *
      * @return UserApiToken
      */
@@ -348,7 +348,7 @@ class User extends Base
                 implode('/', [self::ORGANIZATION_RESOURCE, $this->getOrganizationName($organization), 'memberships']),
                 ['json' => [
                     'roles' => $roles,
-            ]])
+                ]])
             ->getBody()
             ->getContents();
 

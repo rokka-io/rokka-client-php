@@ -39,7 +39,7 @@ class Image extends Base
     /**
      * @var string|null the render base url like foo-org.rokka.io
      */
-    private $renderBaseUrl = null;
+    private $renderBaseUrl;
 
     /**
      * Constructor.
@@ -470,13 +470,13 @@ class Image extends Base
      *
      * Example:
      * ```language-php
-        $stack = new Stack(null, 'teststack');
-        $stack->addStackOperation(new StackOperation('resize', ['width' => 200, 'height' => 200]));
-        $stack->addStackOperation(new StackOperation('rotate', ['angle' => 45]));
-        $stack->setStackOptions(['jpg.quality' => 80]);
-        $requestConfig = ['overwrite' => true];
-        $stack = $client->saveStack($stack, $requestConfig);
-        echo 'Created stack ' . $stack->getName() . PHP_EOL;
+     * $stack = new Stack(null, 'teststack');
+     * $stack->addStackOperation(new StackOperation('resize', ['width' => 200, 'height' => 200]));
+     * $stack->addStackOperation(new StackOperation('rotate', ['angle' => 45]));
+     * $stack->setStackOptions(['jpg.quality' => 80]);
+     * $requestConfig = ['overwrite' => true];
+     * $stack = $client->saveStack($stack, $requestConfig);
+     * echo 'Created stack ' . $stack->getName() . PHP_EOL;
      * ```
      * The only requestConfig option currently can be
      * ['overwrite' => true|false] (false is the default)
@@ -691,12 +691,12 @@ class Image extends Base
         $callOptions['json'] = $protected;
 
         $path = implode('/', [
-                self::SOURCEIMAGE_RESOURCE,
-                $this->getOrganizationName($organization),
-                $hash,
-                'options',
-                'protected',
-            ]);
+            self::SOURCEIMAGE_RESOURCE,
+            $this->getOrganizationName($organization),
+            $hash,
+            'options',
+            'protected',
+        ]);
 
         // delete the previous, if we're not on the first one anymore, or if we want to delete it.
         if (isset($options['deletePrevious']) && $options['deletePrevious']) {
@@ -766,10 +766,10 @@ class Image extends Base
     }
 
     /**
-     * @param string[]    $languages
-     * @param string      $hash
-     * @param string|null $organization
-     * @param array       $options, for example ['force' => true] to recreate
+     * @param string[]            $languages
+     * @param string              $hash
+     * @param string|null         $organization
+     * @param array{force?: bool} $options      if force is true, the description is generated again even if it already exists
      */
     public function addAutodescription($languages, $hash, $organization = null, array $options = []): SourceImage
     {

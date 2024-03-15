@@ -4,7 +4,7 @@ use Rokka\Client\Core\DynamicMetadata\SubjectArea;
 use Rokka\Client\Core\SourceImage;
 use Rokka\Client\Core\SourceImageCollection;
 
-class SourceImageTest extends \PHPUnit\Framework\TestCase
+class SourceImageTest extends PHPUnit\Framework\TestCase
 {
     /**
      * @return array
@@ -44,12 +44,12 @@ class SourceImageTest extends \PHPUnit\Framework\TestCase
 
         $testData = [];
 
-        $image = new SourceImage('organization', 'binaryHash', 'verylonghash', 'name', 'format', 'mimetype','size', 'width', 'height', [], [], [], new DateTime(), 'link', 'shorthash');
+        $image = new SourceImage('organization', 'binaryHash', 'verylonghash', 'name', 'format', 'mimetype', 'size', 'width', 'height', [], [], [], new DateTime(), 'link', 'shorthash');
         $testData['base-image'] = [
             $image, $imageReverser($image), true,
         ];
 
-        $image = new SourceImage('organization', 'binaryHash', 'verylonghash', 'name', 'format', 'mimetype','size', 'width', 'height', [], [], [], new DateTime(), 'link', 'shorthash');
+        $image = new SourceImage('organization', 'binaryHash', 'verylonghash', 'name', 'format', 'mimetype', 'size', 'width', 'height', [], [], [], new DateTime(), 'link', 'shorthash');
         $testData['base-image-json'] = [
             $image, json_encode($imageReverser($image)),
         ];
@@ -61,7 +61,7 @@ class SourceImageTest extends \PHPUnit\Framework\TestCase
         ];
 
         $subjectAres = new SubjectArea(10, 10, 100, 100);
-        $image = new SourceImage('organization', 'binaryHash', 'verylonghash', 'name', 'format', 'mimetype','size', 'width', 'height', [], ['subject_area' => $subjectAres], [], new DateTime(), 'link', 'shorthash');
+        $image = new SourceImage('organization', 'binaryHash', 'verylonghash', 'name', 'format', 'mimetype', 'size', 'width', 'height', [], ['subject_area' => $subjectAres], [], new DateTime(), 'link', 'shorthash');
         $testData['image-json-subject-area'] = [
             $image, json_encode($imageReverser($image)),
         ];
@@ -72,10 +72,7 @@ class SourceImageTest extends \PHPUnit\Framework\TestCase
     /**
      * @dataProvider createFromJsonDataProvider
      *
-     * @param $expected
-     * @param $datat
-     * @param bool  $isArray
-     * @param mixed $data
+     * @param bool $isArray
      */
     public function testCreateFromJson($expected, $data, $isArray = false)
     {
@@ -90,8 +87,6 @@ class SourceImageTest extends \PHPUnit\Framework\TestCase
     /**
      * @dataProvider createFromJsonDataProvider
      *
-     * @param $expected
-     * @param $data
      * @param bool $isArray
      */
     public function testCollectionCreateFromJson($expected, $data, $isArray = false)

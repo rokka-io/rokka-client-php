@@ -35,13 +35,8 @@ class ImageTest extends \PHPUnit\Framework\TestCase
     /**
      * @dataProvider dataProviderGetSourceImageUri
      *
-     * @param                     $expected
-     * @param \Rokka\Client\Image $client
-     * @param                     $hash
-     * @param                     $stack
-     * @param                     $format
-     * @param                     $name
-     * @param string              $organization
+     * @param string     $organization
+     * @param mixed|null $name
      */
     public function testGetSourceImageUri($expected, Image $client, $hash, $stack, $format, $name = null, $organization = null)
     {

@@ -45,7 +45,7 @@ class TemplateHelper
     private $rokkaClientOptions;
 
     /**
-     * @var \Rokka\Client\Image
+     * @var Image
      */
     private $imageClient;
 
@@ -61,7 +61,7 @@ class TemplateHelper
     public function __construct(
         $organization,
         $apiKey,
-        AbstractCallbacks $callbacks = null,
+        ?AbstractCallbacks $callbacks = null,
         $publicRokkaDomain = null,
         $options = []
     ) {
@@ -136,11 +136,11 @@ class TemplateHelper
      * @return string
      */
     public function getStackUrl(
-      $image,
-      $stack,
-      $format = 'jpg',
-      $seo = null,
-      $seoLanguage = 'de'
+        $image,
+        $stack,
+        $format = 'jpg',
+        $seo = null,
+        $seoLanguage = 'de'
     ) {
         if (null == $image) {
             return '';
@@ -327,7 +327,7 @@ class TemplateHelper
      *
      * @return string
      */
-    public function getImagename(AbstractLocalImage $image = null)
+    public function getImagename(?AbstractLocalImage $image = null)
     {
         if (null === $image) {
             return '';
@@ -357,11 +357,11 @@ class TemplateHelper
      * @return string
      */
     public function generateRokkaUrl(
-      $hash,
-      $stack,
-      $format = 'jpg',
-      $seo = null,
-      $seoLanguage = 'de'
+        $hash,
+        $stack,
+        $format = 'jpg',
+        $seo = null,
+        $seoLanguage = 'de'
     ) {
         if (null === $format) {
             $format = 'jpg';
@@ -385,7 +385,7 @@ class TemplateHelper
      *
      * @throws \RuntimeException
      *
-     * @return \Rokka\Client\Image
+     * @return Image
      */
     public function getRokkaClient()
     {
@@ -439,7 +439,7 @@ class TemplateHelper
      *
      * @param AbstractLocalImage|string|\SplFileInfo $input
      * @param string|null                            $identifier
-     * @param mixed                                  $context
+     * @param mixed|null                             $context
      *
      * @throws \RuntimeException
      *
@@ -469,8 +469,7 @@ class TemplateHelper
         }
 
         // we can't trust callers to only provide $input in one of the supported types
-        // @phpstan-ignore-next-line
-        $inputType = \is_object($input) ? \get_class($input) : \gettype($input);
+        $inputType = \is_object($input) ? $input::class : \gettype($input);
 
         throw new \RuntimeException('Can not create a source image from input of type '.$inputType);
     }
@@ -525,7 +524,7 @@ class TemplateHelper
         $hash,
         $stack,
         $format = 'jpg',
-        AbstractLocalImage $image = null,
+        ?AbstractLocalImage $image = null,
         $seoLanguage = 'de'
     ) {
         return $this->generateRokkaUrl($hash, $stack, $format, $this->getImagename($image), $seoLanguage);
