@@ -6,10 +6,13 @@ This project tries to follow [Semantic Versioning](http://semver.org/) since the
 
 This document mainly describes API changes important to users of this library.
 
-## 1.21.0 - 2024-03-15
+## 1.21.0 - 2024-03-17
 
-* Remove support for firebase/php-jwt 5.x due to [CVE-2021-46743](https://github.com/advisories/GHSA-8xf4-w7qw-pjjw)
-* Add support for autodescriptions.
+* Dropped PHP 7.x Support: Now requires PHP ^8.0.
+* Updated Dependencies: Upgraded guzzlehttp/psr7 and limited firebase/php-jwt to ^6.0 due to security concerns.
+* CI Workflow Adjustments: Removed PHP 7.3 and 7.4 from test matrix.
+* New Feature: Added `addAutodescription` method in Image class for automatic image descriptions in multiple languages.
+* Code Simplifications: Streamlined error handling and minor code improvements for better efficiency and clarity.
 
 ## 1.20.0 - 2023-02-22
 
