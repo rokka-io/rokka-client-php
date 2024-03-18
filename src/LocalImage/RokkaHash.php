@@ -24,7 +24,7 @@ class RokkaHash extends AbstractLocalImage
     /**
      * @var string|null
      */
-    private $content = null;
+    private $content;
 
     /**
      * @var TemplateHelper|null

@@ -56,11 +56,11 @@ class UriHelperTest extends \PHPUnit\Framework\TestCase
             ['resize-width-100--options-autoformat-true--v-w-300', 'v-w-200', 'resize-width-100--o-autoformat-true--v-w-200'],
 
             // with v in query parameter
-            ['',  ['variables' => ['dpr' => '?d', 'a' => 'b']], 'v-a-b', true,'','?v=%7B%22dpr%22:%22?d%22%7D'],
+            ['',  ['variables' => ['dpr' => '?d', 'a' => 'b']], 'v-a-b', true, '', '?v=%7B%22dpr%22:%22?d%22%7D'],
             ['v-text-lala',  ['variables' => ['text' => 'Lala#', 'a' => 'b']], 'v-a-b', true, '', '?v=%7B%22text%22:%22Lala%23%22%7D'],
             ['v-text-lala',  ['variables' => ['text' => 'Lala', 'a' => 'b']], 'v-a-b-text-Lala', true],
-            ['v-text-lala',  ['variables' => ['text' => 'Lala?']], '', true,'','?v=%7B%22text%22:%22Lala?%22%7D'],
-            ['',  ['variables' => ['text' => 'Lala', 'a' => 'b']], 'v-a-b-text-Lala', true, '?v=%7B%22text%22:%22Lala?%22%7D',''],
+            ['v-text-lala',  ['variables' => ['text' => 'Lala?']], '', true, '', '?v=%7B%22text%22:%22Lala?%22%7D'],
+            ['',  ['variables' => ['text' => 'Lala', 'a' => 'b']], 'v-a-b-text-Lala', true, '?v=%7B%22text%22:%22Lala?%22%7D', ''],
         ];
     }
 
@@ -112,9 +112,6 @@ class UriHelperTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @dataProvider provideDecomposeUri
-     *
-     * @param $option
-     * @param $expectedOptions
      */
     public function testDecomposeUri($option, $expectedOptions)
     {
@@ -143,11 +140,10 @@ class UriHelperTest extends \PHPUnit\Framework\TestCase
      * @param string       $inputUrl
      * @param string|array $options
      * @param string       $expected
-     * @param mixed        $shortNames
      */
     public function testAddOptionsToUri($inputUrl, $options, $expected, $shortNames = true, $requestQuery = '', $queryString = '')
     {
-        $this->assertSame('https://test.rokka.io/stackname/'.($expected ? $expected . '/' : '').'b53763.jpg'. $queryString, UriHelper::addOptionsToUriString('https://test.rokka.io/stackname/'.$inputUrl.'/b53763.jpg'.$requestQuery, $options, $shortNames));
+        $this->assertSame('https://test.rokka.io/stackname/'.($expected ? $expected.'/' : '').'b53763.jpg'.$queryString, UriHelper::addOptionsToUriString('https://test.rokka.io/stackname/'.$inputUrl.'/b53763.jpg'.$requestQuery, $options, $shortNames));
     }
 
     public function testGetDynamicStackFromStackObject()
@@ -168,7 +164,6 @@ class UriHelperTest extends \PHPUnit\Framework\TestCase
      * @param string      $size
      * @param string|null $custom
      * @param string      $expected
-     * @param mixed       $setWidthInUrl
      */
     public function testGetSrcSetUrl($size, $custom, $expected, $setWidthInUrl = true)
     {
@@ -180,29 +175,25 @@ class UriHelperTest extends \PHPUnit\Framework\TestCase
     {
         // keep existing query strings
         $inputUrl = 'https://test.rokka.io/stackname/b537639e539efcc3df4459ef87c5963aa5079ca6.jpg?foo=bar&baz';
-        $result = (string) \Rokka\Client\UriHelper::addOptionsToUriString($inputUrl, ['variables' => ['text' => 'Lal$a', 'foo' => 'bar']]);
+        $result = (string) UriHelper::addOptionsToUriString($inputUrl, ['variables' => ['text' => 'Lal$a', 'foo' => 'bar']]);
         $exptected = 'https://test.rokka.io/stackname/v-foo-bar/b537639e539efcc3df4459ef87c5963aa5079ca6.jpg?foo=bar&baz&v=%7B%22text%22:%22Lal$a%22%7D';
         $this->assertSame($exptected, $result);
         // without adding to v query
-        $result = (string) \Rokka\Client\UriHelper::addOptionsToUriString($inputUrl, ['variables' => ['text' => 'Lala', 'foo' => 'bar']]);
+        $result = (string) UriHelper::addOptionsToUriString($inputUrl, ['variables' => ['text' => 'Lala', 'foo' => 'bar']]);
         $exptected = 'https://test.rokka.io/stackname/v-foo-bar-text-Lala/b537639e539efcc3df4459ef87c5963aa5079ca6.jpg?foo=bar&baz';
         $this->assertSame($exptected, $result);
 
         // with string as options
-        $result = (string) \Rokka\Client\UriHelper::addOptionsToUriString($inputUrl, 'v-a-b');
+        $result = (string) UriHelper::addOptionsToUriString($inputUrl, 'v-a-b');
         $exptected = 'https://test.rokka.io/stackname/v-a-b/b537639e539efcc3df4459ef87c5963aa5079ca6.jpg?foo=bar&baz';
         $this->assertSame($exptected, $result);
 
         // with existing v query string
         $inputUrl = 'https://test.rokka.io/stackname/b537639e539efcc3df4459ef87c5963aa5079ca6.jpg?foo=bar&baz&v={"foo": "b%at"}';
-        $result = (string) \Rokka\Client\UriHelper::addOptionsToUriString($inputUrl, ['variables' => ['text' => 'La#la', 'foo' => 'ba%r']]);
+        $result = (string) UriHelper::addOptionsToUriString($inputUrl, ['variables' => ['text' => 'La#la', 'foo' => 'ba%r']]);
         $exptected = 'https://test.rokka.io/stackname/b537639e539efcc3df4459ef87c5963aa5079ca6.jpg?foo=bar&baz&v=%7B%22foo%22:%22ba%25r%22,%22text%22:%22La%23la%22%7D';
         $this->assertSame($exptected, $result);
-
-
-
     }
-
 
     private function twoRoutesTest(array $hashes, $stack, $option, array $expectedOptions)
     {
@@ -232,16 +223,13 @@ class UriHelperTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($filename, (string) $components['filename'], 'Filename was not as expected for url '.$testUrl);
         $this->assertEquals('jpeg', $components['format'], 'Format was not as expected for url '.$testUrl);
         $this->assertEquals($expectedOptions['optionsArray'], $cStack->getStackOptions(), 'Options were not as expected for url '.$testUrl);
-        //test back with composeUri
+        // test back with composeUri
         if ($filename) {
             $filename = '/'.$filename;
         }
         if ($expectedOptions['optionsUrl']) {
-            $expectedOptions['optionsUrl'] = $expectedOptions['optionsUrl'].'/';
+            $expectedOptions['optionsUrl'] .= '/';
         }
         $this->assertEquals('https://test.rokka.io/'.$stack.'/'.$expectedOptions['optionsUrl'].$hash.$filename.'.jpeg', (string) UriHelper::composeUri($components, $testUri));
     }
-
-
-
 }

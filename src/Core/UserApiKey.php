@@ -52,7 +52,7 @@ class UserApiKey
      *
      * @param array $apiKeys
      *
-     * @return \Rokka\Client\Core\UserApiKey
+     * @return UserApiKey
      */
     public static function createFromArray($apiKeys)
     {

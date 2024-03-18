@@ -112,7 +112,7 @@ class UriHelper
      *
      * @return UriInterface
      */
-    public static function composeUri($components, UriInterface $uri = null, $shortNames = true)
+    public static function composeUri($components, ?UriInterface $uri = null, $shortNames = true)
     {
         if (\is_array($components)) {
             $components = UriComponents::createFromArray($components);
@@ -160,13 +160,13 @@ class UriHelper
         $pathPattern = '(?<hash>-.+-)';
         $path = $uri->getPath();
         // hash with seo-filename
-        if (preg_match('#^/'.$stackPattern.'/'.$hashPattern.'/'.$filenamePattern.'\.'.$formatPattern.'$#', $path, $matches) ||
+        if (preg_match('#^/'.$stackPattern.'/'.$hashPattern.'/'.$filenamePattern.'\.'.$formatPattern.'$#', $path, $matches)
             // hash without seo-filename
-            preg_match('#^/'.$stackPattern.'/'.$hashPattern.'.'.$formatPattern.'$#', $path, $matches) ||
+            || preg_match('#^/'.$stackPattern.'/'.$hashPattern.'.'.$formatPattern.'$#', $path, $matches)
             // remote_path with seo-filename
-            preg_match('#^/'.$stackPattern.'/'.$pathPattern.'/'.$filenamePattern.'\.'.$formatPattern.'$#', $path, $matches) ||
+            || preg_match('#^/'.$stackPattern.'/'.$pathPattern.'/'.$filenamePattern.'\.'.$formatPattern.'$#', $path, $matches)
             // remote_path without seo-filename
-            preg_match('#^/'.$stackPattern.'/'.$pathPattern.'.'.$formatPattern.'$#', $path, $matches)) {
+            || preg_match('#^/'.$stackPattern.'/'.$pathPattern.'.'.$formatPattern.'$#', $path, $matches)) {
             $uriComponents = UriComponents::createFromArray($matches);
 
             $inQuery = Query::parse($uri->getQuery());
@@ -269,7 +269,7 @@ class UriHelper
      *
      * @return array<string>
      */
-    private static function getUriStringFromStackConfig(array $config, $shortNames = true, UriInterface $uri = null)
+    private static function getUriStringFromStackConfig(array $config, $shortNames = true, ?UriInterface $uri = null)
     {
         $newOptions = [];
 
