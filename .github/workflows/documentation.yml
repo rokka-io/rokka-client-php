@@ -1,8 +1,10 @@
-name: deploy documentation
+name: documentation
 
 on:
   push:
-    branches: [master]
+    branches:
+      - master
+  pull_request:
 
 jobs:
   build:
@@ -18,14 +20,16 @@ jobs:
           php-version: '8.1'
 
       - name: Checkout Code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      - name: Prepate documentation with doctum
+      - name: Prepare documentation with doctum
         run: ./scripts/prepare_doctum_docs_on_github.sh
 
       - name: build doctum docs
         uses: sudo-bot/action-doctum@v5
         env:
+          # the GITHUB_BASE_REF is only set in pull requests but not in pushes to the master branch, so this should work as expected in doctum-config.php
+          _DOCTUM_BRANCH: ${{ github.GITHUB_BASE_REF }}
           _DOCTUM_TEMPLATE_DIR: ./template/
         with:
           config-file: ./scripts/doctum-config.php
@@ -35,6 +39,7 @@ jobs:
           cli-args: "--output-format=github --no-ansi --no-progress -v"
 
       - name: Deploy
+        if: github.ref == 'refs/head/master'
         uses: reggionick/s3-deploy@v3
         with:
           folder: doctum-output/build/

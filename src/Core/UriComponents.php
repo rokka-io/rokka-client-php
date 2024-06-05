@@ -50,7 +50,7 @@ class UriComponents implements \ArrayAccess
     /**
      * Creates a UriComponent object from an array with 'stack', 'hash', 'format', 'filename' and 'stack' as keys.
      *
-     * @param array{stack: string, hash?: ?string, format?: ?string, filename?: ?string} $config
+     * @param array $config array shape array{stack: string, hash?: ?string, format?: ?string, filename?: ?string} (not yet supported by doctum)
      *
      * @since 1.2.0
      */
