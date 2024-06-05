@@ -96,24 +96,20 @@ class SourceImage
     public $locked;
 
     /**
-     * Constructor.
-     *
-     * @param string    $organization    Organization
-     * @param string    $binaryHash      Binary hash
-     * @param string    $hash            Hash
-     * @param string    $name            Original name
-     * @param string    $format          Format
-     * @param int       $size            File size in bytes
-     * @param int       $width           Width in pixels
-     * @param int       $height          Height in pixels
-     * @param array     $userMetadata    User metadata
-     * @param array     $dynamicMetadata Dynamic metadata
-     * @param \DateTime $created         Created at date
-     * @param string    $link            Link to the image
-     * @param string    $shortHash       The short hash
-     * @param bool      $protected       Is image protected
-     * @param bool      $locked          Is image locked
-     * @param mixed     $mimetype
+     * @param string    $organization
+     * @param string    $binaryHash
+     * @param string    $hash
+     * @param string    $name         Original name
+     * @param string    $format
+     * @param string    $mimetype
+     * @param int       $size         File size in bytes
+     * @param int       $width        Width in pixels
+     * @param int       $height       Height in pixels
+     * @param \DateTime $created      Created at date
+     * @param string    $link         Link to the image
+     * @param string    $shortHash
+     * @param bool      $protected
+     * @param bool      $locked
      */
     public function __construct(
         $organization,
@@ -165,7 +161,7 @@ class SourceImage
             $data['user_metadata'] = [];
         } else {
             foreach ($data['user_metadata'] as $key => $value) {
-                if (0 === strpos($key, 'date:')) {
+                if (str_starts_with($key, 'date:')) {
                     $data['user_metadata'][$key] = new \DateTime($value);
                 }
             }

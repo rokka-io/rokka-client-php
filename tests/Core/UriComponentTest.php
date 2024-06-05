@@ -20,7 +20,6 @@ class UriComponentTest extends \PHPUnit\Framework\TestCase
      * @dataProvider provideCreateFromArray
      *
      * @param array $config
-     * @param $name
      */
     public function testCreateFromArray($config, $name)
     {

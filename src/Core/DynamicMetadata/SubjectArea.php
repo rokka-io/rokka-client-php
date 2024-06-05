@@ -88,6 +88,9 @@ class SubjectArea implements DynamicMetadataInterface
         return 'subject_area';
     }
 
+    /**
+     * @return $this
+     */
     public function getForJson()
     {
         return $this;

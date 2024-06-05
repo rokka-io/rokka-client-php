@@ -36,7 +36,7 @@ class StackUri extends AbstractStack
     {
         parent::__construct($name, $stackOperations, $stackOptions, $stackVariables);
 
-        if (null !== $name && false !== strpos($name, '/')) {
+        if (null !== $name && str_contains($name, '/')) {
             // Some part of a rokka URL can have // in it, but it means nothing, remove them here.
             $name = preg_replace('#/{2,}#', '/', $name);
             if (!\is_string($name)) {

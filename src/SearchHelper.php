@@ -20,6 +20,7 @@ class SearchHelper
         if ('deletedDate' === $fieldName) {
             return true;
         }
+
         // Field names must be shorter than 54 chars, and match the given format.
         return 54 > \strlen($fieldName) && (1 === preg_match('/^(user:((str|array|date|latlon|int|double):)?)?[a-z0-9_]{1,54}$/', $fieldName)
             || 1 === preg_match('/^((dynamic|static):((str|array|date|latlon|int|double):))?[a-z0-9_]+:[a-z0-9_]{1,54}$/', $fieldName));

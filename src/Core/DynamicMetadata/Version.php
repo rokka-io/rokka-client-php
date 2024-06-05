@@ -31,11 +31,12 @@ class Version implements DynamicMetadataInterface
      */
     public static function createFromDecodedJsonResponse($data)
     {
-        $object = new self($data['text']);
-
-        return $object;
+        return new self($data['text']);
     }
 
+    /**
+     * @return self
+     */
     public function getForJson()
     {
         return $this;

@@ -104,15 +104,15 @@ class UriHelper
      *
      * @since 1.2.0
      *
-     * @param array|UriComponents $components
-     * @param UriInterface        $uri        If this is provided, it will change the path for that object and return
-     * @param bool                $shortNames if short names (like o for option or v for variables) should be used
+     * @param array{stack: string, hash?: ?string, format?: ?string, filename?: ?string}|UriComponents $components
+     * @param UriInterface                                                                             $uri        If this is provided, it will change the path for that object and return
+     * @param bool                                                                                     $shortNames if short names (like o for option or v for variables) should be used
      *
      * @throws \RuntimeException
      *
      * @return UriInterface
      */
-    public static function composeUri($components, UriInterface $uri = null, $shortNames = true)
+    public static function composeUri($components, ?UriInterface $uri = null, $shortNames = true)
     {
         if (\is_array($components)) {
             $components = UriComponents::createFromArray($components);
@@ -160,13 +160,15 @@ class UriHelper
         $pathPattern = '(?<hash>-.+-)';
         $path = $uri->getPath();
         // hash with seo-filename
-        if (preg_match('#^/'.$stackPattern.'/'.$hashPattern.'/'.$filenamePattern.'\.'.$formatPattern.'$#', $path, $matches) ||
+        if (preg_match('#^/'.$stackPattern.'/'.$hashPattern.'/'.$filenamePattern.'\.'.$formatPattern.'$#', $path, $matches)
             // hash without seo-filename
-            preg_match('#^/'.$stackPattern.'/'.$hashPattern.'.'.$formatPattern.'$#', $path, $matches) ||
+            || preg_match('#^/'.$stackPattern.'/'.$hashPattern.'.'.$formatPattern.'$#', $path, $matches)
             // remote_path with seo-filename
-            preg_match('#^/'.$stackPattern.'/'.$pathPattern.'/'.$filenamePattern.'\.'.$formatPattern.'$#', $path, $matches) ||
+            || preg_match('#^/'.$stackPattern.'/'.$pathPattern.'/'.$filenamePattern.'\.'.$formatPattern.'$#', $path, $matches)
             // remote_path without seo-filename
-            preg_match('#^/'.$stackPattern.'/'.$pathPattern.'.'.$formatPattern.'$#', $path, $matches)) {
+            || preg_match('#^/'.$stackPattern.'/'.$pathPattern.'.'.$formatPattern.'$#', $path, $matches)
+        ) {
+            // @phpstan-ignore-next-line argument.type
             $uriComponents = UriComponents::createFromArray($matches);
 
             $inQuery = Query::parse($uri->getQuery());
@@ -269,7 +271,7 @@ class UriHelper
      *
      * @return array<string>
      */
-    private static function getUriStringFromStackConfig(array $config, $shortNames = true, UriInterface $uri = null)
+    private static function getUriStringFromStackConfig(array $config, $shortNames = true, ?UriInterface $uri = null)
     {
         $newOptions = [];
 

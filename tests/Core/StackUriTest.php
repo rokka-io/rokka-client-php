@@ -33,9 +33,9 @@ class StackUriTest extends \PHPUnit\Framework\TestCase
      * @param string      $name
      * @param array       $options
      * @param array       $operations
-     * @param null|string $expectedUri
+     * @param string|null $expectedUri
      */
-    public function test__construct($stackName, $name, $options, $operations, $expectedUri = null)
+    public function testConstruct($stackName, $name, $options, $operations, $expectedUri = null)
     {
         $stack = new StackUri($stackName);
         $this->assertEquals($name, $stack->getName());

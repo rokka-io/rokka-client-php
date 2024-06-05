@@ -27,7 +27,7 @@ class StackCollection implements \Countable, \Iterator
      *
      * @param array $stacks Array of stacks
      */
-    public function __construct(array $stacks, string $cursor = null)
+    public function __construct(array $stacks, ?string $cursor = null)
     {
         foreach ($stacks as $stack) {
             if (!($stack instanceof Stack)) {
