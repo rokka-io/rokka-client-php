@@ -102,15 +102,13 @@ class UriHelper
      * ]
      * ```
      *
-     * @since 1.2.0
-     *
-     * @param array{stack: string, hash?: ?string, format?: ?string, filename?: ?string}|UriComponents $components
-     * @param UriInterface                                                                             $uri        If this is provided, it will change the path for that object and return
-     * @param bool                                                                                     $shortNames if short names (like o for option or v for variables) should be used
-     *
-     * @throws \RuntimeException
+     * @param array|UriComponents $components array shape is array{stack: string, hash?: ?string, format?: ?string, filename?: ?string} (not yet supported by doctum)
+     * @param UriInterface|null   $uri        If this is provided, it will change the path for that object and return
+     * @param bool                $shortNames if short names (like o for option or v for variables) should be used
      *
      * @return UriInterface
+     *
+     * @since 1.2.0
      */
     public static function composeUri($components, ?UriInterface $uri = null, $shortNames = true)
     {
@@ -168,7 +166,6 @@ class UriHelper
             // remote_path without seo-filename
             || preg_match('#^/'.$stackPattern.'/'.$pathPattern.'.'.$formatPattern.'$#', $path, $matches)
         ) {
-            // @phpstan-ignore-next-line argument.type
             $uriComponents = UriComponents::createFromArray($matches);
 
             $inQuery = Query::parse($uri->getQuery());

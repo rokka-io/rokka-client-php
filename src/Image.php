@@ -766,10 +766,10 @@ class Image extends Base
     }
 
     /**
-     * @param string[]            $languages
-     * @param string              $hash
-     * @param string|null         $organization
-     * @param array{force?: bool} $options      if force is true, the description is generated again even if it already exists
+     * @param string[]    $languages
+     * @param string      $hash
+     * @param string|null $organization
+     * @param array       $options      if force is true, the description is generated again even if it already exists. array shape array{force?: bool} (not yet supported by doctum)
      */
     public function addAutodescription($languages, $hash, $organization = null, array $options = []): SourceImage
     {
