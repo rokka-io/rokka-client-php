@@ -20,6 +20,9 @@ jobs:
             env:
               COMPOSER_FLAGS: "--prefer-lowest"
           - php: '8.2'
+          - php: '8.3'
+          - php: '8.4'
+          - php: '8.5'
 
     env:
       COMPOSER_FLAGS: ${{ matrix.env.COMPOSER_FLAGS }}
