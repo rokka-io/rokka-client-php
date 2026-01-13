@@ -63,7 +63,7 @@ class TemplateHelper
         $apiKey,
         ?AbstractCallbacks $callbacks = null,
         $publicRokkaDomain = null,
-        $options = []
+        $options = [],
     ) {
         $this->rokkaApiKey = $apiKey;
         $this->rokkaOrg = $organization;
@@ -140,7 +140,7 @@ class TemplateHelper
         $stack,
         $format = 'jpg',
         $seo = null,
-        $seoLanguage = 'de'
+        $seoLanguage = 'de',
     ) {
         if (null == $image) {
             return '';
@@ -361,7 +361,7 @@ class TemplateHelper
         $stack,
         $format = 'jpg',
         $seo = null,
-        $seoLanguage = 'de'
+        $seoLanguage = 'de',
     ) {
         if (null === $format) {
             $format = 'jpg';
@@ -525,7 +525,7 @@ class TemplateHelper
         $stack,
         $format = 'jpg',
         ?AbstractLocalImage $image = null,
-        $seoLanguage = 'de'
+        $seoLanguage = 'de',
     ) {
         return $this->generateRokkaUrl($hash, $stack, $format, $this->getImagename($image), $seoLanguage);
     }

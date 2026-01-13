@@ -153,7 +153,7 @@ class Factory
             $retries,
             Request $request,
             ?Response $response = null,
-            ?TransferException $exception = null
+            ?TransferException $exception = null,
         ) {
             // Limit the number of retries to 10
             if ($retries >= 10) {

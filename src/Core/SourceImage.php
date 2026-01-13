@@ -128,7 +128,7 @@ class SourceImage
         $link,
         $shortHash = null,
         $protected = false,
-        $locked = false
+        $locked = false,
     ) {
         $this->organization = $organization;
         $this->binaryHash = $binaryHash;

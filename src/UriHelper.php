@@ -168,7 +168,6 @@ class UriHelper
             // remote_path without seo-filename
             || preg_match('#^/'.$stackPattern.'/'.$pathPattern.'.'.$formatPattern.'$#', $path, $matches)
         ) {
-            // @phpstan-ignore-next-line argument.type
             $uriComponents = UriComponents::createFromArray($matches);
 
             $inQuery = Query::parse($uri->getQuery());
