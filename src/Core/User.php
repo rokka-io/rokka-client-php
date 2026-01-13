@@ -38,10 +38,10 @@ class User
     /**
      * Constructor.
      *
-     * @param string                               $id      Id
-     * @param string|null                          $email   Email
-     * @param string|null                          $apiKey  API keys
-     * @param array<\Rokka\Client\Core\UserApiKey> $apiKeys API keys
+     * @param string            $id      Id
+     * @param string|null       $email   Email
+     * @param string|null       $apiKey  API keys
+     * @param array<UserApiKey> $apiKeys API keys
      */
     public function __construct($id, $email, $apiKey, $apiKeys = [])
     {

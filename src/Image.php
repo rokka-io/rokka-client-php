@@ -295,7 +295,7 @@ class Image extends Base
         if (\is_array($search) && !empty($search)) {
             foreach ($search as $field => $value) {
                 if (!SearchHelper::validateFieldName((string) $field)) {
-                    throw new \LogicException(sprintf('Invalid field name "%s" as search field', $field));
+                    throw new \LogicException(\sprintf('Invalid field name "%s" as search field', $field));
                 }
 
                 $options['query'][$field] = $value;
@@ -454,7 +454,7 @@ class Image extends Base
         array $stackOperations,
         $organization = '',
         array $stackOptions = [],
-        $overwrite = false
+        $overwrite = false,
     ) {
         $stackData = [
             'operations' => $stackOperations,

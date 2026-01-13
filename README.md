@@ -97,3 +97,9 @@ composer run lint:fix
 ```
 composer run phpstan
 ```
+
+## Running PHP compatibility check
+
+```
+composer run phpcompatibility
+```
