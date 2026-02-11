@@ -68,7 +68,7 @@ class User
         $email = isset($data['email']) ? $data['email'] : null;
         $apiKeys = [];
         if (isset($data['api_keys'])) {
-            $apiKeys = array_map(function ($key) {
+            $apiKeys = array_map(static function ($key) {
                 return UserApiKey::createFromArray($key);
             }, $data['api_keys']);
         }

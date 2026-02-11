@@ -79,7 +79,7 @@ class Membership
     {
         $data = json_decode($jsonString, true);
         if (\is_array($data) && isset($data['items'])) {
-            return array_map(function ($membership) {
+            return array_map(static function ($membership) {
                 return self::getObjectFromArray($membership);
             }, $data['items']);
         }

@@ -149,7 +149,7 @@ class Factory
      */
     private static function retryDecider()
     {
-        return function (
+        return static function (
             $retries,
             Request $request,
             ?Response $response = null,
@@ -184,7 +184,7 @@ class Factory
      */
     private static function retryDelay()
     {
-        return function ($numberOfRetries) {
+        return static function ($numberOfRetries) {
             return 2000 * $numberOfRetries;
         };
     }

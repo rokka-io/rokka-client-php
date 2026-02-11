@@ -115,7 +115,7 @@ class SourceImageCollection implements \Countable, \Iterator
     {
         $data = json_decode($jsonString, true);
 
-        $sourceImages = array_map(function ($sourceImage) {
+        $sourceImages = array_map(static function ($sourceImage) {
             return SourceImage::createFromDecodedJsonResponse($sourceImage);
         }, $data['items']);
 

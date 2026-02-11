@@ -304,7 +304,7 @@ class User extends Base
         if (\is_string($roles)) {
             $roles = [$roles];
         }
-        $roles = array_map(function ($role) {
+        $roles = array_map(static function ($role) {
             return strtolower($role);
         }, $roles);
         $contents = $this
@@ -340,7 +340,7 @@ class User extends Base
         if (\is_string($roles)) {
             $roles = [$roles];
         }
-        $roles = array_map(function ($role) {
+        $roles = array_map(static function ($role) {
             return strtolower($role);
         }, $roles);
         $contents = $this
