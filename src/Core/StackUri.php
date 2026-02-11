@@ -18,9 +18,9 @@ use Rokka\Client\UriHelper;
  * echo $stackUri->getStackUriString();
  * ```
  *
- * @see \Rokka\Client\Core\Stack::getDynamicUriString()
- * @see \Rokka\Client\UriHelper::addOptionsToUri()
- * @see \Rokka\Client\UriHelper::addOptionsToUriString()
+ * @see Stack::getDynamicUriString()
+ * @see UriHelper::addOptionsToUri()
+ * @see UriHelper::addOptionsToUriString()
  * @since 1.2.0
  */
 class StackUri extends AbstractStack
@@ -187,11 +187,11 @@ class StackUri extends AbstractStack
      */
     private static function parseOptions(array $options)
     {
-        $optionValues = array_filter($options, function ($key): bool {
+        $optionValues = array_filter($options, static function ($key): bool {
             return 1 === $key % 2;
         }, \ARRAY_FILTER_USE_KEY);
 
-        $optionKeys = array_filter($options, function ($key): bool {
+        $optionKeys = array_filter($options, static function ($key): bool {
             return 0 === ($key % 2);
         }, \ARRAY_FILTER_USE_KEY);
 

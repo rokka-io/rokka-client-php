@@ -34,7 +34,7 @@ class DynamicMetadataHelper
     {
         // Convert to a CamelCase class name.
         // See Symfony\Component\Serializer\NameConverter\CamelCaseToSnakeCaseNameConverter::denormalize()
-        $camelCasedName = preg_replace_callback('/(^|_|\.)+(.)/', function ($match) {
+        $camelCasedName = preg_replace_callback('/(^|_|\.)+(.)/', static function ($match) {
             return ('.' === $match[1] ? '_' : '').strtoupper($match[2]);
         }, $name);
 

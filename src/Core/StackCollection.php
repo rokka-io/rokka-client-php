@@ -30,7 +30,7 @@ class StackCollection implements \Countable, \Iterator
     public function __construct(array $stacks, ?string $cursor = null)
     {
         foreach ($stacks as $stack) {
-            if (!($stack instanceof Stack)) {
+            if (!$stack instanceof Stack) {
                 throw new \LogicException('You can only use Stack inside StackCollection');
             }
         }
@@ -76,7 +76,7 @@ class StackCollection implements \Countable, \Iterator
     {
         $data = json_decode($data, true);
 
-        $stacks = array_map(function ($stack) {
+        $stacks = array_map(static function ($stack) {
             return Stack::createFromDecodedJsonResponse($stack);
         }, $data['items']);
 

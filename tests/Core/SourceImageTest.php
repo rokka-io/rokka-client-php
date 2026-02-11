@@ -11,7 +11,7 @@ class SourceImageTest extends PHPUnit\Framework\TestCase
      */
     public function createFromJsonDataProvider()
     {
-        $imageReverser = function (SourceImage $image) {
+        $imageReverser = static function (SourceImage $image) {
             $data = [
                 'organization' => $image->organization,
                 'binary_hash' => $image->binaryHash,

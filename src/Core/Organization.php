@@ -144,7 +144,7 @@ class Organization
      */
     public function getSigningKeys()
     {
-        return array_map(function ($key) {
+        return array_map(static function ($key) {
             return $key['key'];
         }, $this->signing_keys);
     }
