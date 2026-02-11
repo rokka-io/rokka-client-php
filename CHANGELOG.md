@@ -6,6 +6,10 @@ This project tries to follow [Semantic Versioning](http://semver.org/) since the
 
 This document mainly describes API changes important to users of this library.
 
+## 1.21.1 - 2026-02-11
+
+* Allow installation with firebase/php-jwt version 7.
+
 ## 1.21.0 - 2024-03-17
 
 * Dropped PHP 7.x Support: Now requires PHP ^8.0.
