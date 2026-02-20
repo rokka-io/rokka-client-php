@@ -6,6 +6,10 @@ This project tries to follow [Semantic Versioning](http://semver.org/) since the
 
 This document mainly describes API changes important to users of this library.
 
+## 1.21.4 - unreleased
+
+* Remove `firebase/php-jwt` dependency. JWT payload decoding now uses plain PHP, no external library needed.
+
 ## 1.21.3 - 2026-02-11
 
 * Allow installation with firebase/php-jwt version 7.
@@ -38,7 +42,7 @@ This document mainly describes API changes important to users of this library.
 
 ## 1.18.2 - 2022-06-24
 
-* Allow firebase/php-jwt 5.0 
+* Allow firebase/php-jwt 5.0
 
 ## 1.18.1 - 2022-06-24
 
@@ -51,7 +55,7 @@ This document mainly describes API changes important to users of this library.
 
 ## 1.17.0 - 2022-05-24
 
-* Add support for API Tokens. 
+* Add support for API Tokens.
   See [the Authentication Guide](https://rokka.io/documentation/guides/authentication.html#using-rokka-with-a-jwt-token) for details
 
 ## 1.16.0 - 2021-12-07
@@ -78,7 +82,7 @@ This document mainly describes API changes important to users of this library.
 
 ## 1.13.1 - 2020-11-09
 
-* Fix dependency on rokka/utils and make it use "^1.0" 
+* Fix dependency on rokka/utils and make it use "^1.0"
 
 ## 1.13.0 - 2020-11-08
 
@@ -87,7 +91,7 @@ This document mainly describes API changes important to users of this library.
 * Added `\Rokka\Client\User::setOrganizationOption()`
 * Added `\Rokka\Client\Core\Organization::getOptions()` and `\Rokka\Client\Core\Organization::getSigningKeys()`
 * Added support for making SourceImages protected (via `\Rokka\Client\Image::uploadSourceImage()` or `\Rokka\Client\Image::setProtected()`)
-* Added support for adding variables with non-url-supported characters. URLs then contain a `v` query parameter. 
+* Added support for adding variables with non-url-supported characters. URLs then contain a `v` query parameter.
 * Upgraded `guzzlehttp/psr7` minimum requirement to 1.7
 
 ## 1.12.1 - 2020-10-12
@@ -113,7 +117,7 @@ This document mainly describes API changes important to users of this library.
 
 * removed HHVM support on travis tests, therefore HHVM isn't officially supported anymore.
 * Added stack variables and expressions support. See [the documentation](https://rokka.io/documentation/references/stacks.html#expressions) for more details.
-* Added optional 3rd boolean parameter to `\Rokka\Client\UriHelper::addOptionsToUriString` and 
+* Added optional 3rd boolean parameter to `\Rokka\Client\UriHelper::addOptionsToUriString` and
   related methods to return short versions for `options` (`o`) and `variables` (`v`)
 * Added optional 3rd boolean parameter to `\Rokka\Client\TemplateHelper::getSrcAttributes` to set
   the stack operation option `width` for `resize`. If false, you should add that via the `$sizes`
@@ -126,12 +130,12 @@ This document mainly describes API changes important to users of this library.
 
 ## 1.8.1 - 2018-12-06
 
-* Fixed search for integer user metadata. https://github.com/rokka-io/rokka-client-php/pull/62 thanks to @pascalvb
+* Fixed search for integer user metadata. <https://github.com/rokka-io/rokka-client-php/pull/62> thanks to @pascalvb
 
 ## 1.8.0 - 2018-11-05
 
-* Added an object for the new dynamic metadata "version". 
-  See https://rokka.io//documentation/references/dynamic-metadata.html#version for details 
+* Added an object for the new dynamic metadata "version".
+  See <https://rokka.io//documentation/references/dynamic-metadata.html#version> for details
 * $option in `\Rokka\Client\Image::uploadSourceImage` and `\Rokka\Client\Image::setDynamicMetadata` now takes either
   a single DynamicMetaData Object or an array with the needed fields. Or an array thereof for multiple new sets.
   
@@ -140,7 +144,7 @@ This document mainly describes API changes important to users of this library.
 * Added new membership methods to `\Rokka\Client\User`. It's not totally backwards compatible, but the methods changed were not
   working as documented.
   See [documentation about users and memberships](https://rokka.io/documentation/references/users-and-memberships.html) for details.
-  * `\Rokka\Client\Factory::getUserClient` takes an organisation and apikey as 1st and 2nd parameter now. 
+  * `\Rokka\Client\Factory::getUserClient` takes an organisation and apikey as 1st and 2nd parameter now.
   * `\Rokka\Client\Core\Membership` returns now an array with `roles` instead of a string with `role`, since a Membership can now multiple roles.
   * Added `\Rokka\Client\User::getCurrentUserId()`. Returns the user_id for the logged in user.
   * Added `\Rokka\Client\User::createUserAndMembership()`.
@@ -148,15 +152,14 @@ This document mainly describes API changes important to users of this library.
   * Changed parameter order of `\Rokka\Client\User::createMembership()`. Wasn't working before at all.
   * Changed parameter order of `\Rokka\Client\User::getMembership()`. Wasn't working before at all.
   
-
 ## 1.6.0 - 2018-09-20
 
-* Added possibility to add a proxy and other guzzle options also to TemplateHelper. 
+* Added possibility to add a proxy and other guzzle options also to TemplateHelper.
   See [README.md](README.md#options-for-clients) for details.
 
 ## 1.5.0 - 2018-09-20
 
-* Added possibility to add a proxy and other guzzle options to a client. 
+* Added possibility to add a proxy and other guzzle options to a client.
   See [README.md](README.md#options-for-clients) for details.
 
 ## 1.4.0 - 2018-08-15
@@ -177,19 +180,19 @@ This document mainly describes API changes important to users of this library.
 
 * Added `\Rokka\Client\Image::restoreSourceImage($hash, $organization)` for restoring deleted images. See [documentation about source images](https://rokka.io/documentation/references/source-images.html#restore-a-source-image) for details.
 * Added `\Rokka\Client\Image::copySourceImage($hash, $destination, $overwrite, $organization)` for copying an image to another organization. See [documentation about source images](https://rokka.io/documentation/references/source-images.html#copy-a-source-image-to-another-organization) for details.
-* Added [`\Rokka\Client\TemplateHelper`](https://rokka.io/client-php-api/master/Rokka/Client/TemplateHelper.html) class with many methods for making life easier with template and integration into frameworks and CMS. 
+* Added [`\Rokka\Client\TemplateHelper`](https://rokka.io/client-php-api/master/Rokka/Client/TemplateHelper.html) class with many methods for making life easier with template and integration into frameworks and CMS.
 * Added `\Rokka\Client\Core\DynamicMetadata\MultiAreas` and `\Rokka\Client\Core\DynamicMetadata\CropArea`. See [documentation about dynamic metadata](https://rokka.io/documentation/references/dynamic-metadata.html) for details.
-* Renamed `\Rokka\Client\Core\StackAbstract` to `\Rokka\Client\Core\AbstractStack`. Deprecated `\Rokka\Client\Core\StackAbstract` (still here for BC reasons) 
+* Renamed `\Rokka\Client\Core\StackAbstract` to `\Rokka\Client\Core\AbstractStack`. Deprecated `\Rokka\Client\Core\StackAbstract` (still here for BC reasons)
 
 ## 1.2.0 - 2018-02-19
 
 * Remove 3rd parameter $apiSecret from `\Rokka\Client\Factory::getImageClient()`. 3rd parameter is now the optional $baseUrl. Backwards compatibility is kept, but you're advised to adjust your clients.
 * Add `Stack::getDynamicUriString()`
 * Add the `StackUri` and '`UriComponents` classes.
-* Add `UriHelper::composeUri(array|UriComponents $components): UriInterface` and `UriHelper::decomposeUri(UriInterface $uri): UriComponents` 
+* Add `UriHelper::composeUri(array|UriComponents $components): UriInterface` and `UriHelper::decomposeUri(UriInterface $uri): UriComponents`
 * Add `UriHelper::getSrcSetUrl(UriInterface $uri, string $size, null|string $custom = null)` and `UriHelper::getSrcSetUrlString(string $uri, string $size, null|string $custom = null)`
 * Implement `Iterator` interface for `OperationCollection`, `SourceImageCollection` and `StackCollection`.
-* Rokka PHP Client API docs are automatically generated and published at https://rokka.io/client-php-api/master/
+* Rokka PHP Client API docs are automatically generated and published at <https://rokka.io/client-php-api/master/>
 
 ## 1.1.0 - 2017-11-13
 
@@ -198,7 +201,7 @@ This document mainly describes API changes important to users of this library.
 * Add `Rokka\Client\Image::saveStack(Stack $stack, array $requestConfig)`. Supersedes `Rokka\Client\Image::createStack()`,
   which is marked as deprecated for now. See docs for more info.
 * Add static method `Stack::createFromConfig(string $stackName, array $config, string $organization = null): Stack`.
-* Add setters and getters to the Stack class. 
+* Add setters and getters to the Stack class.
 * Officially deprecated `Rokka\Client\Image::listSourceImages`, use `Rokka\Client\Image::searchSourceImages` instead
 * For your info: Deprecated methods will work fine until the next major release (2.0), when they may be removed.
 
@@ -231,4 +234,3 @@ This document mainly describes API changes important to users of this library.
   Only option right now is `['deletePrevious' => true]`, defaults to `false`.
 * Add options parameter to `Rokka\Client\Image::deleteDynamicMetadata(DynamicMetadataInterface $dynamicMetadata, $hash, $organization = '', $options = [])`.
   Only option right now is `['deletePrevious' => true]`, defaults to `false`.
-
