@@ -2,7 +2,6 @@
 
 namespace Rokka\Client;
 
-use Firebase\JWT\JWT;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\GuzzleException;
 use Psr\Http\Message\ResponseInterface;
@@ -199,16 +198,16 @@ abstract class Base
         if (3 != \count($tks)) {
             return null;
         }
-        $payloadRaw = JWT::urlsafeB64Decode($tks[1]);
-        if (null === ($payload = JWT::jsonDecode($payloadRaw))) {
+        $payloadRaw = base64_decode(strtr($tks[1], '-_', '+/'), true);
+        if (false === $payloadRaw) {
             return null;
         }
 
-        $enc = json_encode($payload);
-        if (false === $enc) {
+        $payload = json_decode($payloadRaw, true);
+        if (!\is_array($payload)) {
             return null;
         }
 
-        return json_decode($enc, true);
+        return $payload;
     }
 }
