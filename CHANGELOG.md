@@ -6,7 +6,7 @@ This project tries to follow [Semantic Versioning](http://semver.org/) since the
 
 This document mainly describes API changes important to users of this library.
 
-## 1.21.4 - unreleased
+## 1.21.4 - 2026-02-20
 
 * Remove `firebase/php-jwt` dependency. JWT payload decoding now uses plain PHP, no external library needed.
 
