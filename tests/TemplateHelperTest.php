@@ -243,6 +243,126 @@ class TemplateHelperTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($expected, TemplateHelper::slugify($input, $lang));
     }
 
+    public function testGetOriginalSizeUrl(): void
+    {
+        $hash = $this->testImages['small']['hash'];
+        $image = new FileInfo(new \SplFileInfo($this->testImages['small']['path']));
+        $urlPrefix = 'https://testorg.rokka.io/dynamic';
+
+        $this->assertEquals(
+            $urlPrefix."/noop--o-autoformat-true-jpg.transparency.autoformat-true/$hash/small-bratpfanne.jpg",
+            $this->rokka->getOriginalSizeUrl($image)
+        );
+
+        $this->assertEquals(
+            $urlPrefix."/noop--o-autoformat-true-jpg.transparency.autoformat-true/$hash/small-bratpfanne.png",
+            $this->rokka->getOriginalSizeUrl($image, 'png')
+        );
+
+        $this->assertEquals(
+            $urlPrefix."/noop--o-autoformat-true-jpg.transparency.autoformat-true/$hash/my-seo-name.jpg",
+            $this->rokka->getOriginalSizeUrl($image, 'jpg', 'my-seo-name')
+        );
+    }
+
+    public function testResizeCropUrlWithSeo(): void
+    {
+        $hash = $this->testImages['small']['hash'];
+        $image = new FileInfo(new \SplFileInfo($this->testImages['small']['path']));
+        $urlPrefix = 'https://testorg.rokka.io/dynamic';
+
+        $this->assertEquals(
+            $urlPrefix."/resize-height-400-mode-fill-width-300--crop-height-400-width-300--o-autoformat-true-jpg.transparency.autoformat-true/$hash/custom-seo.png",
+            $this->rokka->getResizeCropUrl($image, 300, 400, 'png', 'custom-seo')
+        );
+    }
+
+    public function testGetImageObjectWithAbstractLocalImage(): void
+    {
+        $image = new FileInfo(new \SplFileInfo($this->testImages['small']['path']));
+        $result = $this->rokka->getImageObject($image);
+        $this->assertSame($image, $result);
+    }
+
+    public function testGetImageObjectWithSplFileInfo(): void
+    {
+        $spl = new \SplFileInfo($this->testImages['small']['path']);
+        $result = $this->rokka->getImageObject($spl);
+        $this->assertInstanceOf(FileInfo::class, $result);
+    }
+
+    public function testGetImageObjectWithStringPath(): void
+    {
+        $result = $this->rokka->getImageObject($this->testImages['small']['path']);
+        $this->assertInstanceOf(FileInfo::class, $result);
+    }
+
+    public function testGetImageObjectWithHashString(): void
+    {
+        $result = $this->rokka->getImageObject('abcdef1234567890abcd');
+        $this->assertInstanceOf(RokkaHash::class, $result);
+    }
+
+    public function testGetImageObjectWithIdentifierAndContext(): void
+    {
+        $image = new FileInfo(new \SplFileInfo($this->testImages['small']['path']));
+        $result = $this->rokka->getImageObject($image, 'my-id', ['key' => 'value']);
+        $this->assertSame($image, $result);
+        $this->assertSame('my-id', $result->getIdentifier());
+        $this->assertSame(['key' => 'value'], $result->getContext());
+    }
+
+    public function testGetImageObjectThrowsOnInvalidType(): void
+    {
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('Can not create a source image from input of type');
+        $this->rokka->getImageObject(12345);
+    }
+
+    public function testGetStackUrlWithNullImage(): void
+    {
+        $this->assertSame('', $this->rokka->getStackUrl(null, 'test'));
+    }
+
+    public function testGenerateRokkaUrlWithNullFormat(): void
+    {
+        $hash = $this->testImages['small']['hash'];
+        $url = $this->rokka->generateRokkaUrl($hash, 'test', null);
+        $this->assertStringEndsWith('.jpg', $url);
+    }
+
+    public function testGetSrcSetUrl(): void
+    {
+        $hash = $this->testImages['small']['hash'];
+        $image = new FileInfo(new \SplFileInfo($this->testImages['small']['path']));
+        $url = $this->rokka->getStackUrl($image, 'test');
+
+        $srcSet = TemplateHelper::getSrcSetUrl($url, ['1x', '2x']);
+        $this->assertStringContainsString('1x', $srcSet);
+        $this->assertStringContainsString('2x', $srcSet);
+        $this->assertStringContainsString(', ', $srcSet);
+    }
+
+    public function testGetImagename(): void
+    {
+        $image = new FileInfo(new \SplFileInfo($this->testImages['small']['path']));
+        $this->assertEquals('small-bratpfanne', $this->rokka->getImagename($image));
+    }
+
+    public function testGetImagenameNull(): void
+    {
+        $this->assertEquals('', $this->rokka->getImagename(null));
+    }
+
+    public function testPublicDomainWithoutScheme(): void
+    {
+        $helper = new TemplateHelper('testorg', 'key', new TestCallbacks(), 'custom.rokka.io');
+        $hash = $this->testImages['small']['hash'];
+        $image = new FileInfo(new \SplFileInfo($this->testImages['small']['path']));
+        $url = $helper->getStackUrl($image, 'test');
+        $this->assertStringStartsWith('https://custom.rokka.io/', $url);
+    }
+
     private function checkBaseUrl($imageClient)
     {
         $reflector = new \ReflectionClass($imageClient);

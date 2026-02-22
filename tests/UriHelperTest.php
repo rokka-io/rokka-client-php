@@ -195,6 +195,69 @@ class UriHelperTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($exptected, $result);
     }
 
+    public function testComposeUriFromArray(): void
+    {
+        $components = [
+            'stack' => 'mystack',
+            'hash' => 'abcdef1234',
+            'format' => 'jpg',
+            'filename' => 'my-image',
+        ];
+        $result = UriHelper::composeUri($components);
+        $this->assertSame('/mystack/abcdef1234/my-image.jpg', (string) $result);
+    }
+
+    public function testComposeUriFromArrayWithoutFilename(): void
+    {
+        $components = [
+            'stack' => 'mystack',
+            'hash' => 'abcdef1234',
+            'format' => 'png',
+        ];
+        $result = UriHelper::composeUri($components);
+        $this->assertSame('/mystack/abcdef1234.png', (string) $result);
+    }
+
+    public function testComposeUriWithExistingUri(): void
+    {
+        $baseUri = new Uri('https://test.rokka.io/old-stack/oldhash.jpg');
+        $components = [
+            'stack' => 'newstack',
+            'hash' => 'newhash123',
+            'format' => 'webp',
+            'filename' => 'seo-name',
+        ];
+        $result = UriHelper::composeUri($components, $baseUri);
+        $this->assertSame('https://test.rokka.io/newstack/newhash123/seo-name.webp', (string) $result);
+    }
+
+    public function testDecomposeUriReturnsNullForNonRokkaPath(): void
+    {
+        $uri = new Uri('https://example.com/just/a/path');
+        $this->assertNull(UriHelper::decomposeUri($uri));
+    }
+
+    public function testDecomposeUriReturnsNullForRootPath(): void
+    {
+        $uri = new Uri('https://example.com/');
+        $this->assertNull(UriHelper::decomposeUri($uri));
+    }
+
+    public function testAddOptionsToUriReturnsOriginalForNonRokkaUrl(): void
+    {
+        $url = 'https://example.com/some/path/without/hash';
+        $result = UriHelper::addOptionsToUriString($url, 'options-dpr-2');
+        $this->assertSame($url, $result);
+    }
+
+    public function testGetSrcSetUrlWithUnknownIdentifier(): void
+    {
+        $inputUrl = 'https://test.rokka.io/stackname/b537639e539efcc3df4459ef87c5963aa5079ca6.jpg';
+        // Unknown identifier (not 'x' or 'w') returns original URL
+        $result = (string) UriHelper::getSrcSetUrlString($inputUrl, '300z');
+        $this->assertSame($inputUrl, $result);
+    }
+
     private function twoRoutesTest(array $hashes, $stack, $option, array $expectedOptions)
     {
         foreach ($hashes as $hash) {

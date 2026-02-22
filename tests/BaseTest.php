@@ -118,4 +118,38 @@ class BaseTest extends \PHPUnit\Framework\TestCase
 
         $this->assertSame(-1, $client->getTokenIsValidFor());
     }
+
+    public function testGetTokenPayloadReturnsNullForNonArrayJson(): void
+    {
+        $client = $this->createClient();
+
+        // Valid base64 containing a JSON string (not an object/array)
+        $stringPayload = rtrim(strtr(base64_encode('"just a string"'), '+/', '-_'), '=');
+        $this->assertNull($client->getTokenPayload('header.'.$stringPayload.'.signature'));
+
+        // Valid base64 containing a JSON number
+        $numberPayload = rtrim(strtr(base64_encode('42'), '+/', '-_'), '=');
+        $this->assertNull($client->getTokenPayload('header.'.$numberPayload.'.signature'));
+    }
+
+    public function testSetAndGetToken(): void
+    {
+        $client = $this->createClient();
+
+        $this->assertNull($client->getToken());
+
+        $client->setToken('my-token');
+        $this->assertSame('my-token', $client->getToken());
+
+        $client->setToken(null);
+        $this->assertNull($client->getToken());
+    }
+
+    public function testGetTokenPayloadWithTooManyParts(): void
+    {
+        $client = $this->createClient();
+
+        // 4 parts instead of 3
+        $this->assertNull($client->getTokenPayload('a.b.c.d'));
+    }
 }
