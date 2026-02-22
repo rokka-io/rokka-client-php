@@ -6,6 +6,10 @@ This project tries to follow [Semantic Versioning](http://semver.org/) since the
 
 This document mainly describes API changes important to users of this library.
 
+## 1.22.0 - unreleased
+
+* Dropped PHP 8.0 Support: Now requires PHP ^8.1.
+
 ## 1.21.4 - 2026-02-20
 
 * Remove `firebase/php-jwt` dependency. JWT payload decoding now uses plain PHP, no external library needed.
