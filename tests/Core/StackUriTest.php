@@ -7,7 +7,7 @@ use Rokka\Client\Core\StackUri;
 
 class StackUriTest extends \PHPUnit\Framework\TestCase
 {
-    public function provide__construct()
+    public static function provide__construct()
     {
         return [
             'simple stack' => ['foo', 'foo', [], [], 'foo'],

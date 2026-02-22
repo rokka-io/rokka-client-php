@@ -89,7 +89,6 @@ class FactoryTest extends \PHPUnit\Framework\TestCase
     {
         $reflector = new \ReflectionClass($imageClient);
         $reflector_property = $reflector->getProperty('client');
-        $reflector_property->setAccessible(true);
         /** @var Client $client */
         $client = $reflector_property->getValue($imageClient);
 

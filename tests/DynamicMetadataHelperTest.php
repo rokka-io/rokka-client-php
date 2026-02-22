@@ -11,7 +11,7 @@ class DynamicMetadataHelperTest extends \PHPUnit\Framework\TestCase
     /**
      * @return array
      */
-    public function provideGetDynamicMetadataClassNameData()
+    public static function provideGetDynamicMetadataClassNameData()
     {
         return [
             ['Rokka\Client\Core\DynamicMetadata\A', 'a'],
@@ -31,7 +31,7 @@ class DynamicMetadataHelperTest extends \PHPUnit\Framework\TestCase
     /**
      * @return array
      */
-    public function provideBuildDynamicMetadataData()
+    public static function provideBuildDynamicMetadataData()
     {
         return [
             // SubjectArea, name as snake_case

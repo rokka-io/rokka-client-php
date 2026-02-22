@@ -10,7 +10,7 @@ class ImageTest extends \PHPUnit\Framework\TestCase
     /**
      * @return array
      */
-    public function dataProviderGetSourceImageUri()
+    public static function dataProviderGetSourceImageUri()
     {
         $organization = 'testorg';
         $apiKey = 'apiKey';

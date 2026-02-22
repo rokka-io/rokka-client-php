@@ -9,6 +9,8 @@ This document mainly describes API changes important to users of this library.
 ## 1.22.0 - unreleased
 
 * Dropped PHP 8.0 Support: Now requires PHP ^8.1.
+* Update PHPUnit to version 10.
+* Allow symfony/var-dumper ^7.0 and ^8.0 in dev dependencies.
 
 ## 1.21.4 - 2026-02-20
 

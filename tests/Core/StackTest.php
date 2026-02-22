@@ -12,7 +12,7 @@ class StackTest extends \PHPUnit\Framework\TestCase
     /**
      * @return array
      */
-    public function createFromJsonDataProvider()
+    public static function createFromJsonDataProvider()
     {
         $data = '{
           "organization": "testorg",

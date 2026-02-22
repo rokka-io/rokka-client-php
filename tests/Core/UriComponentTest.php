@@ -7,7 +7,7 @@ use Rokka\Client\Core\UriComponents;
 
 class UriComponentTest extends \PHPUnit\Framework\TestCase
 {
-    public function provideCreateFromArray()
+    public static function provideCreateFromArray()
     {
         return [
             'simple stack' => [['stack' => 'foo', 'filename' => 'test', 'hash' => '34d345', 'format' => 'jpg'], 'foo'],

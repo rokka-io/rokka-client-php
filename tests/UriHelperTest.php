@@ -13,7 +13,7 @@ class UriHelperTest extends \PHPUnit\Framework\TestCase
     /**
      * @return array
      */
-    public function provideAddOptionsToUri()
+    public static function provideAddOptionsToUri()
     {
         return [
             ['', 'options-dpr-2', 'o-dpr-2'],
@@ -67,7 +67,7 @@ class UriHelperTest extends \PHPUnit\Framework\TestCase
     /**
      * @return array
      */
-    public function provideGetSrcSetUrl()
+    public static function provideGetSrcSetUrl()
     {
         return [
             ['2x', null, 'https://test.rokka.io/stackname/o-dpr-2/b537639e539efcc3df4459ef87c5963aa5079ca6.jpg'],
@@ -89,7 +89,7 @@ class UriHelperTest extends \PHPUnit\Framework\TestCase
         ];
     }
 
-    public function provideDecomposeUri()
+    public static function provideDecomposeUri()
     {
         return [
             ['', ['optionsUrl' => '', 'optionsArray' => []]],

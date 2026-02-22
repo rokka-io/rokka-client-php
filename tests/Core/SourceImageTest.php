@@ -9,7 +9,7 @@ class SourceImageTest extends PHPUnit\Framework\TestCase
     /**
      * @return array
      */
-    public function createFromJsonDataProvider()
+    public static function createFromJsonDataProvider()
     {
         $imageReverser = static function (SourceImage $image) {
             $data = [

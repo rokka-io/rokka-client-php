@@ -9,7 +9,7 @@ class SignUrlsTest extends \PHPUnit\Framework\TestCase
     /**
      * @return array
      */
-    public function provideAddOptionsToUri()
+    public static function provideAddOptionsToUri()
     {
         return
             [

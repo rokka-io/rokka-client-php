@@ -33,23 +33,24 @@ class TemplateHelperTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($this->testImages['small']['hash'], $this->rokka->getHashMaybeUpload($image));
     }
 
-    public function provideStackUrl()
+    public static function provideStackUrl()
     {
-        $testimage = $this->testImages['small']['path'];
-        $urlPrefix = 'https://testorg.rokka.io/test/'.$this->testImages['small']['hash'];
+        $testimage = __DIR__.'/Fixtures/Images/small-bratpfanne.jpg';
+        $hash = '71775293697709c1a1ce66f05d7c011a6982a6a9';
+        $urlPrefix = 'https://testorg.rokka.io/test/'.$hash;
 
         return [
             'SplFileInfo' => [new FileInfo(new \SplFileInfo($testimage)), null, $urlPrefix.'/small-bratpfanne.jpg'],
             'Native SplFileInfo' => [new \SplFileInfo($testimage), null, $urlPrefix.'/small-bratpfanne.jpg'],
             'String path' => [$testimage, null, $urlPrefix.'/small-bratpfanne.jpg'],
             'String content' => [new StringContent(file_get_contents($testimage)),  null, $urlPrefix.'.jpg'],
-            'RokkaHash' => [new RokkaHash($this->testImages['small']['hash']),  null, $urlPrefix.'.jpg'],
+            'RokkaHash' => [new RokkaHash($hash),  null, $urlPrefix.'.jpg'],
 
             'SplFileInfo seo' => [new FileInfo(new \SplFileInfo($testimage)), 'seo-string', $urlPrefix.'/seo-string.jpg'],
             'Native SplFileInfo seo' => [new \SplFileInfo($testimage), 'seo-string', $urlPrefix.'/seo-string.jpg'],
             'String path seo' => [$testimage, 'seo-string', $urlPrefix.'/seo-string.jpg'],
             'String content seo' => [new StringContent(file_get_contents($testimage)), 'seo-string', $urlPrefix.'/seo-string.jpg'],
-            'RokkaHash seo' => [new RokkaHash($this->testImages['small']['hash']),  'seo-string', $urlPrefix.'/seo-string.jpg'],
+            'RokkaHash seo' => [new RokkaHash($hash),  'seo-string', $urlPrefix.'/seo-string.jpg'],
         ];
     }
 
@@ -220,7 +221,7 @@ class TemplateHelperTest extends \PHPUnit\Framework\TestCase
     /**
      * @return array
      */
-    public function provideSlugify()
+    public static function provideSlugify()
     {
         return [
             ['hello-world.png', '', 'hello-world-png'],
@@ -246,7 +247,6 @@ class TemplateHelperTest extends \PHPUnit\Framework\TestCase
     {
         $reflector = new \ReflectionClass($imageClient);
         $reflector_property = $reflector->getProperty('client');
-        $reflector_property->setAccessible(true);
         /** @var Client $client */
         $client = $reflector_property->getValue($imageClient);
 
