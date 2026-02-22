@@ -367,7 +367,7 @@ class TemplateHelper
             $format = 'jpg';
         }
         $slug = null;
-        if (!empty($seo) && null !== $seo) {
+        if (!empty($seo)) {
             if (null === $seoLanguage) {
                 $seoLanguage = 'de';
             }

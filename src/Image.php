@@ -641,7 +641,7 @@ class Image extends Base
             ]);
 
             // delete the previous, if we're not on the first one anymore, or if we want to delete it.
-            if ($count > 0 || (0 === $count && isset($options['deletePrevious']) && $options['deletePrevious'])) {
+            if ($count > 0 || (isset($options['deletePrevious']) && $options['deletePrevious'])) {
                 $callOptions['query'] = ['deletePrevious' => 'true'];
             }
 

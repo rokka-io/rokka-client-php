@@ -46,7 +46,7 @@ class SourceImageCollection implements \Countable, \Iterator
      * @param SourceImage[] $sourceImages Array of source images
      * @param int           $total        The total amount of results matched
      * @param array         $links        The navigation/browse links
-     * @param null          $cursor       The navigation cursor
+     * @param string|null   $cursor       The navigation cursor
      */
     public function __construct(array $sourceImages, $total, $links = [], $cursor = null)
     {
