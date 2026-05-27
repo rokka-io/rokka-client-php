@@ -745,11 +745,9 @@ class Image extends Base
      * Returns the new Hash for the SourceImage, it could be the same as the input one if the operation
      * did not change it.
      *
-     * The only option currently can be
-     * ['deletePrevious' => true]
-     *
-     * which deletes the previous image from rokka (but not the binary, since that's still used)
-     * If not set, the original image is kept in rokka.
+     * Supported options:
+     *  - `['deletePrevious' => true]` — deletes the previous image from rokka (but not the binary, since that's still used). If not set, the original image is kept in rokka.
+     *  - `['keepHash' => true]` — **FOOTGUN.** Updates the metadata in place without changing the image hash. Downstream caches (CloudFront, memcached, browser) will keep serving stale renders until manually invalidated. Mutually exclusive with `deletePrevious`. When passing multiple metadata entries, all entries are written to the same (unchanged) hash.
      *
      * @param DynamicMetadataInterface|array $dynamicMetadata A Dynamic Metadata object, an array with all the needed info.
      *                                                        Or an array with more than one of those.
@@ -788,8 +786,16 @@ class Image extends Base
                 $name,
             ]);
 
-            // delete the previous, if we're not on the first one anymore, or if we want to delete it.
-            if ($count > 0 || (isset($options['deletePrevious']) && $options['deletePrevious'])) {
+            $keepHash = isset($options['keepHash']) && $options['keepHash'];
+            $deletePreviousRequested = isset($options['deletePrevious']) && $options['deletePrevious'];
+            if ($keepHash && $deletePreviousRequested) {
+                throw new \LogicException('keepHash and deletePrevious are mutually exclusive');
+            }
+            if ($keepHash) {
+                // With keepHash the server returns the same hash, so no previous to clean up between iterations.
+                $callOptions['query'] = ['keepHash' => 'true'];
+            } elseif ($count > 0 || $deletePreviousRequested) {
+                // delete the previous, if we're not on the first one anymore, or if we want to delete it.
                 $callOptions['query'] = ['deletePrevious' => 'true'];
             }
 
@@ -1164,10 +1170,9 @@ class Image extends Base
      * Returns the new Hash for the SourceImage, it could be the same as the input one if the operation
      * did not change it.
      *
-     * The only option currently can be
-     * ['deletePrevious' => true]
-     * which deletes the previous image from rokka (but not the binary, since that's still used)
-     * If not set, the original image is kept in rokka.
+     * Supported options:
+     *  - `['deletePrevious' => true]` — deletes the previous image from rokka (but not the binary, since that's still used). If not set, the original image is kept in rokka.
+     *  - `['keepHash' => true]` — **FOOTGUN.** Removes the metadata in place without changing the image hash. Downstream caches (CloudFront, memcached, browser) will keep serving stale renders until manually invalidated. Mutually exclusive with `deletePrevious`.
      *
      * @param string $dynamicMetadataName The DynamicMetadata name
      * @param string $hash                The Image hash
@@ -1198,7 +1203,14 @@ class Image extends Base
         ]);
 
         $callOptions = [];
-        if (isset($options['deletePrevious']) && $options['deletePrevious']) {
+        $deletePrevious = isset($options['deletePrevious']) && $options['deletePrevious'];
+        $keepHash = isset($options['keepHash']) && $options['keepHash'];
+        if ($keepHash && $deletePrevious) {
+            throw new \LogicException('keepHash and deletePrevious are mutually exclusive');
+        }
+        if ($keepHash) {
+            $callOptions['query'] = ['keepHash' => 'true'];
+        } elseif ($deletePrevious) {
             $callOptions['query'] = ['deletePrevious' => 'true'];
         }
 

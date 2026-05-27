@@ -328,4 +328,52 @@ class ImageApiTest extends \PHPUnit\Framework\TestCase
         $this->assertNull($image->getUserMetadataField('missing', 'abc123'));
     }
 
+    // ---- keepHash option on dynamic metadata ----
+
+    public function testSetDynamicMetadataWithKeepHash(): void
+    {
+        $image = $this->makeClient([new Response(204, ['Location' => '/sourceimages/testorg/abc123'])]);
+
+        $image->setDynamicMetadata(['subject_area' => ['x' => 1, 'y' => 2, 'width' => 3, 'height' => 4]], 'abc123', '', ['keepHash' => true]);
+
+        $req = $this->history[0]['request'];
+        $this->assertSame('PUT', $req->getMethod());
+        $this->assertSame('/sourceimages/testorg/abc123/meta/dynamic/subject_area', $req->getUri()->getPath());
+        parse_str($req->getUri()->getQuery(), $query);
+        $this->assertSame('true', $query['keepHash']);
+        $this->assertArrayNotHasKey('deletePrevious', $query);
+    }
+
+    public function testSetDynamicMetadataRejectsKeepHashWithDeletePrevious(): void
+    {
+        $image = $this->makeClient([]);
+
+        $this->expectException(\LogicException::class);
+        $this->expectExceptionMessage('keepHash and deletePrevious are mutually exclusive');
+
+        $image->setDynamicMetadata(['subject_area' => ['x' => 1]], 'abc123', '', ['keepHash' => true, 'deletePrevious' => true]);
+    }
+
+    public function testDeleteDynamicMetadataWithKeepHash(): void
+    {
+        $image = $this->makeClient([new Response(204, ['Location' => '/sourceimages/testorg/abc123'])]);
+
+        $image->deleteDynamicMetadata('subject_area', 'abc123', '', ['keepHash' => true]);
+
+        $req = $this->history[0]['request'];
+        $this->assertSame('DELETE', $req->getMethod());
+        $this->assertSame('/sourceimages/testorg/abc123/meta/dynamic/subject_area', $req->getUri()->getPath());
+        parse_str($req->getUri()->getQuery(), $query);
+        $this->assertSame('true', $query['keepHash']);
+    }
+
+    public function testDeleteDynamicMetadataRejectsKeepHashWithDeletePrevious(): void
+    {
+        $image = $this->makeClient([]);
+
+        $this->expectException(\LogicException::class);
+        $this->expectExceptionMessage('keepHash and deletePrevious are mutually exclusive');
+
+        $image->deleteDynamicMetadata('subject_area', 'abc123', '', ['keepHash' => true, 'deletePrevious' => true]);
+    }
 }

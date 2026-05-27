@@ -26,6 +26,7 @@ This document mainly describes API changes important to users of this library.
 * Add `\Rokka\Client\Image::signUrlOnServer` to request a server-signed render URL (`POST /utils/{org}/sign_url`). For most cases `\Rokka\Client\UriHelper::signUrl()` remains preferable since it signs locally without a network round-trip.
 * Add `\Rokka\Client\User::getBilling` to fetch monthly billing statistics for an organization (`GET /billing/{org}`).
 * Add `\Rokka\Client\User::setOrganizationOptions` to replace all organization options in a single request (`PUT /organizations/{org}/options`); complements the existing single-option `setOrganizationOption`.
+* Support the new `keepHash` query parameter on `setDynamicMetadata` and `deleteDynamicMetadata` via `$options['keepHash' => true]`. When set, metadata changes don't bump the image hash — useful for late metadata fixes, but downstream caches (CloudFront, memcached, browser) will keep serving stale renders until manually invalidated. Mutually exclusive with `deletePrevious`; passing both throws a `LogicException`.
 
 ## 1.21.4 - 2026-02-20
 
