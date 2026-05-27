@@ -17,6 +17,9 @@ This document mainly describes API changes important to users of this library.
 * Add `\Rokka\Client\Image::downloadSourceImagesAsZip` to download up to 300 source images as a ZIP archive (`GET /sourceimages/{org}/download`).
 * `\Rokka\Client\Image::copySourceImage` now uses the documented `POST /sourceimages/{org}/{hash}/copy` endpoint instead of the legacy `COPY` HTTP verb. Same method signature and behavior.
 * `\Rokka\Client\Image::getSourceImagesWithBinaryHash` now uses the documented `GET /sourceimages/{org}/binaryhash/{binaryHash}` endpoint instead of the legacy `?binaryHash=` query form. Same method signature and behavior.
+* Add `\Rokka\Client\Image::getSourceImageAlias`, `setSourceImageAlias`, `deleteSourceImageAlias`, and `deleteSourceImageAliasCache` for managing image aliases (`/sourceimages/{org}/alias/{alias}` and `/cache`).
+* Add `\Rokka\Client\Core\SourceImageAlias` core model representing an alias mapping.
+* Add MockHandler-based test coverage (`tests/ImageApiTest.php`) for the new Image API methods and the migrated `copySourceImage` and `getSourceImagesWithBinaryHash` endpoints.
 
 ## 1.21.4 - 2026-02-20
 

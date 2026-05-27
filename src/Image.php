@@ -10,6 +10,7 @@ use Psr\Http\Message\UriInterface;
 use Rokka\Client\Core\DynamicMetadata\DynamicMetadataInterface;
 use Rokka\Client\Core\OperationCollection;
 use Rokka\Client\Core\SourceImage;
+use Rokka\Client\Core\SourceImageAlias;
 use Rokka\Client\Core\SourceImageCollection;
 use Rokka\Client\Core\Stack;
 use Rokka\Client\Core\StackCollection;
@@ -35,6 +36,8 @@ class Image extends Base
     private const STACK_RESOURCE = 'stacks';
 
     private const OPERATIONS_RESOURCE = 'operations';
+
+    private const ALIAS_RESOURCE = 'alias';
 
     /**
      * @var string|null the render base url like foo-org.rokka.io
@@ -837,6 +840,156 @@ class Image extends Base
             self::SOURCEIMAGE_RESOURCE,
             $this->getOrganizationName($organization),
             $hash,
+            'cache',
+        ]);
+
+        try {
+            $response = $this->call('DELETE', $path);
+        } catch (GuzzleException $e) {
+            if (404 == $e->getCode()) {
+                return [];
+            }
+
+            throw $e;
+        }
+
+        $decoded = json_decode($response->getBody()->getContents(), true);
+        if (!\is_array($decoded) || !isset($decoded['items']) || !\is_array($decoded['items'])) {
+            return [];
+        }
+
+        return $decoded['items'];
+    }
+
+    /**
+     * Get the source image alias for the given name.
+     *
+     * @param string $alias        The alias name
+     * @param string $organization Optional organization name
+     *
+     * @throws GuzzleException
+     * @throws \RuntimeException
+     *
+     * @return SourceImageAlias
+     */
+    public function getSourceImageAlias($alias, $organization = '')
+    {
+        $path = implode('/', [
+            self::SOURCEIMAGE_RESOURCE,
+            $this->getOrganizationName($organization),
+            self::ALIAS_RESOURCE,
+            $alias,
+        ]);
+
+        $contents = $this
+            ->call('GET', $path)
+            ->getBody()
+            ->getContents();
+
+        $data = json_decode($contents, true);
+        if (!\is_array($data)) {
+            throw new \RuntimeException('Invalid response when fetching alias: '.$contents);
+        }
+
+        return SourceImageAlias::createFromDecodedJsonResponse($data);
+    }
+
+    /**
+     * Create or overwrite an alias that maps a name to a source image hash.
+     *
+     * The only option currently accepted is `['overwrite' => true]`, which allows replacing
+     * an existing alias. Without it, the call fails if the alias already exists.
+     *
+     * @param string $alias        The alias name
+     * @param string $hash         The source image hash the alias should point to
+     * @param string $organization Optional organization name
+     * @param array  $options      Optional options, currently ['overwrite' => bool]
+     *
+     * @throws GuzzleException
+     * @throws \RuntimeException
+     *
+     * @return SourceImageAlias
+     */
+    public function setSourceImageAlias($alias, $hash, $organization = '', $options = [])
+    {
+        $callOptions = ['json' => ['hash' => $hash]];
+        if (isset($options['overwrite']) && $options['overwrite']) {
+            $callOptions['query'] = ['overwrite' => 'true'];
+        }
+
+        $path = implode('/', [
+            self::SOURCEIMAGE_RESOURCE,
+            $this->getOrganizationName($organization),
+            self::ALIAS_RESOURCE,
+            $alias,
+        ]);
+
+        $response = $this->call('PUT', $path, $callOptions);
+        if (!($response->getStatusCode() >= 200 && $response->getStatusCode() < 300)) {
+            throw new \LogicException($response->getBody()->getContents(), $response->getStatusCode());
+        }
+
+        $data = json_decode($response->getBody()->getContents(), true);
+        if (!\is_array($data)) {
+            // server returns the alias object; fall back to constructing one from the inputs
+            return new SourceImageAlias($this->getOrganizationName($organization), $alias, $hash);
+        }
+
+        return SourceImageAlias::createFromDecodedJsonResponse($data);
+    }
+
+    /**
+     * Delete the alias mapping (does not invalidate the CDN cache; call
+     * {@see Image::deleteSourceImageAliasCache()} for that).
+     *
+     * @param string $alias        The alias name
+     * @param string $organization Optional organization name
+     *
+     * @throws GuzzleException If the request fails for a different reason than alias not found
+     *
+     * @return bool True on success, false if the alias was not found
+     */
+    public function deleteSourceImageAlias($alias, $organization = '')
+    {
+        $path = implode('/', [
+            self::SOURCEIMAGE_RESOURCE,
+            $this->getOrganizationName($organization),
+            self::ALIAS_RESOURCE,
+            $alias,
+        ]);
+
+        try {
+            $response = $this->call('DELETE', $path);
+        } catch (GuzzleException $e) {
+            if (404 == $e->getCode()) {
+                return false;
+            }
+
+            throw $e;
+        }
+
+        return '204' == $response->getStatusCode();
+    }
+
+    /**
+     * Purge an alias from the CDN cache.
+     *
+     * Only available on paid accounts (rate-limited to 10 calls/hour).
+     *
+     * @param string $alias        The alias name
+     * @param string $organization Optional organization name
+     *
+     * @throws GuzzleException If the request fails for a different reason than alias not found
+     *
+     * @return array<int, string> Array of purged CDN paths; empty array if the alias was not found
+     */
+    public function deleteSourceImageAliasCache($alias, $organization = '')
+    {
+        $path = implode('/', [
+            self::SOURCEIMAGE_RESOURCE,
+            $this->getOrganizationName($organization),
+            self::ALIAS_RESOURCE,
+            $alias,
             'cache',
         ]);
 
