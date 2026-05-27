@@ -2,6 +2,7 @@
 
 namespace Rokka\Client\Tests;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use Rokka\Client\Factory;
 use Rokka\Client\Image;
 
@@ -33,11 +34,10 @@ class ImageTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @dataProvider dataProviderGetSourceImageUri
-     *
      * @param string     $organization
      * @param mixed|null $name
      */
+    #[DataProvider('dataProviderGetSourceImageUri')]
     public function testGetSourceImageUri($expected, Image $client, $hash, $stack, $format, $name = null, $organization = null)
     {
         $uri = $client->getSourceImageUri($hash, $stack, $format, $name, $organization);

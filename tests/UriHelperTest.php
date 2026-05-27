@@ -3,6 +3,7 @@
 namespace Rokka\Client\Tests;
 
 use GuzzleHttp\Psr7\Uri;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Rokka\Client\Core\Stack;
 use Rokka\Client\Core\StackOperation;
 use Rokka\Client\Core\StackUri;
@@ -110,9 +111,7 @@ class UriHelperTest extends \PHPUnit\Framework\TestCase
         ];
     }
 
-    /**
-     * @dataProvider provideDecomposeUri
-     */
+    #[DataProvider('provideDecomposeUri')]
     public function testDecomposeUri($option, $expectedOptions)
     {
         $stacks = [
@@ -135,12 +134,11 @@ class UriHelperTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @dataProvider provideAddOptionsToUri
-     *
      * @param string       $inputUrl
      * @param string|array $options
      * @param string       $expected
      */
+    #[DataProvider('provideAddOptionsToUri')]
     public function testAddOptionsToUri($inputUrl, $options, $expected, $shortNames = true, $requestQuery = '', $queryString = '')
     {
         $this->assertSame('https://test.rokka.io/stackname/'.($expected ? $expected.'/' : '').'b53763.jpg'.$queryString, UriHelper::addOptionsToUriString('https://test.rokka.io/stackname/'.$inputUrl.'/b53763.jpg'.$requestQuery, $options, $shortNames));
@@ -159,12 +157,11 @@ class UriHelperTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @dataProvider provideGetSrcSetUrl
-     *
      * @param string      $size
      * @param string|null $custom
      * @param string      $expected
      */
+    #[DataProvider('provideGetSrcSetUrl')]
     public function testGetSrcSetUrl($size, $custom, $expected, $setWidthInUrl = true)
     {
         $inputUrl = 'https://test.rokka.io/stackname/b537639e539efcc3df4459ef87c5963aa5079ca6.jpg';

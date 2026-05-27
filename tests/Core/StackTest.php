@@ -2,6 +2,7 @@
 
 namespace Core;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use Rokka\Client\Core\Stack;
 use Rokka\Client\Core\StackCollection;
 use Rokka\Client\Core\StackExpression;
@@ -61,9 +62,7 @@ class StackTest extends \PHPUnit\Framework\TestCase
         return ['base' => [$stack, $data]];
     }
 
-    /**
-     * @dataProvider createFromJsonDataProvider
-     */
+    #[DataProvider('createFromJsonDataProvider')]
     public function testCreateFromJson($expected, $data)
     {
         $stack = Stack::createFromJsonResponse($data);
@@ -71,10 +70,9 @@ class StackTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @dataProvider createFromJsonDataProvider
-     *
      * @param bool $isArray
      */
+    #[DataProvider('createFromJsonDataProvider')]
     public function testCollectionCreateFromJson($expected, $data, $isArray = false)
     {
         $json = '{"items": ['.$data.'], "offset": 0}';

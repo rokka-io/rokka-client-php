@@ -2,6 +2,7 @@
 
 namespace Rokka\Client\Tests;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use Rokka\Client\SearchHelper;
 
 class SearchHelperTest extends \PHPUnit\Framework\TestCase
@@ -25,9 +26,7 @@ class SearchHelperTest extends \PHPUnit\Framework\TestCase
         ];
     }
 
-    /**
-     * @dataProvider provideValidFieldNames
-     */
+    #[DataProvider('provideValidFieldNames')]
     public function testValidateFieldNameAcceptsValid(string $fieldName): void
     {
         $this->assertTrue(SearchHelper::validateFieldName($fieldName));
@@ -45,9 +44,7 @@ class SearchHelperTest extends \PHPUnit\Framework\TestCase
         ];
     }
 
-    /**
-     * @dataProvider provideInvalidFieldNames
-     */
+    #[DataProvider('provideInvalidFieldNames')]
     public function testValidateFieldNameRejectsInvalid(string $fieldName): void
     {
         $this->assertFalse(SearchHelper::validateFieldName($fieldName));

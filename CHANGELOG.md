@@ -10,7 +10,7 @@ This document mainly describes API changes important to users of this library.
 
 * Dropped PHP 8.0 and 8.1 Support: Now requires PHP ^8.2.
 * Dropped Guzzle 6 support: Now requires guzzlehttp/guzzle ^7.4.5 and guzzlehttp/psr7 ^2.4.5.
-* Update PHPUnit to version 10.
+* Update PHPUnit to version 11. `@dataProvider` PHPDoc annotations in tests migrated to the `#[DataProvider]` attribute (no impact on library consumers).
 * Simplify dev dependency constraints (symfony/var-dumper ^6.0|^7.0|^8.0).
 * Add `\Rokka\Client\Image::setSourceImageName` to rename a source image (`PUT /sourceimages/{org}/{hash}/name`).
 * Add `\Rokka\Client\Image::deleteSourceImageCache` to purge a single source image from the CDN cache (`DELETE /sourceimages/{org}/{hash}/cache`, paid feature).

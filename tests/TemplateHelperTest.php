@@ -2,6 +2,7 @@
 
 namespace Rokka\Client\Tests;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use Rokka\Client\Core\SourceImage;
 use Rokka\Client\Factory;
 use Rokka\Client\Image;
@@ -55,10 +56,9 @@ class TemplateHelperTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @dataProvider provideStackUrl
-     *
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
+    #[DataProvider('provideStackUrl')]
     public function testGetStackUrl($image, $seo, $url)
     {
         $this->assertEquals($url, $this->rokka->getStackUrl($image, 'test', 'jpg', $seo));
@@ -232,12 +232,11 @@ class TemplateHelperTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @dataProvider provideSlugify
-     *
      * @param string $input
      * @param string $lang
      * @param string $expected
      */
+    #[DataProvider('provideSlugify')]
     public function testSlugify($input, $lang, $expected)
     {
         $this->assertEquals($expected, TemplateHelper::slugify($input, $lang));

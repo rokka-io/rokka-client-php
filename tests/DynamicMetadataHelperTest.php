@@ -2,6 +2,7 @@
 
 namespace Rokka\Client\Tests;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use Rokka\Client\Core\DynamicMetadata\DynamicMetadataInterface;
 use Rokka\Client\Core\DynamicMetadata\SubjectArea;
 use Rokka\Client\DynamicMetadataHelper;
@@ -20,9 +21,7 @@ class DynamicMetadataHelperTest extends \PHPUnit\Framework\TestCase
         ];
     }
 
-    /**
-     * @dataProvider provideGetDynamicMetadataClassNameData
-     */
+    #[DataProvider('provideGetDynamicMetadataClassNameData')]
     public function testGetDynamicMetadataClassName($expected, $name)
     {
         $this->assertEquals($expected, DynamicMetadataHelper::getDynamicMetadataClassName($name));
@@ -56,12 +55,11 @@ class DynamicMetadataHelperTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @dataProvider provideBuildDynamicMetadataData
-     *
      * @param DynamicMetadataInterface $excepted
      * @param string                   $name
      * @param array                    $data
      */
+    #[DataProvider('provideBuildDynamicMetadataData')]
     public function testBuildDynamicMetadata($excepted, $name, $data)
     {
         $this->assertEquals($excepted, DynamicMetadataHelper::buildDynamicMetadata($name, $data));

@@ -2,6 +2,7 @@
 
 namespace Core;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use Rokka\Client\Core\StackOperation;
 use Rokka\Client\Core\StackUri;
 
@@ -27,14 +28,13 @@ class StackUriTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @dataProvider provide__construct
-     *
      * @param string      $stackName
      * @param string      $name
      * @param array       $options
      * @param array       $operations
      * @param string|null $expectedUri
      */
+    #[DataProvider('provide__construct')]
     public function testConstruct($stackName, $name, $options, $operations, $expectedUri = null)
     {
         $stack = new StackUri($stackName);

@@ -1,5 +1,6 @@
 <?php
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use Rokka\Client\Core\DynamicMetadata\SubjectArea;
 use Rokka\Client\Core\SourceImage;
 use Rokka\Client\Core\SourceImageCollection;
@@ -70,10 +71,9 @@ class SourceImageTest extends PHPUnit\Framework\TestCase
     }
 
     /**
-     * @dataProvider createFromJsonDataProvider
-     *
      * @param bool $isArray
      */
+    #[DataProvider('createFromJsonDataProvider')]
     public function testCreateFromJson($expected, $data, $isArray = false)
     {
         if ($isArray) {
@@ -85,10 +85,9 @@ class SourceImageTest extends PHPUnit\Framework\TestCase
     }
 
     /**
-     * @dataProvider createFromJsonDataProvider
-     *
      * @param bool $isArray
      */
+    #[DataProvider('createFromJsonDataProvider')]
     public function testCollectionCreateFromJson($expected, $data, $isArray = false)
     {
         if ($isArray) {

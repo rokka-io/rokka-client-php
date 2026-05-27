@@ -2,6 +2,7 @@
 
 namespace Rokka\Client\Tests;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use Rokka\Client\UriHelper;
 
 class SignUrlsTest extends \PHPUnit\Framework\TestCase
@@ -54,14 +55,13 @@ class SignUrlsTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @dataProvider provideAddOptionsToUri
-     *
      * @param string $inputQuery
      * @param string $expectedQuery
      *
      * @throws \PHPUnit_Framework_Exception
      * @throws \PHPUnit_Framework_ExpectationFailedException
      */
+    #[DataProvider('provideAddOptionsToUri')]
     public function testCheckSignature($inputQuery = '', $expectedQuery = '', ?\DateTime $until = null)
     {
         $key = 'OCOuisGe30QyocYkQN1SPErGGKunyuhZ';

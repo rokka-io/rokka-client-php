@@ -2,6 +2,7 @@
 
 namespace Rokka\Client\Tests;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use Rokka\Client\Core\StackUri;
 use Rokka\Client\Core\UriComponents;
 
@@ -17,10 +18,9 @@ class UriComponentTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @dataProvider provideCreateFromArray
-     *
      * @param array $config
      */
+    #[DataProvider('provideCreateFromArray')]
     public function testCreateFromArray($config, $name)
     {
         $components = UriComponents::createFromArray($config);
