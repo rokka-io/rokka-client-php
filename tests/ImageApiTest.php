@@ -220,4 +220,39 @@ class ImageApiTest extends \PHPUnit\Framework\TestCase
 
         $this->assertSame([], $image->deleteSourceImageAliasCache('my-alias'));
     }
+
+    // ---- Section 3: User metadata single-field ----
+
+    public function testGetUserMetadata(): void
+    {
+        $body = '{"foo":"bar","int:count":5}';
+        $image = $this->makeClient([new Response(200, [], $body)]);
+
+        $result = $image->getUserMetadata('abc123');
+
+        $this->assertSame(['foo' => 'bar', 'int:count' => 5], $result);
+        $req = $this->history[0]['request'];
+        $this->assertSame('GET', $req->getMethod());
+        $this->assertSame('/sourceimages/testorg/abc123/meta/user', $req->getUri()->getPath());
+    }
+
+    public function testGetUserMetadataField(): void
+    {
+        $image = $this->makeClient([new Response(200, [], '"bar"')]);
+
+        $result = $image->getUserMetadataField('foo', 'abc123');
+
+        $this->assertSame('bar', $result);
+        $req = $this->history[0]['request'];
+        $this->assertSame('GET', $req->getMethod());
+        $this->assertSame('/sourceimages/testorg/abc123/meta/user/foo', $req->getUri()->getPath());
+    }
+
+    public function testGetUserMetadataFieldReturnsNullOnNotFound(): void
+    {
+        $image = $this->makeClient([new Response(404, [], '{"error":"not found"}')]);
+
+        $this->assertNull($image->getUserMetadataField('missing', 'abc123'));
+    }
+
 }

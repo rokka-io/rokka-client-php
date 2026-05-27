@@ -20,6 +20,7 @@ This document mainly describes API changes important to users of this library.
 * Add `\Rokka\Client\Image::getSourceImageAlias`, `setSourceImageAlias`, `deleteSourceImageAlias`, and `deleteSourceImageAliasCache` for managing image aliases (`/sourceimages/{org}/alias/{alias}` and `/cache`).
 * Add `\Rokka\Client\Core\SourceImageAlias` core model representing an alias mapping.
 * Add MockHandler-based test coverage (`tests/ImageApiTest.php`) for the new Image API methods and the migrated `copySourceImage` and `getSourceImagesWithBinaryHash` endpoints.
+* Add `\Rokka\Client\Image::getUserMetadata` and `getUserMetadataField` to fetch all user metadata or a single field (`GET /sourceimages/{org}/{hash}/meta/user[/{field}]`).
 
 ## 1.21.4 - 2026-02-20
 

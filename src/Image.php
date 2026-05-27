@@ -1211,6 +1211,76 @@ class Image extends Base
     }
 
     /**
+     * Get all user-metadata for an image.
+     *
+     * @param string $hash         The image hash
+     * @param string $organization Optional organization name
+     *
+     * @throws GuzzleException
+     * @throws \RuntimeException
+     *
+     * @return array<string, mixed>
+     */
+    public function getUserMetadata($hash, $organization = '')
+    {
+        $path = implode('/', [
+            self::SOURCEIMAGE_RESOURCE,
+            $this->getOrganizationName($organization),
+            $hash,
+            self::USER_META_RESOURCE,
+        ]);
+
+        $contents = $this
+            ->call('GET', $path)
+            ->getBody()
+            ->getContents();
+
+        $decoded = json_decode($contents, true);
+        if (!\is_array($decoded)) {
+            return [];
+        }
+
+        return $decoded;
+    }
+
+    /**
+     * Get a single user-metadata field for an image.
+     *
+     * @param string $field        The field name
+     * @param string $hash         The image hash
+     * @param string $organization Optional organization name
+     *
+     * @throws GuzzleException If the request fails for a different reason than field not found
+     *
+     * @return mixed|null The field value, or null if the field (or image) does not exist
+     */
+    public function getUserMetadataField($field, $hash, $organization = '')
+    {
+        $path = implode('/', [
+            self::SOURCEIMAGE_RESOURCE,
+            $this->getOrganizationName($organization),
+            $hash,
+            self::USER_META_RESOURCE,
+            $field,
+        ]);
+
+        try {
+            $contents = $this
+                ->call('GET', $path)
+                ->getBody()
+                ->getContents();
+        } catch (GuzzleException $e) {
+            if (404 == $e->getCode()) {
+                return null;
+            }
+
+            throw $e;
+        }
+
+        return json_decode($contents, true);
+    }
+
+    /**
      * Returns url for accessing the image.
      *
      * @param string          $hash         Identifier Hash
