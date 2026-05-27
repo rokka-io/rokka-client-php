@@ -105,10 +105,8 @@ abstract class AbstractLocalImage
      * @since 1.3.0
      *
      * @param string|null $identifier
-     *
-     * @return void
      */
-    public function setIdentifier($identifier)
+    public function setIdentifier($identifier): void
     {
         $this->identifier = $identifier;
     }
@@ -131,10 +129,8 @@ abstract class AbstractLocalImage
      * @since 1.3.0
      *
      * @param mixed|null $context
-     *
-     * @return void
      */
-    public function setContext($context)
+    public function setContext($context): void
     {
         $this->context = $context;
     }

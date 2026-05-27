@@ -47,10 +47,7 @@ class Version implements DynamicMetadataInterface
         return $this->text;
     }
 
-    /**
-     * @return void
-     */
-    public function setText(string $text)
+    public function setText(string $text): void
     {
         $this->text = $text;
     }

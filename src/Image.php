@@ -1424,10 +1424,8 @@ class Image extends Base
 
     /**
      * @param string|null $renderBaseUrl
-     *
-     * @return void
      */
-    public function setRenderBaseUrl($renderBaseUrl)
+    public function setRenderBaseUrl($renderBaseUrl): void
     {
         $this->renderBaseUrl = $renderBaseUrl;
     }

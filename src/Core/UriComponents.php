@@ -82,10 +82,8 @@ class UriComponents implements \ArrayAccess
      * @param string|StackUri $stack
      *
      * @throws \RuntimeException
-     *
-     * @return void
      */
-    public function setStack($stack)
+    public function setStack($stack): void
     {
         if ($stack instanceof StackUri) {
             $this->stack = $stack;
@@ -110,10 +108,8 @@ class UriComponents implements \ArrayAccess
      * @since 1.2.0
      *
      * @param string|null $hash
-     *
-     * @return void
      */
-    public function setHash($hash)
+    public function setHash($hash): void
     {
         $this->hash = $hash;
     }
@@ -132,10 +128,8 @@ class UriComponents implements \ArrayAccess
      * @since 1.2.0
      *
      * @param string|null $format
-     *
-     * @return void
      */
-    public function setFormat($format)
+    public function setFormat($format): void
     {
         $this->format = $format;
     }
@@ -154,10 +148,8 @@ class UriComponents implements \ArrayAccess
      * @since 1.2.0
      *
      * @param string|null $filename
-     *
-     * @return void
      */
-    public function setFilename($filename)
+    public function setFilename($filename): void
     {
         $this->filename = $filename;
     }
@@ -186,7 +178,7 @@ class UriComponents implements \ArrayAccess
      * @param StackUri|string $value
      */
     #[\ReturnTypeWillChange] // PHP 8 complains other and with < 8.0 there's no mixed return type
-    public function offsetSet($offset, $value)
+    public function offsetSet($offset, $value): void
     {
         if (!property_exists($this, $offset)) {
             throw new \RuntimeException("Property $offset can't be set.");

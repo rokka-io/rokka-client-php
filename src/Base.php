@@ -67,10 +67,8 @@ abstract class Base
      * Set the credentials.
      *
      * @param string|null $key API key
-     *
-     * @return void
      */
-    public function setCredentials($key)
+    public function setCredentials($key): void
     {
         $this->credentials['key'] = $key;
     }
@@ -81,10 +79,8 @@ abstract class Base
      * @since 1.17.0
      *
      * @param string|null $token API token
-     *
-     * @return void
      */
-    public function setToken(?string $token)
+    public function setToken(?string $token): void
     {
         $this->credentials['token'] = $token;
     }
