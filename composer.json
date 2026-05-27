@@ -33,7 +33,7 @@
         "phpunit/phpunit": "^11.5",
         "symfony/var-dumper": "^6.0|^7.0|^8.0",
         "phpstan/phpstan": "^2.1",
-        "friendsofphp/php-cs-fixer": "^3.57",
+        "friendsofphp/php-cs-fixer": "^3.95",
         "phpcompatibility/php-compatibility": "^10.0.0@dev"
     },
     "autoload": {
