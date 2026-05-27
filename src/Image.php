@@ -638,6 +638,109 @@ class Image extends Base
     }
 
     /**
+     * Purge a stack from the CDN cache.
+     *
+     * Pass `'*'` as the stack name to invalidate the entire organization's cache.
+     * Limited to 5 invocations per hour. Larger orgs are blocked from using this — clear stack
+     * names with `deleteStack`/`createStack` are the preferred approach.
+     *
+     * @param string $stackName    Stack name, or `'*'` for the whole organization
+     * @param string $organization Optional organization name
+     *
+     * @throws GuzzleException If the request fails for a different reason than stack not found
+     *
+     * @return bool True on success, false if the stack was not found
+     */
+    public function deleteStackCache($stackName, $organization = '')
+    {
+        $path = implode('/', [self::STACK_RESOURCE, $this->getOrganizationName($organization), $stackName, 'cache']);
+
+        try {
+            $response = $this->call('DELETE', $path);
+        } catch (GuzzleException $e) {
+            if (404 == $e->getCode()) {
+                return false;
+            }
+
+            throw $e;
+        }
+
+        return $response->getStatusCode() >= 200 && $response->getStatusCode() < 300;
+    }
+
+    /**
+     * List the available stack options as a JSON schema document.
+     *
+     * Useful for introspecting what option keys, types, and defaults the Rokka API accepts on
+     * stack creation. The response is the raw JSON schema as an associative array.
+     *
+     * @throws GuzzleException
+     * @throws \RuntimeException
+     *
+     * @return array<string, mixed>
+     */
+    public function listStackOptions()
+    {
+        $contents = $this
+            ->call('GET', 'stackoptions')
+            ->getBody()
+            ->getContents();
+
+        $decoded = json_decode($contents, true);
+        if (!\is_array($decoded)) {
+            return [];
+        }
+
+        return $decoded;
+    }
+
+    /**
+     * Sign a render URL via the Rokka API.
+     *
+     * The same signing algorithm is available client-side via {@see UriHelper::signUrl()},
+     * which is generally preferable since it requires no network round-trip. Use this method
+     * when you want the API to sign with the organization's stored signing key rather than
+     * supplying the key locally.
+     *
+     * @param string         $url           The URL to sign
+     * @param string|null    $signKey       Optional signing key (server uses the org's first key if omitted)
+     * @param \DateTime|null $until         Optional expiration date
+     * @param int|null       $roundDateUpTo Optional rounding granularity in seconds (default 3600)
+     * @param string         $organization  Optional organization name
+     *
+     * @throws GuzzleException
+     * @throws \RuntimeException
+     *
+     * @return array<string, mixed> Decoded response with `signed_url`, `original_url`, and optional `until`
+     */
+    public function signUrlOnServer($url, $signKey = null, ?\DateTime $until = null, $roundDateUpTo = null, $organization = '')
+    {
+        $query = ['url' => $url];
+        if (null !== $signKey) {
+            $query['key'] = $signKey;
+        }
+        if (null !== $until) {
+            $query['until'] = $until->format('c');
+        }
+        if (null !== $roundDateUpTo) {
+            $query['roundDateUpTo'] = $roundDateUpTo;
+        }
+
+        $path = implode('/', ['utils', $this->getOrganizationName($organization), 'sign_url']);
+        $contents = $this
+            ->call('POST', $path, ['query' => $query])
+            ->getBody()
+            ->getContents();
+
+        $decoded = json_decode($contents, true);
+        if (!\is_array($decoded)) {
+            throw new \RuntimeException('Invalid response when signing URL: '.$contents);
+        }
+
+        return $decoded;
+    }
+
+    /**
      * Add the given DynamicMetadata to a SourceImage.
      * Returns the new Hash for the SourceImage, it could be the same as the input one if the operation
      * did not change it.

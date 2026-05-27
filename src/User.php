@@ -263,6 +263,76 @@ class User extends Base
     }
 
     /**
+     * Set all options for an organization at once.
+     *
+     * Unlike {@see User::setOrganizationOption()}, this replaces the entire options bag in
+     * a single request. Pass an associative array of option name → value pairs.
+     *
+     * @param string               $organization Organization name
+     * @param array<string, mixed> $options      Associative array of option name => value
+     *
+     * @throws GuzzleException
+     * @throws \RuntimeException
+     *
+     * @return Organization
+     */
+    public function setOrganizationOptions($organization, array $options)
+    {
+        $contents = $this
+            ->call('PUT', self::ORGANIZATION_RESOURCE.'/'.$this->getOrganizationName($organization).'/options', ['json' => $options])
+            ->getBody()
+            ->getContents()
+        ;
+
+        return Organization::createFromJsonResponse($contents);
+    }
+
+    /**
+     * Get the monthly billing statistics for an organization.
+     *
+     * Requires admin rights on the organization. Optional `from` and `to` dates accept any
+     * string format that `\DateTime` parses; the server rounds them to the first/last day
+     * of the month. The response shape is intentionally free-form — Rokka may add fields
+     * over time — so it's returned as a decoded associative array.
+     *
+     * @param string         $organization Organization name
+     * @param \DateTime|null $from         Optional start date (rounded to first of month)
+     * @param \DateTime|null $to           Optional end date (rounded to last of month)
+     *
+     * @throws GuzzleException
+     * @throws \RuntimeException
+     *
+     * @return array<string, mixed>
+     */
+    public function getBilling($organization, ?\DateTime $from = null, ?\DateTime $to = null)
+    {
+        $query = [];
+        if (null !== $from) {
+            $query['from'] = $from->format('Y-m-d');
+        }
+        if (null !== $to) {
+            $query['to'] = $to->format('Y-m-d');
+        }
+
+        $callOptions = [];
+        if (!empty($query)) {
+            $callOptions['query'] = $query;
+        }
+
+        $contents = $this
+            ->call('GET', 'billing/'.$this->getOrganizationName($organization), $callOptions)
+            ->getBody()
+            ->getContents();
+
+        $decoded = json_decode($contents, true);
+        if (!\is_array($decoded)) {
+            return [];
+        }
+
+        return $decoded;
+    }
+
+    /**
      * Return an organization.
      *
      * @since 1.7.0

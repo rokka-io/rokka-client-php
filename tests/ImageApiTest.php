@@ -221,6 +221,79 @@ class ImageApiTest extends \PHPUnit\Framework\TestCase
         $this->assertSame([], $image->deleteSourceImageAliasCache('my-alias'));
     }
 
+    // ---- Section 4: Stack cache, stack options, sign URL ----
+
+    public function testDeleteStackCache(): void
+    {
+        $image = $this->makeClient([new Response(200, [], '{"status":"ok"}')]);
+
+        $this->assertTrue($image->deleteStackCache('mystack'));
+        $req = $this->history[0]['request'];
+        $this->assertSame('DELETE', $req->getMethod());
+        $this->assertSame('/stacks/testorg/mystack/cache', $req->getUri()->getPath());
+    }
+
+    public function testDeleteStackCacheReturnsFalseOnNotFound(): void
+    {
+        $image = $this->makeClient([new Response(404, [], '{"error":"not found"}')]);
+
+        $this->assertFalse($image->deleteStackCache('missing'));
+    }
+
+    public function testDeleteStackCacheWildcard(): void
+    {
+        $image = $this->makeClient([new Response(200, [], '{"status":"ok"}')]);
+
+        $image->deleteStackCache('*');
+
+        $this->assertSame('/stacks/testorg/*/cache', $this->history[0]['request']->getUri()->getPath());
+    }
+
+    public function testListStackOptions(): void
+    {
+        $body = '{"properties":{"jpg.quality":{"type":"integer","minimum":1,"maximum":100,"default":75}}}';
+        $image = $this->makeClient([new Response(200, [], $body)]);
+
+        $result = $image->listStackOptions();
+
+        $this->assertArrayHasKey('properties', $result);
+        $this->assertSame(75, $result['properties']['jpg.quality']['default']);
+        $req = $this->history[0]['request'];
+        $this->assertSame('GET', $req->getMethod());
+        $this->assertSame('/stackoptions', $req->getUri()->getPath());
+    }
+
+    public function testSignUrlOnServer(): void
+    {
+        $body = '{"signed_url":"https://x.rokka.io/foo.jpg?sig=abc","original_url":"https://x.rokka.io/foo.jpg"}';
+        $image = $this->makeClient([new Response(200, [], $body)]);
+
+        $result = $image->signUrlOnServer('https://x.rokka.io/foo.jpg');
+
+        $this->assertSame('https://x.rokka.io/foo.jpg?sig=abc', $result['signed_url']);
+        $req = $this->history[0]['request'];
+        $this->assertSame('POST', $req->getMethod());
+        $this->assertSame('/utils/testorg/sign_url', $req->getUri()->getPath());
+        parse_str($req->getUri()->getQuery(), $query);
+        $this->assertSame('https://x.rokka.io/foo.jpg', $query['url']);
+        $this->assertArrayNotHasKey('key', $query);
+        $this->assertArrayNotHasKey('until', $query);
+    }
+
+    public function testSignUrlOnServerWithAllOptions(): void
+    {
+        $body = '{"signed_url":"https://x.rokka.io/foo.jpg?sig=abc&exp=1","original_url":"https://x.rokka.io/foo.jpg","until":"2026-12-31T23:59:59+00:00"}';
+        $image = $this->makeClient([new Response(200, [], $body)]);
+
+        $until = new \DateTime('2026-12-31T23:59:59+00:00');
+        $image->signUrlOnServer('https://x.rokka.io/foo.jpg', 'mykey', $until, 60);
+
+        parse_str($this->history[0]['request']->getUri()->getQuery(), $query);
+        $this->assertSame('mykey', $query['key']);
+        $this->assertSame('60', $query['roundDateUpTo']);
+        $this->assertStringStartsWith('2026-12-31', $query['until']);
+    }
+
     // ---- Section 3: User metadata single-field ----
 
     public function testGetUserMetadata(): void

@@ -21,6 +21,11 @@ This document mainly describes API changes important to users of this library.
 * Add `\Rokka\Client\Core\SourceImageAlias` core model representing an alias mapping.
 * Add MockHandler-based test coverage (`tests/ImageApiTest.php`) for the new Image API methods and the migrated `copySourceImage` and `getSourceImagesWithBinaryHash` endpoints.
 * Add `\Rokka\Client\Image::getUserMetadata` and `getUserMetadataField` to fetch all user metadata or a single field (`GET /sourceimages/{org}/{hash}/meta/user[/{field}]`).
+* Add `\Rokka\Client\Image::deleteStackCache` to purge a stack (or `*` for the whole organization) from the CDN cache (`DELETE /stacks/{org}/{name}/cache`).
+* Add `\Rokka\Client\Image::listStackOptions` to fetch the JSON schema of supported stack options (`GET /stackoptions`).
+* Add `\Rokka\Client\Image::signUrlOnServer` to request a server-signed render URL (`POST /utils/{org}/sign_url`). For most cases `\Rokka\Client\UriHelper::signUrl()` remains preferable since it signs locally without a network round-trip.
+* Add `\Rokka\Client\User::getBilling` to fetch monthly billing statistics for an organization (`GET /billing/{org}`).
+* Add `\Rokka\Client\User::setOrganizationOptions` to replace all organization options in a single request (`PUT /organizations/{org}/options`); complements the existing single-option `setOrganizationOption`.
 
 ## 1.21.4 - 2026-02-20
 
