@@ -186,8 +186,8 @@ class Image extends Base
             if (false === $overwrite) {
                 $headers['Overwrite'] = 'F';
             }
-            $response = $this->call('COPY',
-                implode('/', [self::SOURCEIMAGE_RESOURCE, $this->getOrganizationName($sourceOrg), $hash]),
+            $response = $this->call('POST',
+                implode('/', [self::SOURCEIMAGE_RESOURCE, $this->getOrganizationName($sourceOrg), $hash, 'copy']),
                 ['headers' => $headers]
             );
         } catch (GuzzleException $e) {
@@ -377,11 +377,10 @@ class Image extends Base
      */
     public function getSourceImagesWithBinaryHash($binaryHash, $organization = '')
     {
-        $path = self::SOURCEIMAGE_RESOURCE.'/'.$this->getOrganizationName($organization);
+        $path = implode('/', [self::SOURCEIMAGE_RESOURCE, $this->getOrganizationName($organization), 'binaryhash', $binaryHash]);
 
-        $options['query'] = ['binaryHash' => $binaryHash];
         $contents = $this
-            ->call('GET', $path, $options)
+            ->call('GET', $path)
             ->getBody()
             ->getContents();
 
@@ -410,6 +409,49 @@ class Image extends Base
 
         return $this
             ->call('GET', $path)
+            ->getBody()
+            ->getContents();
+    }
+
+    /**
+     * Download multiple source images as a ZIP archive.
+     *
+     * The server enforces a maximum of 300 images per request. Use the same `$sorts` shape as
+     * {@see Image::searchSourceImages()} (e.g. `['created' => 'desc']`).
+     *
+     * @param int|null        $limit        Optional limit (server max 300)
+     * @param int|string|null $offset       Optional offset, either integer or the "Cursor" value
+     * @param array           $sorts        Optional sort definition, e.g. ['created' => 'desc']
+     * @param bool            $deleted      If true, returns the ZIP for deleted images
+     * @param string          $organization Optional organization name
+     *
+     * @throws GuzzleException
+     * @throws \RuntimeException
+     *
+     * @return string Raw ZIP file contents
+     */
+    public function downloadSourceImagesAsZip($limit = null, $offset = null, $sorts = [], $deleted = false, $organization = '')
+    {
+        $options = ['query' => []];
+
+        $sort = SearchHelper::buildSearchSortParameter($sorts);
+        if (!empty($sort)) {
+            $options['query']['sort'] = $sort;
+        }
+        if (isset($limit)) {
+            $options['query']['limit'] = $limit;
+        }
+        if (isset($offset)) {
+            $options['query']['offset'] = $offset;
+        }
+        if ($deleted) {
+            $options['query']['deleted'] = 'true';
+        }
+
+        $path = implode('/', [self::SOURCEIMAGE_RESOURCE, $this->getOrganizationName($organization), 'download']);
+
+        return $this
+            ->call('GET', $path, $options)
             ->getBody()
             ->getContents();
     }
@@ -742,6 +784,78 @@ class Image extends Base
         $content = $response->getBody()->getContents();
 
         return SourceImage::createFromJsonResponse($content);
+    }
+
+    /**
+     * Rename a source image.
+     *
+     * @param string $name         The new image name
+     * @param string $hash         The Image hash
+     * @param string $organization Optional organization name
+     *
+     * @throws GuzzleException If the request fails for a different reason than image not found
+     *
+     * @return bool True on success, false if the image was not found
+     */
+    public function setSourceImageName($name, $hash, $organization = '')
+    {
+        $path = implode('/', [
+            self::SOURCEIMAGE_RESOURCE,
+            $this->getOrganizationName($organization),
+            $hash,
+            'name',
+        ]);
+
+        try {
+            $response = $this->call('PUT', $path, ['json' => $name]);
+        } catch (GuzzleException $e) {
+            if (404 == $e->getCode()) {
+                return false;
+            }
+
+            throw $e;
+        }
+
+        return '204' == $response->getStatusCode();
+    }
+
+    /**
+     * Purge a source image from the CDN cache.
+     *
+     * Only available on paid accounts. Free accounts will receive a 403 response.
+     *
+     * @param string $hash         The Image hash
+     * @param string $organization Optional organization name
+     *
+     * @throws GuzzleException If the request fails for a different reason than image not found
+     *
+     * @return array<int, string> Array of purged CDN paths; empty array if the image was not found
+     */
+    public function deleteSourceImageCache($hash, $organization = '')
+    {
+        $path = implode('/', [
+            self::SOURCEIMAGE_RESOURCE,
+            $this->getOrganizationName($organization),
+            $hash,
+            'cache',
+        ]);
+
+        try {
+            $response = $this->call('DELETE', $path);
+        } catch (GuzzleException $e) {
+            if (404 == $e->getCode()) {
+                return [];
+            }
+
+            throw $e;
+        }
+
+        $decoded = json_decode($response->getBody()->getContents(), true);
+        if (!\is_array($decoded) || !isset($decoded['items']) || !\is_array($decoded['items'])) {
+            return [];
+        }
+
+        return $decoded['items'];
     }
 
     /**

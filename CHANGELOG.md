@@ -12,6 +12,11 @@ This document mainly describes API changes important to users of this library.
 * Dropped Guzzle 6 support: Now requires guzzlehttp/guzzle ^7.4.5 and guzzlehttp/psr7 ^2.4.5.
 * Update PHPUnit to version 10.
 * Simplify dev dependency constraints (symfony/var-dumper ^6.0|^7.0|^8.0).
+* Add `\Rokka\Client\Image::setSourceImageName` to rename a source image (`PUT /sourceimages/{org}/{hash}/name`).
+* Add `\Rokka\Client\Image::deleteSourceImageCache` to purge a single source image from the CDN cache (`DELETE /sourceimages/{org}/{hash}/cache`, paid feature).
+* Add `\Rokka\Client\Image::downloadSourceImagesAsZip` to download up to 300 source images as a ZIP archive (`GET /sourceimages/{org}/download`).
+* `\Rokka\Client\Image::copySourceImage` now uses the documented `POST /sourceimages/{org}/{hash}/copy` endpoint instead of the legacy `COPY` HTTP verb. Same method signature and behavior.
+* `\Rokka\Client\Image::getSourceImagesWithBinaryHash` now uses the documented `GET /sourceimages/{org}/binaryhash/{binaryHash}` endpoint instead of the legacy `?binaryHash=` query form. Same method signature and behavior.
 
 ## 1.21.4 - 2026-02-20
 
