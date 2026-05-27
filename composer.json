@@ -22,7 +22,7 @@
         }
     ],
     "require": {
-        "php": "^8.1",
+        "php": "^8.2",
         "guzzlehttp/guzzle": "^7.4.5",
         "jbroadway/urlify": "^1.2",
         "guzzlehttp/psr7": "^2.4.5",
@@ -50,7 +50,7 @@
         ]
     },
     "scripts": {
-        "phpcompatibility": "phpcs -ps --standard=PHPCompatibility --runtime-set testVersion 8.1- src/ tests/",
+        "phpcompatibility": "phpcs -ps --standard=PHPCompatibility --runtime-set testVersion 8.2- src/ tests/",
         "phpunit": "phpunit",
         "phpstan": "phpstan analyze -c phpstan.neon -l 8 src/",
         "lint:fix": "php-cs-fixer fix -v --diff --using-cache=yes src/",
