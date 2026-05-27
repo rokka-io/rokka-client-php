@@ -6,7 +6,7 @@ This project tries to follow [Semantic Versioning](http://semver.org/) since the
 
 This document mainly describes API changes important to users of this library.
 
-## 1.22.0 - unreleased
+## 1.22.0 - 2026-05-27
 
 * Dropped PHP 8.0 and 8.1 Support: Now requires PHP ^8.2.
 * Dropped Guzzle 6 support: Now requires guzzlehttp/guzzle ^7.4.5 and guzzlehttp/psr7 ^2.4.5.
