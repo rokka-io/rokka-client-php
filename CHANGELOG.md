@@ -6,6 +6,11 @@ This project tries to follow [Semantic Versioning](http://semver.org/) since the
 
 This document mainly describes API changes important to users of this library.
 
+## Unreleased
+
+* **Security:** `Image::uploadSourceImage()` percent-encodes `"`, `\`, CR, LF and NUL in the file name (`"` → `%22`, like browsers do), so a file name can't add parameters or headers to the multipart upload request. [ROKKA-325](https://track.liip.ch/issue/ROKKA-325)
+* **Security:** `Image::uploadSourceImage()` and `uploadSourceImageByUrl()` throw an `\InvalidArgumentException` for `meta_dynamic` names other than `[a-z0-9_]+`. [ROKKA-325](https://track.liip.ch/issue/ROKKA-325)
+
 ## 1.22.0 - 2026-05-27
 
 * Dropped PHP 8.0 and 8.1 Support: Now requires PHP ^8.2.

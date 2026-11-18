@@ -75,6 +75,7 @@ class Image extends Base
      *
      * @throws GuzzleException
      * @throws \RuntimeException
+     * @throws \InvalidArgumentException If a meta_dynamic name contains other characters than [a-z0-9_]
      *
      * @return SourceImageCollection If no image contents are provided to be uploaded
      */
@@ -86,7 +87,7 @@ class Image extends Base
         $requestOptions = [[
             'name' => 'filedata',
             'contents' => $contents,
-            'filename' => $fileName,
+            'filename' => self::escapeMultipartFilename((string) $fileName),
         ]];
 
         return $this->uploadSourceImageInternal($organization, $options, $requestOptions);
@@ -101,6 +102,7 @@ class Image extends Base
      *
      * @throws GuzzleException
      * @throws \RuntimeException
+     * @throws \InvalidArgumentException If a meta_dynamic name contains other characters than [a-z0-9_]
      *
      * @return SourceImageCollection If no image contents are provided to be uploaded
      */
@@ -1501,6 +1503,24 @@ class Image extends Base
         return true;
     }
 
+    /**
+     * Percent-encodes the characters that would break out of the quoted multipart filename parameter.
+     *
+     * Guzzle's MultipartStream puts the filename into the Content-Disposition header as is. Like browsers do
+     * (WHATWG HTML, multipart/form-data encoding), `"`, CR and LF become %22, %0D and %0A. NUL and the
+     * backslash (an escape character for PHP's multipart parser) are encoded too.
+     */
+    private static function escapeMultipartFilename(string $fileName): string
+    {
+        return strtr($fileName, [
+            '"' => '%22',
+            "\r" => '%0D',
+            "\n" => '%0A',
+            "\0" => '%00',
+            '\\' => '%5C',
+        ]);
+    }
+
     private function applyValueTransformationsToUserMeta(array $fields): array
     {
         foreach ($fields as $key => $value) {
@@ -1552,6 +1572,10 @@ class Image extends Base
                 if ($value instanceof DynamicMetadataInterface) {
                     $key = $value::getName();
                     $value = $value->getForJson();
+                }
+                $key = (string) $key;
+                if (!preg_match('/\A[a-z0-9_]+\z/', $key)) {
+                    throw new \InvalidArgumentException(\sprintf('Invalid dynamic metadata name "%s", only [a-z0-9_] is allowed.', addcslashes($key, "\0..\37\"\\")));
                 }
                 $requestOptions[] = [
                     'name' => 'meta_dynamic[0]['.$key.']',
