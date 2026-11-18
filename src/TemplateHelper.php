@@ -50,6 +50,11 @@ class TemplateHelper
     private $imageClient;
 
     /**
+     * @var string[] Resolved directories with trailing separator, empty means no restriction
+     */
+    private $allowedBaseDirs = [];
+
+    /**
      * @since 1.3.0
      *
      * @param string                 $organization      Organization name
@@ -132,6 +137,7 @@ class TemplateHelper
      *
      * @throws \GuzzleHttp\Exception\GuzzleException
      * @throws \RuntimeException
+     * @throws \InvalidArgumentException             if $image is a URL, a stream wrapper or outside the allowed base directories
      *
      * @return string
      */
@@ -171,6 +177,7 @@ class TemplateHelper
      *
      * @throws \GuzzleHttp\Exception\GuzzleException
      * @throws \RuntimeException
+     * @throws \InvalidArgumentException             if $image is a URL, a stream wrapper or outside the allowed base directories
      *
      * @return string
      */
@@ -201,6 +208,7 @@ class TemplateHelper
      *
      * @throws \GuzzleHttp\Exception\GuzzleException
      * @throws \RuntimeException
+     * @throws \InvalidArgumentException             if $image is a URL, a stream wrapper or outside the allowed base directories
      *
      * @return string
      */
@@ -225,6 +233,7 @@ class TemplateHelper
      *
      * @throws \GuzzleHttp\Exception\GuzzleException
      * @throws \RuntimeException
+     * @throws \InvalidArgumentException             if $image is a URL, a stream wrapper or outside the allowed base directories
      *
      * @return string
      */
@@ -433,7 +442,13 @@ class TemplateHelper
      * - LocalImageAbstract: returns that, sets $identidier and $context, if set
      * - SplFileInfo: returns \Rokka\Client\LocalImage\FileInfo
      * - string with hash pattern (/^[0-9a-f]{6,40}$/): returns \Rokka\Client\LocalImage\RokkaHash
-     * - other strings: returns \Rokka\Client\LocalImage\FileInfo with $input as the path to the image
+     * - other strings: returns \Rokka\Client\LocalImage\FileInfo with $input as the local path to the image.
+     *   URLs and stream wrappers (anything containing "://" or starting with "data:") are rejected.
+     *
+     * If allowed base directories are set (see setAllowedBaseDirs()), strings and \SplFileInfo objects must resolve
+     * to an existing file inside one of them.
+     *
+     * To upload an image from somewhere else, create the AbstractLocalImage object yourself (eg. StringContent).
      *
      * @since 1.3.1
      *
@@ -442,6 +457,7 @@ class TemplateHelper
      * @param mixed|null                             $context
      *
      * @throws \RuntimeException
+     * @throws \InvalidArgumentException if $input is a URL, a stream wrapper or outside the allowed base directories
      *
      * @return AbstractLocalImage
      */
@@ -458,12 +474,16 @@ class TemplateHelper
             return $input;
         }
         if ($input instanceof \SplFileInfo) {
+            $this->assertInAllowedBaseDirs($input->getPathname());
+
             return new FileInfo($input, $identifier, $context);
         }
         if (\is_string($input)) {
             if (preg_match('/^[0-9a-f]{6,40}$/', $input)) {
                 return new RokkaHash($input, $identifier, $context, $this);
             }
+            $this->assertLocalPath($input);
+            $this->assertInAllowedBaseDirs($input);
 
             return new FileInfo(new \SplFileInfo($input), $identifier, $context);
         }
@@ -472,6 +492,73 @@ class TemplateHelper
         $inputType = \is_object($input) ? $input::class : \gettype($input);
 
         throw new \RuntimeException('Can not create a source image from input of type '.$inputType);
+    }
+
+    /**
+     * Restricts string paths and \SplFileInfo objects passed to the URL methods to files inside these directories.
+     *
+     * Paths are compared after resolving symlinks and "..", so a symlink pointing outside is rejected.
+     * Pass an empty array to remove the restriction (the default).
+     *
+     * @since 1.23.0
+     *
+     * @param string[] $dirs Existing directories
+     *
+     * @throws \InvalidArgumentException if a directory doesn't exist
+     */
+    public function setAllowedBaseDirs(array $dirs): void
+    {
+        $allowed = [];
+        foreach ($dirs as $dir) {
+            $realDir = realpath($dir);
+            if (false === $realDir || !is_dir($realDir)) {
+                throw new \InvalidArgumentException('Allowed base dir does not exist: '.$dir);
+            }
+            $allowed[] = rtrim($realDir, \DIRECTORY_SEPARATOR).\DIRECTORY_SEPARATOR;
+        }
+        $this->allowedBaseDirs = $allowed;
+    }
+
+    /**
+     * @return string[] The allowed base directories (resolved, with trailing separator)
+     */
+    public function getAllowedBaseDirs(): array
+    {
+        return $this->allowedBaseDirs;
+    }
+
+    /**
+     * Rejects URLs and stream wrappers, so strings are only ever read as local paths.
+     *
+     * Windows paths like C:\image.jpg are still allowed.
+     *
+     * @throws \InvalidArgumentException
+     */
+    private function assertLocalPath(string $path): void
+    {
+        if (str_contains($path, '://') || 0 === stripos($path, 'data:')) {
+            throw new \InvalidArgumentException('Only local file paths are supported, URLs and stream wrappers are not allowed. Create an AbstractLocalImage object yourself to upload images from other sources.');
+        }
+    }
+
+    /**
+     * @throws \InvalidArgumentException
+     */
+    private function assertInAllowedBaseDirs(string $path): void
+    {
+        if ([] === $this->allowedBaseDirs) {
+            return;
+        }
+        $realPath = realpath($path);
+        if (false !== $realPath && is_file($realPath)) {
+            foreach ($this->allowedBaseDirs as $dir) {
+                if (str_starts_with($realPath, $dir)) {
+                    return;
+                }
+            }
+        }
+
+        throw new \InvalidArgumentException('Image path is not inside an allowed base dir.');
     }
 
     /**
