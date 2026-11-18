@@ -376,4 +376,116 @@ class ImageApiTest extends \PHPUnit\Framework\TestCase
 
         $image->deleteDynamicMetadata('subject_area', 'abc123', '', ['keepHash' => true, 'deletePrevious' => true]);
     }
+
+    // ---- Section: multipart upload headers ----
+
+    /**
+     * Splits the recorded multipart request body into parts and returns the header lines of each part.
+     *
+     * @return list<list<string>>
+     */
+    private function getMultipartHeaders(RequestInterface $request): array
+    {
+        $this->assertSame(1, preg_match('/boundary=([^;]+)/', $request->getHeaderLine('Content-Type'), $m));
+        $parts = explode('--'.$m[1], (string) $request->getBody());
+        // drop the preamble and the closing "--\r\n"
+        $parts = \array_slice($parts, 1, -1);
+
+        return array_map(static function (string $part): array {
+            [$headers] = explode("\r\n\r\n", ltrim($part, "\r\n"), 2);
+
+            return explode("\r\n", $headers);
+        }, $parts);
+    }
+
+    /**
+     * @param list<string> $headers
+     */
+    private function assertSingleContentDisposition(string $expected, array $headers): void
+    {
+        $dispositions = array_values(array_filter($headers, static fn (string $h): bool => 0 === stripos($h, 'Content-Disposition:')));
+        $this->assertSame(['Content-Disposition: '.$expected], $dispositions);
+    }
+
+    public static function provideUploadFilenames(): array
+    {
+        return [
+            'plain' => ['photo.jpg', 'photo.jpg'],
+            'spaces, umlaut and percent' => ['Mein Bild 100% süss.jpg', 'Mein Bild 100% süss.jpg'],
+            'quote adds a name parameter' => ['x.gif"; name="options[0]', 'x.gif%22; name=%22options[0]'],
+            'crlf adds a header' => ["x.gif\"\r\nContent-Disposition: form-data; name=\"meta_user[0]", 'x.gif%22%0D%0AContent-Disposition: form-data; name=%22meta_user[0]'],
+            'lf only' => ["x\nX-Foo: bar.gif", 'x%0AX-Foo: bar.gif'],
+            'nul' => ["x\0.gif", 'x%00.gif'],
+            'trailing backslash' => ['x.gif\\', 'x.gif%5C'],
+        ];
+    }
+
+    #[\PHPUnit\Framework\Attributes\DataProvider('provideUploadFilenames')]
+    public function testUploadSourceImageEscapesFilename(string $fileName, string $expected): void
+    {
+        $image = $this->makeClient([new Response(200, [], '{"items":[]}')]);
+
+        $image->uploadSourceImage('GIF89a', $fileName, '', ['meta_user' => ['foo' => 'bar']]);
+
+        $req = $this->history[0]['request'];
+        $this->assertSame('POST', $req->getMethod());
+        $this->assertSame('/sourceimages/testorg', $req->getUri()->getPath());
+
+        $parts = $this->getMultipartHeaders($req);
+        $this->assertCount(2, $parts);
+        $this->assertSingleContentDisposition('form-data; name="filedata"; filename="'.$expected.'"', $parts[0]);
+        $this->assertSame(['Content-Length', 'Content-Type'], array_map(static fn (string $h): string => explode(':', $h)[0], \array_slice($parts[0], 1)));
+        $this->assertSingleContentDisposition('form-data; name="meta_user[0]"', $parts[1]);
+    }
+
+    public function testUploadSourceImageSendsDynamicMetadata(): void
+    {
+        $image = $this->makeClient([new Response(200, [], '{"items":[]}')]);
+
+        $image->uploadSourceImage('GIF89a', 'x.gif', '', ['meta_dynamic' => [
+            // the key is ignored for DynamicMetadataInterface objects, getName() is used
+            'not valid!' => new \Rokka\Client\Core\DynamicMetadata\SubjectArea(1, 2),
+            'crop_area' => ['x' => 1, 'y' => 2, 'width' => 3, 'height' => 4],
+        ]]);
+
+        $parts = $this->getMultipartHeaders($this->history[0]['request']);
+        $this->assertCount(3, $parts);
+        $this->assertSingleContentDisposition('form-data; name="meta_dynamic[0][subject_area]"', $parts[1]);
+        $this->assertSingleContentDisposition('form-data; name="meta_dynamic[0][crop_area]"', $parts[2]);
+    }
+
+    public static function provideInvalidDynamicMetadataNames(): array
+    {
+        return [
+            'bracket' => ['x][y'],
+            'quote' => ['x]"; name="options[0]'],
+            'crlf' => ["x\r\nX-Foo: bar"],
+            'trailing newline' => ["crop_area\n"],
+            'uppercase' => ['Crop_Area'],
+            'empty' => [''],
+        ];
+    }
+
+    #[\PHPUnit\Framework\Attributes\DataProvider('provideInvalidDynamicMetadataNames')]
+    public function testUploadSourceImageRejectsInvalidDynamicMetadataName(string $name): void
+    {
+        $image = $this->makeClient([new Response(200, [], '{"items":[]}')]);
+
+        try {
+            $image->uploadSourceImage('GIF89a', 'x.gif', '', ['meta_dynamic' => [$name => ['x' => 1]]]);
+            $this->fail('Expected InvalidArgumentException');
+        } catch (\InvalidArgumentException $e) {
+            $this->assertStringContainsString('Invalid dynamic metadata name', $e->getMessage());
+        }
+        $this->assertSame([], $this->history);
+    }
+
+    public function testUploadSourceImageByUrlRejectsInvalidDynamicMetadataName(): void
+    {
+        $image = $this->makeClient([new Response(200, [], '{"items":[]}')]);
+
+        $this->expectException(\InvalidArgumentException::class);
+
+        $image->uploadSourceImageByUrl('https://example.org/x.gif', '', ['meta_dynamic' => ['x]' => ['x' => 1]]]);
+    }
 }
