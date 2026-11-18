@@ -653,7 +653,9 @@ class Image extends Base
      */
     public function deleteStackCache($stackName, $organization = '')
     {
-        $path = implode('/', [self::STACK_RESOURCE, $this->getOrganizationPathSegment($organization), self::encodePathSegment($stackName), 'cache']);
+        // '*' is the documented wildcard for purging the whole organization's cache
+        $stackSegment = '*' === $stackName ? '*' : self::encodePathSegment($stackName);
+        $path = implode('/', [self::STACK_RESOURCE, $this->getOrganizationPathSegment($organization), $stackSegment, 'cache']);
 
         try {
             $response = $this->call('DELETE', $path);

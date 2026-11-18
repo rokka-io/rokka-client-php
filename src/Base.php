@@ -198,13 +198,24 @@ abstract class Base
     /**
      * Encode a value for use as a single API path segment.
      *
-     * Prevents values like "../stacks/org/name" or "abc?x=1" from changing the requested
+     * Prevents values like "../stacks/org/name", ".." or "abc?x=1" from changing the requested
      * endpoint, since Guzzle resolves dot segments in relative paths against the base URI.
-     * "*" is kept as is (valid in a path segment) since the API uses it as a wildcard, e.g. for cache purges.
+     * Whole "." / ".." segments are percent-encoded (rawurlencode leaves dots alone), and empty
+     * segments are rejected since they would address the parent collection.
+     *
+     * @throws \InvalidArgumentException If the segment is empty
      */
     protected static function encodePathSegment(string|int $segment): string
     {
-        return str_replace('%2A', '*', rawurlencode((string) $segment));
+        $segment = (string) $segment;
+        if ('' === $segment) {
+            throw new \InvalidArgumentException('API path segment must not be empty');
+        }
+        if ('.' === $segment || '..' === $segment) {
+            return str_repeat('%2E', \strlen($segment));
+        }
+
+        return rawurlencode($segment);
     }
 
     /**

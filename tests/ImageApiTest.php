@@ -281,6 +281,34 @@ class ImageApiTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('/stacks/..%2F..%2Fusers/..%2Fother', $this->history[0]['request']->getUri()->getPath());
     }
 
+    public function testDotSegmentsAreEncoded(): void
+    {
+        $image = $this->makeClient([new Response(204), new Response(204)]);
+
+        $image->deleteSourceImage('..');
+        $image->deleteStack('.', '..');
+
+        $this->assertSame('/sourceimages/testorg/%2E%2E', $this->history[0]['request']->getUri()->getPath());
+        $this->assertSame('/stacks/%2E%2E/%2E', $this->history[1]['request']->getUri()->getPath());
+    }
+
+    public function testEmptySegmentIsRejected(): void
+    {
+        $image = $this->makeClient([]);
+
+        $this->expectException(\InvalidArgumentException::class);
+        $image->deleteSourceImage('');
+    }
+
+    public function testWildcardIsOnlyKeptForStackCache(): void
+    {
+        $image = $this->makeClient([new Response(204)]);
+
+        $image->deleteStack('*');
+
+        $this->assertSame('/stacks/testorg/%2A', $this->history[0]['request']->getUri()->getPath());
+    }
+
     public function testDeleteSourceImageAliasEncodesTraversalInAlias(): void
     {
         $image = $this->makeClient([new Response(204)]);
