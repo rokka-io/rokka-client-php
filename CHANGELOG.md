@@ -6,6 +6,11 @@ This project tries to follow [Semantic Versioning](http://semver.org/) since the
 
 This document mainly describes API changes important to users of this library.
 
+## Unreleased
+
+* **Security / BC break:** `TemplateHelper::getImageObject()` and the URL methods using it (`getStackUrl()`, `getResizeUrl()`, `getResizeCropUrl()`, `getOriginalSizeUrl()`) treat strings only as local file paths. Strings containing `://` or starting with `data:` (`http://`, `file://`, `php://filter`, `phar://`, …) now throw an `\InvalidArgumentException` instead of being fetched and uploaded to rokka. Remote URLs are no longer fetched implicitly. To upload content from elsewhere, fetch it yourself and pass a `\Rokka\Client\LocalImage\StringContent` (or another `AbstractLocalImage`) object. [ROKKA-324](https://track.liip.ch/issue/ROKKA-324)
+* Add `TemplateHelper::setAllowedBaseDirs()` to restrict string paths and `\SplFileInfo` objects to files inside the given directories (compared after resolving symlinks and `..`). [ROKKA-324](https://track.liip.ch/issue/ROKKA-324)
+
 ## 1.22.0 - 2026-05-27
 
 * Dropped PHP 8.0 and 8.1 Support: Now requires PHP ^8.2.

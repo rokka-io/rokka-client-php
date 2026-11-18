@@ -362,6 +362,168 @@ class TemplateHelperTest extends \PHPUnit\Framework\TestCase
         $this->assertStringStartsWith('https://custom.rokka.io/', $url);
     }
 
+    public static function provideRemoteOrStreamPaths(): \Generator
+    {
+        $fixture = __DIR__.'/Fixtures/Images/small-bratpfanne.jpg';
+        $paths = [
+            'http' => 'http://127.0.0.1:1/secret.png',
+            'uppercase HTTP' => 'HTTP://127.0.0.1:1/secret.png',
+            'https' => 'https://example.org/image.jpg',
+            'php filter' => 'php://filter/read=convert.base64-encode/resource='.$fixture,
+            'file' => 'file://'.$fixture,
+            'phar' => 'phar://'.$fixture.'/x.jpg',
+            'data' => 'data:image/png;base64,iVBORw0KGgo=',
+            'uppercase DATA' => 'DATA:image/png;base64,iVBORw0KGgo=',
+        ];
+        $methods = [
+            'getImageObject' => static fn (TemplateHelper $h, string $p) => $h->getImageObject($p),
+            'getStackUrl' => static fn (TemplateHelper $h, string $p) => $h->getStackUrl($p, 'stack'),
+            'getResizeUrl' => static fn (TemplateHelper $h, string $p) => $h->getResizeUrl($p, 100),
+            'getResizeCropUrl' => static fn (TemplateHelper $h, string $p) => $h->getResizeCropUrl($p, 100, 100),
+            'getOriginalSizeUrl' => static fn (TemplateHelper $h, string $p) => $h->getOriginalSizeUrl($p),
+        ];
+        foreach ($methods as $methodName => $method) {
+            foreach ($paths as $pathName => $path) {
+                yield $methodName.' '.$pathName => [$method, $path];
+            }
+        }
+    }
+
+    #[DataProvider('provideRemoteOrStreamPaths')]
+    public function testRejectsUrlsAndStreamWrappers(\Closure $method, string $path): void
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Only local file paths are supported');
+        $method($this->rokka, $path);
+    }
+
+    public function testAllowsWindowsStylePath(): void
+    {
+        $result = $this->rokka->getImageObject('C:\\images\\image.jpg');
+        $this->assertInstanceOf(FileInfo::class, $result);
+    }
+
+    public function testAllowedBaseDirAcceptsPathInside(): void
+    {
+        $this->rokka->setAllowedBaseDirs([__DIR__.'/Fixtures/Images']);
+        $path = $this->testImages['small']['path'];
+
+        $this->assertInstanceOf(FileInfo::class, $this->rokka->getImageObject($path));
+        $this->assertInstanceOf(FileInfo::class, $this->rokka->getImageObject(new \SplFileInfo($path)));
+        $this->assertStringEndsWith('/small-bratpfanne.jpg', $this->rokka->getStackUrl($path, 'stack'));
+    }
+
+    public function testAllowedBaseDirAcceptsRelativeDotDotStayingInside(): void
+    {
+        $this->rokka->setAllowedBaseDirs([__DIR__.'/Fixtures']);
+        $path = __DIR__.'/Fixtures/Images/../Images/small-bratpfanne.jpg';
+
+        $this->assertInstanceOf(FileInfo::class, $this->rokka->getImageObject($path));
+    }
+
+    public function testAllowedBaseDirRejectsPathOutside(): void
+    {
+        $this->rokka->setAllowedBaseDirs([__DIR__.'/Fixtures/Images']);
+
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('not inside an allowed base dir');
+        $this->rokka->getStackUrl(__FILE__, 'stack');
+    }
+
+    public function testAllowedBaseDirRejectsDotDotEscape(): void
+    {
+        $this->rokka->setAllowedBaseDirs([__DIR__.'/Fixtures/Images']);
+
+        $this->expectException(\InvalidArgumentException::class);
+        $this->rokka->getImageObject(__DIR__.'/Fixtures/Images/../../TemplateHelperTest.php');
+    }
+
+    public function testAllowedBaseDirRejectsSplFileInfoOutside(): void
+    {
+        $this->rokka->setAllowedBaseDirs([__DIR__.'/Fixtures/Images']);
+
+        $this->expectException(\InvalidArgumentException::class);
+        $this->rokka->getImageObject(new \SplFileInfo(__FILE__));
+    }
+
+    public function testAllowedBaseDirRejectsMissingFile(): void
+    {
+        $this->rokka->setAllowedBaseDirs([__DIR__.'/Fixtures/Images']);
+
+        $this->expectException(\InvalidArgumentException::class);
+        $this->rokka->getImageObject(__DIR__.'/Fixtures/Images/does-not-exist.jpg');
+    }
+
+    public function testAllowedBaseDirRejectsSiblingWithSamePrefix(): void
+    {
+        $tmp = $this->createTempDir();
+        mkdir($tmp.'/base');
+        mkdir($tmp.'/base-evil');
+        copy($this->testImages['small']['path'], $tmp.'/base-evil/image.jpg');
+        try {
+            $this->rokka->setAllowedBaseDirs([$tmp.'/base']);
+            $this->expectException(\InvalidArgumentException::class);
+            $this->rokka->getImageObject($tmp.'/base-evil/image.jpg');
+        } finally {
+            $this->removeTempDir($tmp);
+        }
+    }
+
+    public function testAllowedBaseDirRejectsSymlinkPointingOutside(): void
+    {
+        $tmp = $this->createTempDir();
+        mkdir($tmp.'/base');
+        if (!@symlink(__FILE__, $tmp.'/base/link.jpg')) {
+            $this->removeTempDir($tmp);
+            $this->markTestSkipped('symlinks not supported');
+        }
+        try {
+            $this->rokka->setAllowedBaseDirs([$tmp.'/base']);
+            $this->expectException(\InvalidArgumentException::class);
+            $this->rokka->getImageObject($tmp.'/base/link.jpg');
+        } finally {
+            $this->removeTempDir($tmp);
+        }
+    }
+
+    public function testSetAllowedBaseDirsResolvesAndClears(): void
+    {
+        $this->rokka->setAllowedBaseDirs([__DIR__.'/Fixtures/../Fixtures/Images/']);
+        $this->assertSame([realpath(__DIR__.'/Fixtures/Images').\DIRECTORY_SEPARATOR], $this->rokka->getAllowedBaseDirs());
+
+        $this->rokka->setAllowedBaseDirs([]);
+        $this->assertSame([], $this->rokka->getAllowedBaseDirs());
+        $this->assertInstanceOf(FileInfo::class, $this->rokka->getImageObject(__FILE__));
+    }
+
+    public function testSetAllowedBaseDirsRejectsMissingDir(): void
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Allowed base dir does not exist');
+        $this->rokka->setAllowedBaseDirs([__DIR__.'/does-not-exist']);
+    }
+
+    private function createTempDir(): string
+    {
+        $tmp = sys_get_temp_dir().'/rokka-test-'.bin2hex(random_bytes(6));
+        mkdir($tmp);
+
+        return (string) realpath($tmp);
+    }
+
+    private function removeTempDir(string $dir): void
+    {
+        $items = new \RecursiveIteratorIterator(
+            new \RecursiveDirectoryIterator($dir, \FilesystemIterator::SKIP_DOTS),
+            \RecursiveIteratorIterator::CHILD_FIRST
+        );
+        foreach ($items as $item) {
+            /* @var \SplFileInfo $item */
+            $item->isDir() && !$item->isLink() ? rmdir($item->getPathname()) : unlink($item->getPathname());
+        }
+        rmdir($dir);
+    }
+
     private function checkBaseUrl($imageClient)
     {
         $reflector = new \ReflectionClass($imageClient);
