@@ -227,7 +227,7 @@ class User extends Base
         }
 
         $contents = $this
-            ->call('PUT', self::ORGANIZATION_RESOURCE.'/'.self::encodePathSegment($name), $options)
+            ->call('PUT', self::ORGANIZATION_RESOURCE.'/'.self::validateOrganizationName($name), $options)
             ->getBody()
             ->getContents()
         ;
@@ -254,7 +254,7 @@ class User extends Base
         $options = ['json' => $value];
 
         $contents = $this
-            ->call('PUT', self::ORGANIZATION_RESOURCE.'/'.$this->getOrganizationPathSegment($organization).'/options/'.self::encodePathSegment($name), $options)
+            ->call('PUT', self::ORGANIZATION_RESOURCE.'/'.$this->getOrganizationName($organization).'/options/'.self::encodePathSegment($name), $options)
             ->getBody()
             ->getContents()
         ;
@@ -279,7 +279,7 @@ class User extends Base
     public function setOrganizationOptions($organization, array $options)
     {
         $contents = $this
-            ->call('PUT', self::ORGANIZATION_RESOURCE.'/'.$this->getOrganizationPathSegment($organization).'/options', ['json' => $options])
+            ->call('PUT', self::ORGANIZATION_RESOURCE.'/'.$this->getOrganizationName($organization).'/options', ['json' => $options])
             ->getBody()
             ->getContents()
         ;
@@ -320,7 +320,7 @@ class User extends Base
         }
 
         $contents = $this
-            ->call('GET', 'billing/'.$this->getOrganizationPathSegment($organization), $callOptions)
+            ->call('GET', 'billing/'.$this->getOrganizationName($organization), $callOptions)
             ->getBody()
             ->getContents();
 
@@ -347,7 +347,7 @@ class User extends Base
     public function getOrganization($organization = '')
     {
         $contents = $this
-            ->call('GET', self::ORGANIZATION_RESOURCE.'/'.$this->getOrganizationPathSegment($organization))
+            ->call('GET', self::ORGANIZATION_RESOURCE.'/'.$this->getOrganizationName($organization))
             ->getBody()
             ->getContents()
         ;
@@ -378,7 +378,7 @@ class User extends Base
             return strtolower($role);
         }, $roles);
         $contents = $this
-            ->call('PUT', implode('/', [self::ORGANIZATION_RESOURCE, $this->getOrganizationPathSegment($organization), 'memberships', self::encodePathSegment($userId)]), ['json' => [
+            ->call('PUT', implode('/', [self::ORGANIZATION_RESOURCE, $this->getOrganizationName($organization), 'memberships', self::encodePathSegment($userId)]), ['json' => [
                 'roles' => $roles,
             ]])
             ->getBody()
@@ -415,7 +415,7 @@ class User extends Base
         }, $roles);
         $contents = $this
             ->call('POST',
-                implode('/', [self::ORGANIZATION_RESOURCE, $this->getOrganizationPathSegment($organization), 'memberships']),
+                implode('/', [self::ORGANIZATION_RESOURCE, $this->getOrganizationName($organization), 'memberships']),
                 ['json' => [
                     'roles' => $roles,
                 ]])
@@ -441,7 +441,7 @@ class User extends Base
     public function getMembership($userId, $organization = '')
     {
         $contents = $this
-            ->call('GET', implode('/', [self::ORGANIZATION_RESOURCE, $this->getOrganizationPathSegment($organization), 'memberships', self::encodePathSegment($userId)]))
+            ->call('GET', implode('/', [self::ORGANIZATION_RESOURCE, $this->getOrganizationName($organization), 'memberships', self::encodePathSegment($userId)]))
             ->getBody()
             ->getContents();
 
@@ -465,7 +465,7 @@ class User extends Base
     {
         try {
             $response = $this
-            ->call('DELETE', implode('/', [self::ORGANIZATION_RESOURCE, $this->getOrganizationPathSegment($organization), 'memberships', self::encodePathSegment($userId)]));
+            ->call('DELETE', implode('/', [self::ORGANIZATION_RESOURCE, $this->getOrganizationName($organization), 'memberships', self::encodePathSegment($userId)]));
         } catch (GuzzleException $e) {
             if (404 == $e->getCode()) {
                 return false;
@@ -492,7 +492,7 @@ class User extends Base
     public function listMemberships($organization = '')
     {
         $contents = $this
-            ->call('GET', implode('/', [self::ORGANIZATION_RESOURCE, $this->getOrganizationPathSegment($organization), 'memberships']))
+            ->call('GET', implode('/', [self::ORGANIZATION_RESOURCE, $this->getOrganizationName($organization), 'memberships']))
             ->getBody()
             ->getContents()
         ;

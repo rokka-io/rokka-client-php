@@ -41,13 +41,20 @@ class UserApiTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('/organizations/testorg/memberships/..%2F..%2Fother-org', $this->history[0]['request']->getUri()->getPath());
     }
 
-    public function testDeleteMembershipEncodesDotDotUserId(): void
+    public function testCreateOrganizationRejectsInvalidName(): void
     {
-        $user = $this->makeClient([new Response(204)]);
+        $user = $this->makeClient([]);
 
+        $this->expectException(\InvalidArgumentException::class);
+        $user->createOrganization('../users', 'billing@example.com');
+    }
+
+    public function testDeleteMembershipRejectsDotDotUserId(): void
+    {
+        $user = $this->makeClient([]);
+
+        $this->expectException(\InvalidArgumentException::class);
         $user->deleteMembership('..');
-
-        $this->assertSame('/organizations/testorg/memberships/%2E%2E', $this->history[0]['request']->getUri()->getPath());
     }
 
     public function testDeleteUserApiKeyEncodesTraversalInId(): void

@@ -272,32 +272,67 @@ class ImageApiTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('', $uri->getQuery());
     }
 
-    public function testDeleteStackEncodesTraversalInStackNameAndOrganization(): void
+    public function testDeleteStackEncodesTraversalInStackName(): void
     {
         $image = $this->makeClient([new Response(204)]);
 
-        $image->deleteStack('../other', '../../users');
+        $image->deleteStack('../other', 'other-org_2');
 
-        $this->assertSame('/stacks/..%2F..%2Fusers/..%2Fother', $this->history[0]['request']->getUri()->getPath());
+        $this->assertSame('/stacks/other-org_2/..%2Fother', $this->history[0]['request']->getUri()->getPath());
     }
 
-    public function testDotSegmentsAreEncoded(): void
+    /**
+     * @return array<string, array{string}>
+     */
+    public static function invalidOrganizationProvider(): array
     {
-        $image = $this->makeClient([new Response(204), new Response(204)]);
-
-        $image->deleteSourceImage('..');
-        $image->deleteStack('.', '..');
-
-        $this->assertSame('/sourceimages/testorg/%2E%2E', $this->history[0]['request']->getUri()->getPath());
-        $this->assertSame('/stacks/%2E%2E/%2E', $this->history[1]['request']->getUri()->getPath());
+        return [
+            'traversal' => ['../../users'],
+            'query' => ['testorg?x=1'],
+            'slash' => ['testorg/stacks'],
+            'host' => ['evil.com/'],
+            'uppercase' => ['TestOrg'],
+            'encoded' => ['%2e%2e'],
+        ];
     }
 
-    public function testEmptySegmentIsRejected(): void
+    #[\PHPUnit\Framework\Attributes\DataProvider('invalidOrganizationProvider')]
+    public function testInvalidOrganizationIsRejected(string $organization): void
     {
         $image = $this->makeClient([]);
 
         $this->expectException(\InvalidArgumentException::class);
-        $image->deleteSourceImage('');
+        $image->deleteStack('mystack', $organization);
+    }
+
+    public function testInvalidOrganizationIsRejectedForRenderUrl(): void
+    {
+        $image = $this->makeClient([]);
+
+        $this->expectException(\InvalidArgumentException::class);
+        $image->getSourceImageUri('abc123', 'mystack', 'jpg', null, 'evil.com/x');
+    }
+
+    /**
+     * @return array<string, array{string, string}>
+     */
+    public static function invalidSegmentProvider(): array
+    {
+        return [
+            'empty hash' => ['', 'testorg'],
+            'dot-dot hash' => ['..', 'testorg'],
+            'dot hash' => ['.', 'testorg'],
+            'dot-dot organization' => ['abc123', '..'],
+        ];
+    }
+
+    #[\PHPUnit\Framework\Attributes\DataProvider('invalidSegmentProvider')]
+    public function testInvalidSegmentIsRejected(string $hash, string $organization): void
+    {
+        $image = $this->makeClient([]);
+
+        $this->expectException(\InvalidArgumentException::class);
+        $image->deleteSourceImage($hash, $organization);
     }
 
     public function testWildcardIsOnlyKeptForStackCache(): void
