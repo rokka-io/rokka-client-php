@@ -249,6 +249,47 @@ class ImageApiTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('/stacks/testorg/*/cache', $this->history[0]['request']->getUri()->getPath());
     }
 
+    // ---- Path segment encoding (no traversal / query injection via arguments) ----
+
+    public function testDeleteSourceImageEncodesTraversalInHash(): void
+    {
+        $image = $this->makeClient([new Response(204)]);
+
+        $image->deleteSourceImage('../../stacks/testorg/important');
+
+        $uri = $this->history[0]['request']->getUri();
+        $this->assertSame('/sourceimages/testorg/..%2F..%2Fstacks%2Ftestorg%2Fimportant', $uri->getPath());
+    }
+
+    public function testRestoreSourceImageEncodesQueryInjectionInHash(): void
+    {
+        $image = $this->makeClient([new Response(200)]);
+
+        $image->restoreSourceImage('abc123?foo=bar#');
+
+        $uri = $this->history[0]['request']->getUri();
+        $this->assertSame('/sourceimages/testorg/abc123%3Ffoo%3Dbar%23/restore', $uri->getPath());
+        $this->assertSame('', $uri->getQuery());
+    }
+
+    public function testDeleteStackEncodesTraversalInStackNameAndOrganization(): void
+    {
+        $image = $this->makeClient([new Response(204)]);
+
+        $image->deleteStack('../other', '../../users');
+
+        $this->assertSame('/stacks/..%2F..%2Fusers/..%2Fother', $this->history[0]['request']->getUri()->getPath());
+    }
+
+    public function testDeleteSourceImageAliasEncodesTraversalInAlias(): void
+    {
+        $image = $this->makeClient([new Response(204)]);
+
+        $image->deleteSourceImageAlias('../../../stacks/testorg/x');
+
+        $this->assertSame('/sourceimages/testorg/alias/..%2F..%2F..%2Fstacks%2Ftestorg%2Fx', $this->history[0]['request']->getUri()->getPath());
+    }
+
     public function testListStackOptions(): void
     {
         $body = '{"properties":{"jpg.quality":{"type":"integer","minimum":1,"maximum":100,"default":75}}}';

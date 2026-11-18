@@ -32,6 +32,24 @@ class UserApiTest extends \PHPUnit\Framework\TestCase
         return new User($client, 'testorg', 'test-api-key');
     }
 
+    public function testDeleteMembershipEncodesTraversalInUserId(): void
+    {
+        $user = $this->makeClient([new Response(204)]);
+
+        $user->deleteMembership('../../other-org');
+
+        $this->assertSame('/organizations/testorg/memberships/..%2F..%2Fother-org', $this->history[0]['request']->getUri()->getPath());
+    }
+
+    public function testDeleteUserApiKeyEncodesTraversalInId(): void
+    {
+        $user = $this->makeClient([new Response(204)]);
+
+        $user->deleteUserApiKey('../../organizations/testorg');
+
+        $this->assertSame('/user/apikeys/..%2F..%2Forganizations%2Ftestorg', $this->history[0]['request']->getUri()->getPath());
+    }
+
     public function testGetBilling(): void
     {
         $body = '{"total":42.5,"images":1234,"traffic":56789}';

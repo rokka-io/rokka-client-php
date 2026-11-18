@@ -131,7 +131,7 @@ class Image extends Base
     public function deleteSourceImage($hash, $organization = '')
     {
         try {
-            $response = $this->call('DELETE', implode('/', [self::SOURCEIMAGE_RESOURCE, $this->getOrganizationName($organization), $hash]));
+            $response = $this->call('DELETE', implode('/', [self::SOURCEIMAGE_RESOURCE, $this->getOrganizationPathSegment($organization), self::encodePathSegment($hash)]));
         } catch (GuzzleException $e) {
             if (404 == $e->getCode()) {
                 return false;
@@ -156,7 +156,7 @@ class Image extends Base
     public function restoreSourceImage($hash, $organization = '')
     {
         try {
-            $response = $this->call('POST', implode('/', [self::SOURCEIMAGE_RESOURCE, $this->getOrganizationName($organization), $hash, 'restore']));
+            $response = $this->call('POST', implode('/', [self::SOURCEIMAGE_RESOURCE, $this->getOrganizationPathSegment($organization), self::encodePathSegment($hash), 'restore']));
         } catch (GuzzleException $e) {
             if (404 == $e->getCode()) {
                 return false;
@@ -190,7 +190,7 @@ class Image extends Base
                 $headers['Overwrite'] = 'F';
             }
             $response = $this->call('POST',
-                implode('/', [self::SOURCEIMAGE_RESOURCE, $this->getOrganizationName($sourceOrg), $hash, 'copy']),
+                implode('/', [self::SOURCEIMAGE_RESOURCE, $this->getOrganizationPathSegment($sourceOrg), self::encodePathSegment($hash), 'copy']),
                 ['headers' => $headers]
             );
         } catch (GuzzleException $e) {
@@ -228,7 +228,7 @@ class Image extends Base
                 $headers['Overwrite'] = 'F';
             }
             $response = $this->call('POST',
-                implode('/', [self::SOURCEIMAGE_RESOURCE, $this->getOrganizationName($sourceOrg), 'copy']),
+                implode('/', [self::SOURCEIMAGE_RESOURCE, $this->getOrganizationPathSegment($sourceOrg), 'copy']),
                 ['headers' => $headers, 'json' => $hashes]
             );
         } catch (GuzzleException $e) {
@@ -258,7 +258,7 @@ class Image extends Base
     public function deleteSourceImagesWithBinaryHash($binaryHash, $organization = '')
     {
         try {
-            $response = $this->call('DELETE', implode('/', [self::SOURCEIMAGE_RESOURCE, $this->getOrganizationName($organization)]), ['query' => ['binaryHash' => $binaryHash]]);
+            $response = $this->call('DELETE', implode('/', [self::SOURCEIMAGE_RESOURCE, $this->getOrganizationPathSegment($organization)]), ['query' => ['binaryHash' => $binaryHash]]);
         } catch (GuzzleException $e) {
             if (404 == $e->getCode()) {
                 return false;
@@ -313,7 +313,7 @@ class Image extends Base
         }
 
         $contents = $this
-          ->call('GET', self::SOURCEIMAGE_RESOURCE.'/'.$this->getOrganizationName($organization), $options)
+          ->call('GET', self::SOURCEIMAGE_RESOURCE.'/'.$this->getOrganizationPathSegment($organization), $options)
           ->getBody()
           ->getContents();
 
@@ -353,9 +353,9 @@ class Image extends Base
      */
     public function getSourceImage($hash, $organization = '')
     {
-        $path = self::SOURCEIMAGE_RESOURCE.'/'.$this->getOrganizationName($organization);
+        $path = self::SOURCEIMAGE_RESOURCE.'/'.$this->getOrganizationPathSegment($organization);
 
-        $path .= '/'.$hash;
+        $path .= '/'.self::encodePathSegment($hash);
 
         $contents = $this
             ->call('GET', $path)
@@ -380,7 +380,7 @@ class Image extends Base
      */
     public function getSourceImagesWithBinaryHash($binaryHash, $organization = '')
     {
-        $path = implode('/', [self::SOURCEIMAGE_RESOURCE, $this->getOrganizationName($organization), 'binaryhash', $binaryHash]);
+        $path = implode('/', [self::SOURCEIMAGE_RESOURCE, $this->getOrganizationPathSegment($organization), 'binaryhash', self::encodePathSegment($binaryHash)]);
 
         $contents = $this
             ->call('GET', $path)
@@ -405,8 +405,8 @@ class Image extends Base
     {
         $path = implode('/', [
             self::SOURCEIMAGE_RESOURCE,
-            $this->getOrganizationName($organization),
-            $hash,
+            $this->getOrganizationPathSegment($organization),
+            self::encodePathSegment($hash),
             'download', ]
         );
 
@@ -451,7 +451,7 @@ class Image extends Base
             $options['query']['deleted'] = 'true';
         }
 
-        $path = implode('/', [self::SOURCEIMAGE_RESOURCE, $this->getOrganizationName($organization), 'download']);
+        $path = implode('/', [self::SOURCEIMAGE_RESOURCE, $this->getOrganizationPathSegment($organization), 'download']);
 
         return $this
             ->call('GET', $path, $options)
@@ -553,7 +553,7 @@ class Image extends Base
         $contents = $this
             ->call(
                 'PUT',
-                implode('/', [self::STACK_RESOURCE, $stack->getOrganization(), $stack->getName()]),
+                implode('/', [self::STACK_RESOURCE, $this->getOrganizationPathSegment($stack->getOrganization()), self::encodePathSegment($stack->getName())]),
                 ['json' => $stack->getConfig(), 'query' => $queryString]
             )
             ->getBody()
@@ -592,7 +592,7 @@ class Image extends Base
         }
 
         $contents = $this
-            ->call('GET', self::STACK_RESOURCE.'/'.$this->getOrganizationName($organization), $options)
+            ->call('GET', self::STACK_RESOURCE.'/'.$this->getOrganizationPathSegment($organization), $options)
             ->getBody()
             ->getContents();
 
@@ -613,7 +613,7 @@ class Image extends Base
     public function getStack($stackName, $organization = '')
     {
         $contents = $this
-            ->call('GET', implode('/', [self::STACK_RESOURCE, $this->getOrganizationName($organization), $stackName]))
+            ->call('GET', implode('/', [self::STACK_RESOURCE, $this->getOrganizationPathSegment($organization), self::encodePathSegment($stackName)]))
             ->getBody()
             ->getContents();
 
@@ -632,7 +632,7 @@ class Image extends Base
      */
     public function deleteStack($stackName, $organization = '')
     {
-        $response = $this->call('DELETE', implode('/', [self::STACK_RESOURCE, $this->getOrganizationName($organization), $stackName]));
+        $response = $this->call('DELETE', implode('/', [self::STACK_RESOURCE, $this->getOrganizationPathSegment($organization), self::encodePathSegment($stackName)]));
 
         return '204' == $response->getStatusCode();
     }
@@ -653,7 +653,7 @@ class Image extends Base
      */
     public function deleteStackCache($stackName, $organization = '')
     {
-        $path = implode('/', [self::STACK_RESOURCE, $this->getOrganizationName($organization), $stackName, 'cache']);
+        $path = implode('/', [self::STACK_RESOURCE, $this->getOrganizationPathSegment($organization), self::encodePathSegment($stackName), 'cache']);
 
         try {
             $response = $this->call('DELETE', $path);
@@ -726,7 +726,7 @@ class Image extends Base
             $query['roundDateUpTo'] = $roundDateUpTo;
         }
 
-        $path = implode('/', ['utils', $this->getOrganizationName($organization), 'sign_url']);
+        $path = implode('/', ['utils', $this->getOrganizationPathSegment($organization), 'sign_url']);
         $contents = $this
             ->call('POST', $path, ['query' => $query])
             ->getBody()
@@ -769,6 +769,9 @@ class Image extends Base
         $count = 0;
         $response = null;
         foreach ($dynamicMetadata as $value => $data) {
+            if (false === $hash) {
+                throw new \LogicException('The previous dynamic metadata call did not return a hash in the Location header');
+            }
             $callOptions = [];
             if ($data instanceof DynamicMetadataInterface) {
                 $name = $data::getName();
@@ -780,10 +783,10 @@ class Image extends Base
 
             $path = implode('/', [
                 self::SOURCEIMAGE_RESOURCE,
-                $this->getOrganizationName($organization),
-                $hash,
+                $this->getOrganizationPathSegment($organization),
+                self::encodePathSegment($hash),
                 self::DYNAMIC_META_RESOURCE,
-                $name,
+                self::encodePathSegment($name),
             ]);
 
             $keepHash = isset($options['keepHash']) && $options['keepHash'];
@@ -846,8 +849,8 @@ class Image extends Base
 
         $path = implode('/', [
             self::SOURCEIMAGE_RESOURCE,
-            $this->getOrganizationName($organization),
-            $hash,
+            $this->getOrganizationPathSegment($organization),
+            self::encodePathSegment($hash),
             'options',
             'protected',
         ]);
@@ -883,8 +886,8 @@ class Image extends Base
 
         $path = implode('/', [
             self::SOURCEIMAGE_RESOURCE,
-            $this->getOrganizationName($organization),
-            $hash,
+            $this->getOrganizationPathSegment($organization),
+            self::encodePathSegment($hash),
             'options',
             'locked',
         ]);
@@ -913,8 +916,8 @@ class Image extends Base
     {
         $path = implode('/', [
             self::SOURCEIMAGE_RESOURCE,
-            $this->getOrganizationName($organization),
-            $hash,
+            $this->getOrganizationPathSegment($organization),
+            self::encodePathSegment($hash),
             'name',
         ]);
 
@@ -947,8 +950,8 @@ class Image extends Base
     {
         $path = implode('/', [
             self::SOURCEIMAGE_RESOURCE,
-            $this->getOrganizationName($organization),
-            $hash,
+            $this->getOrganizationPathSegment($organization),
+            self::encodePathSegment($hash),
             'cache',
         ]);
 
@@ -985,9 +988,9 @@ class Image extends Base
     {
         $path = implode('/', [
             self::SOURCEIMAGE_RESOURCE,
-            $this->getOrganizationName($organization),
+            $this->getOrganizationPathSegment($organization),
             self::ALIAS_RESOURCE,
-            $alias,
+            self::encodePathSegment($alias),
         ]);
 
         $contents = $this
@@ -1028,9 +1031,9 @@ class Image extends Base
 
         $path = implode('/', [
             self::SOURCEIMAGE_RESOURCE,
-            $this->getOrganizationName($organization),
+            $this->getOrganizationPathSegment($organization),
             self::ALIAS_RESOURCE,
-            $alias,
+            self::encodePathSegment($alias),
         ]);
 
         $response = $this->call('PUT', $path, $callOptions);
@@ -1062,9 +1065,9 @@ class Image extends Base
     {
         $path = implode('/', [
             self::SOURCEIMAGE_RESOURCE,
-            $this->getOrganizationName($organization),
+            $this->getOrganizationPathSegment($organization),
             self::ALIAS_RESOURCE,
-            $alias,
+            self::encodePathSegment($alias),
         ]);
 
         try {
@@ -1096,9 +1099,9 @@ class Image extends Base
     {
         $path = implode('/', [
             self::SOURCEIMAGE_RESOURCE,
-            $this->getOrganizationName($organization),
+            $this->getOrganizationPathSegment($organization),
             self::ALIAS_RESOURCE,
-            $alias,
+            self::encodePathSegment($alias),
             'cache',
         ]);
 
@@ -1128,8 +1131,8 @@ class Image extends Base
     {
         $path = implode('/', [
             self::SOURCEIMAGE_RESOURCE,
-            $this->getOrganizationName($organization),
-            $hash,
+            $this->getOrganizationPathSegment($organization),
+            self::encodePathSegment($hash),
             'autolabel',
         ]);
         $response = $this->call('POST', $path);
@@ -1151,8 +1154,8 @@ class Image extends Base
     {
         $path = implode('/', [
             self::SOURCEIMAGE_RESOURCE,
-            $this->getOrganizationName($organization),
-            $hash,
+            $this->getOrganizationPathSegment($organization),
+            self::encodePathSegment($hash),
             'autodescription',
         ]);
         $force = isset($options['force']) && $options['force'] ? true : false;
@@ -1196,10 +1199,10 @@ class Image extends Base
 
         $path = implode('/', [
             self::SOURCEIMAGE_RESOURCE,
-            $this->getOrganizationName($organization),
-            $hash,
+            $this->getOrganizationPathSegment($organization),
+            self::encodePathSegment($hash),
             self::DYNAMIC_META_RESOURCE,
-            $dynamicMetadataName,
+            self::encodePathSegment($dynamicMetadataName),
         ]);
 
         $callOptions = [];
@@ -1340,8 +1343,8 @@ class Image extends Base
     {
         $path = implode('/', [
             self::SOURCEIMAGE_RESOURCE,
-            $this->getOrganizationName($organization),
-            $hash,
+            $this->getOrganizationPathSegment($organization),
+            self::encodePathSegment($hash),
             self::USER_META_RESOURCE,
         ]);
 
@@ -1373,10 +1376,10 @@ class Image extends Base
     {
         $path = implode('/', [
             self::SOURCEIMAGE_RESOURCE,
-            $this->getOrganizationName($organization),
-            $hash,
+            $this->getOrganizationPathSegment($organization),
+            self::encodePathSegment($hash),
             self::USER_META_RESOURCE,
-            $field,
+            self::encodePathSegment($field),
         ]);
 
         try {
@@ -1487,8 +1490,8 @@ class Image extends Base
     {
         $path = implode('/', [
             self::SOURCEIMAGE_RESOURCE,
-            $this->getOrganizationName($organization),
-            $hash,
+            $this->getOrganizationPathSegment($organization),
+            self::encodePathSegment($hash),
             self::USER_META_RESOURCE,
         ]);
         $data = [];
@@ -1568,7 +1571,7 @@ class Image extends Base
         }
 
         $contents = $this
-            ->call('POST', self::SOURCEIMAGE_RESOURCE.'/'.$this->getOrganizationName($organization), ['multipart' => $requestOptions])
+            ->call('POST', self::SOURCEIMAGE_RESOURCE.'/'.$this->getOrganizationPathSegment($organization), ['multipart' => $requestOptions])
             ->getBody()
             ->getContents();
 

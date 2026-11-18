@@ -184,6 +184,30 @@ abstract class Base
     }
 
     /**
+     * Return the organization (or the default) encoded for use as a single API path segment.
+     *
+     * @param string|null $organization Organization
+     *
+     * @throws \RuntimeException
+     */
+    protected function getOrganizationPathSegment($organization = null): string
+    {
+        return self::encodePathSegment($this->getOrganizationName($organization));
+    }
+
+    /**
+     * Encode a value for use as a single API path segment.
+     *
+     * Prevents values like "../stacks/org/name" or "abc?x=1" from changing the requested
+     * endpoint, since Guzzle resolves dot segments in relative paths against the base URI.
+     * "*" is kept as is (valid in a path segment) since the API uses it as a wildcard, e.g. for cache purges.
+     */
+    protected static function encodePathSegment(string|int $segment): string
+    {
+        return str_replace('%2A', '*', rawurlencode((string) $segment));
+    }
+
+    /**
      * Gets the payload of an API JWT Token (not validated against the signature).
      */
     protected function getUnvalidatedPayload(string $token): ?array
