@@ -169,7 +169,8 @@ abstract class Base
      *
      * @param string|null $organization Organization
      *
-     * @throws \RuntimeException
+     * @throws \RuntimeException         If no organization is given and there is no default
+     * @throws \InvalidArgumentException If the organization name is invalid
      *
      * @return string
      */
@@ -180,7 +181,44 @@ abstract class Base
             throw new \RuntimeException('Organization is empty');
         }
 
-        return $org;
+        return self::validateOrganizationName($org);
+    }
+
+    /**
+     * Ensure an organization name only contains [a-z0-9_-].
+     *
+     * Organization names end up in API paths and in render hostnames, so anything else
+     * (e.g. "../users", "org?x=1", "evil.com/") is rejected instead of being encoded.
+     *
+     * @throws \InvalidArgumentException If the organization name is invalid
+     */
+    protected static function validateOrganizationName(string $organization): string
+    {
+        if (!preg_match('/^[a-z0-9_-]+$/', $organization)) {
+            throw new \InvalidArgumentException(\sprintf('Invalid organization name "%s", only a-z, 0-9, "-" and "_" are allowed', $organization));
+        }
+
+        return $organization;
+    }
+
+    /**
+     * Encode a value for use as a single API path segment.
+     *
+     * Prevents values like "../stacks/org/name", ".." or "abc?x=1" from changing the requested
+     * endpoint, since Guzzle resolves dot segments in relative paths against the base URI.
+     * Empty, "." and ".." segments are rejected: rawurlencode leaves dots alone, and even a
+     * percent-encoded "%2E%2E" may be normalized back into a dot segment by proxies.
+     *
+     * @throws \InvalidArgumentException If the segment is empty, "." or ".."
+     */
+    protected static function encodePathSegment(string|int $segment): string
+    {
+        $segment = (string) $segment;
+        if ('' === $segment || '.' === $segment || '..' === $segment) {
+            throw new \InvalidArgumentException(\sprintf('Invalid API path segment "%s"', $segment));
+        }
+
+        return rawurlencode($segment);
     }
 
     /**
