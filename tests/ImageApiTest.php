@@ -132,11 +132,11 @@ class ImageApiTest extends \PHPUnit\Framework\TestCase
         $body = '{"items":[],"total":0,"cursor":""}';
         $image = $this->makeClient([new Response(200, [], $body)]);
 
-        $image->getSourceImagesWithBinaryHash('abc123binary');
+        $image->getSourceImagesWithBinaryHash('03b3e8a0bdd76ef55c021066642c9d2fa9c02799');
 
         $req = $this->history[0]['request'];
         $this->assertSame('GET', $req->getMethod());
-        $this->assertSame('/sourceimages/testorg/binaryhash/abc123binary', $req->getUri()->getPath());
+        $this->assertSame('/sourceimages/testorg/binaryhash/03b3e8a0bdd76ef55c021066642c9d2fa9c02799', $req->getUri()->getPath());
         $this->assertSame('', $req->getUri()->getQuery());
     }
 
@@ -251,25 +251,46 @@ class ImageApiTest extends \PHPUnit\Framework\TestCase
 
     // ---- Path segment encoding (no traversal / query injection via arguments) ----
 
-    public function testDeleteSourceImageEncodesTraversalInHash(): void
+    public function testShortHashIsAccepted(): void
     {
         $image = $this->makeClient([new Response(204)]);
 
-        $image->deleteSourceImage('../../stacks/testorg/important');
+        $image->deleteSourceImage('c03683');
 
-        $uri = $this->history[0]['request']->getUri();
-        $this->assertSame('/sourceimages/testorg/..%2F..%2Fstacks%2Ftestorg%2Fimportant', $uri->getPath());
+        $this->assertSame('/sourceimages/testorg/c03683', $this->history[0]['request']->getUri()->getPath());
     }
 
-    public function testRestoreSourceImageEncodesQueryInjectionInHash(): void
+    /**
+     * @return array<string, array{string}>
+     */
+    public static function invalidHashProvider(): array
     {
-        $image = $this->makeClient([new Response(200)]);
+        return [
+            'traversal' => ['../../stacks/testorg/important'],
+            'query' => ['abc123?foo=bar#'],
+            'too short' => ['abc12'],
+            'too long' => [str_repeat('a', 41)],
+            'uppercase' => ['ABC123'],
+            'non-hex' => ['abcxyz'],
+            'remote path' => ['-https://example.com/image.jpg-'],
+        ];
+    }
 
-        $image->restoreSourceImage('abc123?foo=bar#');
+    #[\PHPUnit\Framework\Attributes\DataProvider('invalidHashProvider')]
+    public function testInvalidHashIsRejected(string $hash): void
+    {
+        $image = $this->makeClient([]);
 
-        $uri = $this->history[0]['request']->getUri();
-        $this->assertSame('/sourceimages/testorg/abc123%3Ffoo%3Dbar%23/restore', $uri->getPath());
-        $this->assertSame('', $uri->getQuery());
+        $this->expectException(\InvalidArgumentException::class);
+        $image->restoreSourceImage($hash);
+    }
+
+    public function testInvalidBinaryHashIsRejected(): void
+    {
+        $image = $this->makeClient([]);
+
+        $this->expectException(\InvalidArgumentException::class);
+        $image->getSourceImagesWithBinaryHash('c03683');
     }
 
     public function testDeleteStackEncodesTraversalInStackName(): void

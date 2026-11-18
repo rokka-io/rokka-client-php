@@ -131,7 +131,7 @@ class Image extends Base
     public function deleteSourceImage($hash, $organization = '')
     {
         try {
-            $response = $this->call('DELETE', implode('/', [self::SOURCEIMAGE_RESOURCE, $this->getOrganizationName($organization), self::encodePathSegment($hash)]));
+            $response = $this->call('DELETE', implode('/', [self::SOURCEIMAGE_RESOURCE, $this->getOrganizationName($organization), self::validateHash($hash)]));
         } catch (GuzzleException $e) {
             if (404 == $e->getCode()) {
                 return false;
@@ -156,7 +156,7 @@ class Image extends Base
     public function restoreSourceImage($hash, $organization = '')
     {
         try {
-            $response = $this->call('POST', implode('/', [self::SOURCEIMAGE_RESOURCE, $this->getOrganizationName($organization), self::encodePathSegment($hash), 'restore']));
+            $response = $this->call('POST', implode('/', [self::SOURCEIMAGE_RESOURCE, $this->getOrganizationName($organization), self::validateHash($hash), 'restore']));
         } catch (GuzzleException $e) {
             if (404 == $e->getCode()) {
                 return false;
@@ -190,7 +190,7 @@ class Image extends Base
                 $headers['Overwrite'] = 'F';
             }
             $response = $this->call('POST',
-                implode('/', [self::SOURCEIMAGE_RESOURCE, $this->getOrganizationName($sourceOrg), self::encodePathSegment($hash), 'copy']),
+                implode('/', [self::SOURCEIMAGE_RESOURCE, $this->getOrganizationName($sourceOrg), self::validateHash($hash), 'copy']),
                 ['headers' => $headers]
             );
         } catch (GuzzleException $e) {
@@ -355,7 +355,7 @@ class Image extends Base
     {
         $path = self::SOURCEIMAGE_RESOURCE.'/'.$this->getOrganizationName($organization);
 
-        $path .= '/'.self::encodePathSegment($hash);
+        $path .= '/'.self::validateHash($hash);
 
         $contents = $this
             ->call('GET', $path)
@@ -380,7 +380,7 @@ class Image extends Base
      */
     public function getSourceImagesWithBinaryHash($binaryHash, $organization = '')
     {
-        $path = implode('/', [self::SOURCEIMAGE_RESOURCE, $this->getOrganizationName($organization), 'binaryhash', self::encodePathSegment($binaryHash)]);
+        $path = implode('/', [self::SOURCEIMAGE_RESOURCE, $this->getOrganizationName($organization), 'binaryhash', self::validateBinaryHash($binaryHash)]);
 
         $contents = $this
             ->call('GET', $path)
@@ -406,7 +406,7 @@ class Image extends Base
         $path = implode('/', [
             self::SOURCEIMAGE_RESOURCE,
             $this->getOrganizationName($organization),
-            self::encodePathSegment($hash),
+            self::validateHash($hash),
             'download', ]
         );
 
@@ -786,7 +786,7 @@ class Image extends Base
             $path = implode('/', [
                 self::SOURCEIMAGE_RESOURCE,
                 $this->getOrganizationName($organization),
-                self::encodePathSegment($hash),
+                self::validateHash($hash),
                 self::DYNAMIC_META_RESOURCE,
                 self::encodePathSegment($name),
             ]);
@@ -852,7 +852,7 @@ class Image extends Base
         $path = implode('/', [
             self::SOURCEIMAGE_RESOURCE,
             $this->getOrganizationName($organization),
-            self::encodePathSegment($hash),
+            self::validateHash($hash),
             'options',
             'protected',
         ]);
@@ -889,7 +889,7 @@ class Image extends Base
         $path = implode('/', [
             self::SOURCEIMAGE_RESOURCE,
             $this->getOrganizationName($organization),
-            self::encodePathSegment($hash),
+            self::validateHash($hash),
             'options',
             'locked',
         ]);
@@ -919,7 +919,7 @@ class Image extends Base
         $path = implode('/', [
             self::SOURCEIMAGE_RESOURCE,
             $this->getOrganizationName($organization),
-            self::encodePathSegment($hash),
+            self::validateHash($hash),
             'name',
         ]);
 
@@ -953,7 +953,7 @@ class Image extends Base
         $path = implode('/', [
             self::SOURCEIMAGE_RESOURCE,
             $this->getOrganizationName($organization),
-            self::encodePathSegment($hash),
+            self::validateHash($hash),
             'cache',
         ]);
 
@@ -1134,7 +1134,7 @@ class Image extends Base
         $path = implode('/', [
             self::SOURCEIMAGE_RESOURCE,
             $this->getOrganizationName($organization),
-            self::encodePathSegment($hash),
+            self::validateHash($hash),
             'autolabel',
         ]);
         $response = $this->call('POST', $path);
@@ -1157,7 +1157,7 @@ class Image extends Base
         $path = implode('/', [
             self::SOURCEIMAGE_RESOURCE,
             $this->getOrganizationName($organization),
-            self::encodePathSegment($hash),
+            self::validateHash($hash),
             'autodescription',
         ]);
         $force = isset($options['force']) && $options['force'] ? true : false;
@@ -1202,7 +1202,7 @@ class Image extends Base
         $path = implode('/', [
             self::SOURCEIMAGE_RESOURCE,
             $this->getOrganizationName($organization),
-            self::encodePathSegment($hash),
+            self::validateHash($hash),
             self::DYNAMIC_META_RESOURCE,
             self::encodePathSegment($dynamicMetadataName),
         ]);
@@ -1346,7 +1346,7 @@ class Image extends Base
         $path = implode('/', [
             self::SOURCEIMAGE_RESOURCE,
             $this->getOrganizationName($organization),
-            self::encodePathSegment($hash),
+            self::validateHash($hash),
             self::USER_META_RESOURCE,
         ]);
 
@@ -1379,7 +1379,7 @@ class Image extends Base
         $path = implode('/', [
             self::SOURCEIMAGE_RESOURCE,
             $this->getOrganizationName($organization),
-            self::encodePathSegment($hash),
+            self::validateHash($hash),
             self::USER_META_RESOURCE,
             self::encodePathSegment($field),
         ]);
@@ -1493,7 +1493,7 @@ class Image extends Base
         $path = implode('/', [
             self::SOURCEIMAGE_RESOURCE,
             $this->getOrganizationName($organization),
-            self::encodePathSegment($hash),
+            self::validateHash($hash),
             self::USER_META_RESOURCE,
         ]);
         $data = [];
@@ -1515,6 +1515,34 @@ class Image extends Base
         }
 
         return $fields;
+    }
+
+    /**
+     * Ensure a source image hash (full or short) is 6-40 lowercase hex chars, since it ends up in API paths.
+     *
+     * @throws \InvalidArgumentException If the hash is invalid
+     */
+    private static function validateHash(string $hash): string
+    {
+        if (!preg_match('/^[0-9a-f]{6,40}$/', $hash)) {
+            throw new \InvalidArgumentException(\sprintf('Invalid hash "%s", expected 6-40 lowercase hex characters', $hash));
+        }
+
+        return $hash;
+    }
+
+    /**
+     * Ensure a binary hash is a lowercase SHA-1 (40 hex chars), since it ends up in API paths.
+     *
+     * @throws \InvalidArgumentException If the binary hash is invalid
+     */
+    private static function validateBinaryHash(string $binaryHash): string
+    {
+        if (!preg_match('/^[0-9a-f]{40}$/', $binaryHash)) {
+            throw new \InvalidArgumentException(\sprintf('Invalid binary hash "%s", expected 40 lowercase hex characters', $binaryHash));
+        }
+
+        return $binaryHash;
     }
 
     /**
